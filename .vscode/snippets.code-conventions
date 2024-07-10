@@ -1,0 +1,22 @@
+{
+  "TypeScript Component Convention": {
+    "scope": "javascript,typescript,javascriptreact,typescriptreact",
+    "prefix": ["tscmp"],
+    "body": [
+      "import React, {ReactNode} from 'react'",
+      "",
+      "interface ${1:ComponentName}Props {",
+      "  $2",
+      "}",
+      "",
+      "const ${1:ComponentName} = ({}: ${1:ComponentName}Props): ReactNode => {",
+      "  return (",
+      "    <div>${1:ComponentName}</div>",
+      "  )",
+      "}",
+      "",
+      "export default ${1:ComponentName}"
+    ],
+    "description": "React Functional Component with TypeScript"
+  }
+}
