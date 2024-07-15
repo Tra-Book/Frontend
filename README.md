@@ -38,28 +38,28 @@ Updated Later...
 
 <!--  <details> -->
 <summary>  1️⃣ Commit 컨벤션  </summary>
+<br />
+<strong> - 기본적으로 (괄호) 안에 Commit과 관련된 route(--page)를 적도록 한다. </strong>
 
 <br />
 <strong>Commit Example</strong>
-<br />
+<br /><br />
 
 ```
-git commit -m ‘#이슈넘버 type: description’
+git commit -m ‘✨Feat(startpage): 대표이미지 설정’
 ```
 
-- **Commit 메시지 종류 설명**
-- Recommend using gitmoji (![gitmoji](https://gitmoji.dev/))
-
-
+- **Commit 메시지 종류 설명** (Recommend using gitmoji (![gitmoji](https://gitmoji.dev/)))
+  
 |Emoji  |    제목   |                내용                 |
 | :------: | :-----: | :----------------------------------: |
-|    🎉|   init     |            브랜치 첫 커밋            |
-|   ✨|   feat      |      새로운 기능에 대한 커밋        |
-|   ♻️| refactor    |    코드 리팩토링에 대한 커밋       |
-|   🐛|   fix       |     버그 수정에 대한 커밋         |
-|   💄|  design     |CSS 등 사용자 UI 디자인 변경 커밋  |
-|   ✅|   test      |        테스트 커밋              |
-|   📝|   docs      |  문서 수정에 대한 커밋         |
+|    🎉|   Init     |            브랜치 첫 커밋            |
+|   ✨|   Feat      |      새로운 기능에 대한 커밋        |
+|   ♻️| Refactor    |    코드 리팩토링에 대한 커밋       |
+|   🐛|   Fix       |     버그 수정에 대한 커밋         |
+|   💄|  Design     |CSS 등 사용자 UI 디자인 변경 커밋  |
+|   ✅|   Test      |        테스트 커밋              |
+|   📝|   Docs      |  문서 수정에 대한 커밋         |
 
 <br/>
 
@@ -92,7 +92,7 @@ main
 
 - <strong>컴포넌트</strong>
   
-  - Install Nextjs Snippets on vscode extension & use `tscmp` → 팀원들과 이미 맞춘 스니펫을 사용
+  - Install Nextjs Snippets on vscode extension & use `tscmp` → TypeScript + ReactNode Snippet (설정 되어있음)
   - 인터페이스 네이밍은 `컴포넌트 네임 + Props` 로 네이밍한다.
   - `props` 는 구조 분해 할당을 한 상태로 가져온다.
   - 꼭 필수적인 prop이 아닌 것들은 `?:` (optional) 타입으로 선언
