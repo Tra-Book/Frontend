@@ -2,7 +2,7 @@
 name: "⚡️Feature Template"
 about: 만들고자 하는 Feature를 언급해주세요.
 title: "⚡️Feat: "
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
