@@ -21,6 +21,7 @@
 |   Language    |                                                                                                                                                ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white)                                                                                                                                                 |
 |     Style     |                                                                                                                                                       ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)                                                                                                                                                       |
 | Data Fetching |                                                                                                 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white) ![ReactQuery](https://img.shields.io/badge/ReactQuery-FF4154?style=for-the-badge&logo=ReactQuery&logoColor=white)                                                                                                 |
+|     State Management     |          ![zustand](https://img.shields.io/badge/zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) |
 |  Deployment   |                                                                                                                                                ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)                                                                                                                                                 |
 | Collaboration | ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white)![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white)  |
 
@@ -51,7 +52,7 @@ git commit -m ‘✨Feat(startpage): 대표이미지 설정’
 
 - **Commit 메시지 종류 설명** (Recommend using gitmoji (![gitmoji](https://gitmoji.dev/)))
   
-|Emoji  |    제목   |                내용                 |
+|Emoji(선택)  |    제목   |                내용                 |
 | :------: | :-----: | :----------------------------------: |
 |    🎉|   Init     |            브랜치 첫 커밋            |
 |   ✨|   Feat      |      새로운 기능에 대한 커밋        |
