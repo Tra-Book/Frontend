@@ -2,28 +2,27 @@
 
 ## 🍀 서비스 이름 및 소개
 
-
 <strong>여행을 간편하고 편리하게 계획하자, TraBook 입니다.</strong>
 
 ## 👤 TraBook_CLIENT TEAM
 
-|                                                                      **김지호**                                                                      |                                                                      **신진건**                                                                      |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                       **김지호**                       |                       **신진건**                       |
+| :----------------------------------------------------: | :----------------------------------------------------: |
 | <center><img src="" width="130" height="130"></center> | <center><img src="" width="130" height="130"></center> |
-|                                                          [김지호](https://github.com/jihostudy)                                                           |                                                       [신진건](https://github.com/sjg729729)                                                        |
+|         [김지호](https://github.com/jihostudy)         |         [신진건](https://github.com/sjg729729)         |
 
 ## 🔗 기술스택
 
-| **category**  |                                                                                                                                                                                                      **stack**                                                                                                                                                                                                       |
-| :-----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|  Environment  |                                                                                                          ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)                                                                                    |
-|    Common     |                                                  ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white) ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white)                                                    |
-|   Language    |                                                                                                                                                ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white)                                                                                                                                                 |
-|     Style     |                                                                                                                                                       ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)                                                                                                                                                       |
-| Data Fetching |                                                                                                 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white) ![ReactQuery](https://img.shields.io/badge/ReactQuery-FF4154?style=for-the-badge&logo=ReactQuery&logoColor=white)                                                                                                 |
-|     State Management     |          ![zustand](https://img.shields.io/badge/zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) |
-|  Deployment   |                                                                                                                                                ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)                                                                                                                                                 |
-| Collaboration | ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white)![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white)  |
+|   **category**   |                                                                                                                                                                                                      **stack**                                                                                                                                                                                                      |
+| :--------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|   Environment    |                                                                                                                                                        ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)                                                                                                                                                         |
+|      Common      |                                                                                                  ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white) ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white)                                                                                                  |
+|     Language     |                                                                                                                                                ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white)                                                                                                                                                |
+|      Style       |                                                                                                                                            ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)                                                                                                                                             |
+|  Data Fetching   |                                                                                                ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white) ![ReactQuery](https://img.shields.io/badge/ReactQuery-FF4154?style=for-the-badge&logo=ReactQuery&logoColor=white)                                                                                                 |
+| State Management |                                                                                                                                                  ![zustand](https://img.shields.io/badge/zustand-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)                                                                                                                                                  |
+|    Deployment    |                                                                                                                                                    ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)                                                                                                                                                     |
+|  Collaboration   | ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white) ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white)![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white) |
 
 ## 📚 주요 라이브러리
 
@@ -51,16 +50,16 @@ git commit -m ‘✨Feat(startpage): 대표이미지 설정’
 ```
 
 - **Commit 메시지 종류 설명** (Recommend using gitmoji (![gitmoji](https://gitmoji.dev/)))
-  
-|Emoji(선택)  |    제목   |                내용                 |
-| :------: | :-----: | :----------------------------------: |
-|    🎉|   Init     |            브랜치 첫 커밋            |
-|   ✨|   Feat      |      새로운 기능에 대한 커밋        |
-|   ♻️| Refactor    |    코드 리팩토링에 대한 커밋       |
-|   🐛|   Fix       |     버그 수정에 대한 커밋         |
-|   💄|  Design     |CSS 등 사용자 UI 디자인 변경 커밋  |
-|   ✅|   Test      |        테스트 커밋              |
-|   📝|   Docs      |  문서 수정에 대한 커밋         |
+
+| Emoji(선택) |   제목   |               내용                |
+| :---------: | :------: | :-------------------------------: |
+|     🎉      |   Init   |          브랜치 첫 커밋           |
+|     ✨      |   Feat   |      새로운 기능에 대한 커밋      |
+|     ♻️      | Refactor |     코드 리팩토링에 대한 커밋     |
+|     🐛      |   Fix    |       버그 수정에 대한 커밋       |
+|     💄      |  Design  | CSS 등 사용자 UI 디자인 변경 커밋 |
+|     ✅      |   Test   |            테스트 커밋            |
+|     📝      |   Docs   |       문서 수정에 대한 커밋       |
 
 <br/>
 
@@ -88,11 +87,13 @@ main
 <!--  </details> -->
 
 <!--  <details> -->
+
 ### ✅ 코딩 컨벤션 (Stricted)
+
 <br />
 
 - <strong>컴포넌트</strong>
-  
+
   - Install Nextjs Snippets on vscode extension & use `tscmp` → TypeScript + ReactNode Snippet (설정 되어있음)
   - 인터페이스 네이밍은 `컴포넌트 네임 + Props` 로 네이밍한다.
   - `props` 는 구조 분해 할당을 한 상태로 가져온다.
@@ -144,7 +145,9 @@ main
 <!--  </details> -->
 
 <!--  <details> -->
+
 ### ⭐ 네이밍 컨벤션 (Recommended)
+
 <br />
 
 - `컴포넌트`: 파스칼 케이스 `PascalCase` ex) MainHeader

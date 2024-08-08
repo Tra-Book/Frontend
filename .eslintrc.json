@@ -1,3 +1,15 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next/core-web-vitals", "prettier"],
+  "plugins": ["simple-import-sort", "unused-imports"], // import 자동 정렬, 사용하지 않은 import 삭제
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "no-unused-vars": "off", // 사용하지 않은 변수에 대한 경고 끄기
+    "unused-imports/no-unused-imports": "error", // 사용되지 않은 import에 대한 경고를 활성화합니다.
+    "@typescript-eslint/no-unused-vars": "off"
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": "latest"
+  }
 }
