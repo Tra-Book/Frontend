@@ -1,5 +1,6 @@
-import { Comment } from '@/lib/types/comment'
-import { Place } from '@/lib/types/place'
+import { BaseEntity } from '../utils/typeUtils'
+import { Comment } from './comment'
+import { Place } from './place'
 
 export interface DayPlan {
   date: Date
@@ -8,8 +9,7 @@ export interface DayPlan {
   places?: Array<Place>
 }
 
-export interface Plan {
-  id: number // 백엔드 제공 데이터
+export interface Plan extends BaseEntity {
   region: string
   schedule: {
     startDate: Date
