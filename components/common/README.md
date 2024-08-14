@@ -1,0 +1,3 @@
+### 프로젝트 전반적으로 공통으로 사용되는 컴포넌트들을 위치시킵니다.
+
+ex. Header / Footer / LoadingSpinner / Banner / Modal ...
