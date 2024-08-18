@@ -1,0 +1,34 @@
+import React, { ReactNode } from 'react'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
+interface EmailLoginPageProps {}
+
+const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
+  return (
+    <div className='w-3/4'>
+      <div className='my-6 flex items-center justify-center'>
+        <div className='flex-grow border-t border-gray-500'></div>
+        <span className='px-4 text-gray-500'>이메일 로그인</span>
+        <div className='flex-grow border-t border-gray-500'></div>
+      </div>
+      <div className='flex flex-col items-center gap-7'>
+        <div className='grid w-full max-w-sm items-center gap-1.5'>
+          <Label htmlFor='email' className='mb-2'>
+            이메일 *
+          </Label>
+          <Input type='email' id='email' placeholder='' className='h-11' />
+        </div>
+        <div className='grid w-full max-w-sm items-center gap-1.5'>
+          <Label htmlFor='email' className='mb-2'>
+            비밀번호 *
+          </Label>
+          <Input type='password' id='password' placeholder='' className='h-11' />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default EmailLoginPage
