@@ -1,5 +1,7 @@
+import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
@@ -25,6 +27,15 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
             비밀번호 *
           </Label>
           <Input type='password' id='password' placeholder='' className='h-11' />
+        </div>
+        <Button variant='secondary' className='mt-2 h-11 w-full max-w-sm bg-slate-200 hover:bg-slate-300'>
+          로그인
+        </Button>
+        <div className='mt-2 text-slate-500'>
+          계정이 없으신가요?&nbsp;&nbsp;
+          <Link className='text-black' href='/signup'>
+            이메일로 회원가입
+          </Link>
         </div>
       </div>
     </div>
