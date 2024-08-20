@@ -13,7 +13,7 @@ const PolicyCheck = ({}: PolicyCheckProps): ReactNode => {
         서비스를 이용하기 위한 약관 동의를 해주세요.
       </div>
       <div>
-        <div className='text-xl'>
+        <div className='text-xl font-semibold'>
           <Checkbox id='terms' />
           <label
             htmlFor='terms'
@@ -23,7 +23,7 @@ const PolicyCheck = ({}: PolicyCheckProps): ReactNode => {
           </label>
         </div>
 
-        <div className='my-3 pl-9'>
+        <div className='my-3'>
           <Checkbox id='terms' />
           <label
             htmlFor='terms'
@@ -32,7 +32,7 @@ const PolicyCheck = ({}: PolicyCheckProps): ReactNode => {
             &nbsp;(필수)&nbsp;이용약관
           </label>
         </div>
-        <div className='my-3 pl-9'>
+        <div className='my-3'>
           <Checkbox id='terms' />
           <label
             htmlFor='terms'
@@ -41,7 +41,7 @@ const PolicyCheck = ({}: PolicyCheckProps): ReactNode => {
             &nbsp;(필수)&nbsp;개인정보 수집 및 이용 동의
           </label>
         </div>
-        <div className='my-3 pl-9'>
+        <div className='my-3'>
           <Checkbox id='terms' />
           <label
             htmlFor='terms'
@@ -50,7 +50,7 @@ const PolicyCheck = ({}: PolicyCheckProps): ReactNode => {
             &nbsp;(선택)&nbsp;위치기반 서비스 이용약관 동의
           </label>
         </div>
-        <div className='my-3 pl-9'>
+        <div className='my-3'>
           <Checkbox id='terms' />
           <label
             htmlFor='terms'

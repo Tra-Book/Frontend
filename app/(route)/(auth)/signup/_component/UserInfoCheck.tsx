@@ -10,7 +10,7 @@ const UserInfoCheck = ({}: UserInfoCheckProps): ReactNode => {
     <>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         <Label htmlFor='email' className='mb-2'>
-          닉네임 *
+          닉네임 <span className='text-red-600'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input type='email' id='email' placeholder='' className='h-11' />
@@ -18,7 +18,7 @@ const UserInfoCheck = ({}: UserInfoCheckProps): ReactNode => {
       </div>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         <Label htmlFor='email' className='mb-2'>
-          비밀번호 *
+          비밀번호 <span className='text-red-600'>*</span> &#40;10문자 이상&#41;
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input type='password' id='password' placeholder='' className='h-11' />
@@ -31,7 +31,7 @@ const UserInfoCheck = ({}: UserInfoCheckProps): ReactNode => {
       </div>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         <Label htmlFor='email' className='mb-2'>
-          비밀번호 확인 *
+          비밀번호 확인 <span className='text-red-600'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input type='password' id='password' placeholder='' className='h-11' />

@@ -12,7 +12,7 @@ const EmailCheck = ({}: EmailCheckProps): ReactNode => {
       {/* <div className='flex flex-col items-center gap-7'> */}
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         <Label htmlFor='email' className='mb-2'>
-          이메일 *
+          이메일 <span className='text-red-600'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input type='email' id='email' placeholder='' className='h-11' />
@@ -23,7 +23,7 @@ const EmailCheck = ({}: EmailCheckProps): ReactNode => {
       </div>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         <Label htmlFor='email' className='mb-2'>
-          인증번호 *
+          인증번호 <span className='text-red-600'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input type='password' id='password' placeholder='' className='h-11' />
@@ -37,9 +37,9 @@ const EmailCheck = ({}: EmailCheckProps): ReactNode => {
         <br />
         아래 재전송 버튼을 클릭해주세요
       </div>
-      <Button variant='secondary' className='mt-2 h-11 w-full max-w-sm bg-slate-200 hover:bg-slate-300'>
+      {/* <Button variant='secondary' className='mt-2 h-11 w-full max-w-sm bg-slate-200 hover:bg-slate-300'>
         인증번호 재전송
-      </Button>
+      </Button> */}
       {/* </div> */}
     </>
   )

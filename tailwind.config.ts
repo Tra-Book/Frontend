@@ -13,7 +13,16 @@ const config = {
       },
     },
     extend: {
+      width: {
+        '102': '28rem',
+      },
+      height: {
+        '13': '3.25rem',
+      },
       colors: {
+        basic: '#FFD25E',
+        naver: '#03C75A',
+        kakao: '#FEE500',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
