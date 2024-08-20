@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'TraBook',
   description: 'Travel and Plan with TraBook',
   icons: {
-    icon: '/images/logo.png',
+    icon: '/images/favicon.png',
   },
 }
 
