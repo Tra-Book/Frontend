@@ -7,6 +7,9 @@ import { pretendard } from '@/public/fonts/font'
 export const metadata: Metadata = {
   title: 'TraBook',
   description: 'Travel and Plan with TraBook',
+  icons: {
+    icon: '/images/TraBookLogo.png',
+  },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
