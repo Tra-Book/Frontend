@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import AuthImage from '@/public/images/auth/index.png'
+
 interface AuthLayoutProps {
   children: React.ReactNode
 }
@@ -10,7 +12,7 @@ const AuthLayout = ({ children }: AuthLayoutProps): ReactNode => {
     <div className='flex h-dvh w-dvw'>
       <div className='flex h-full w-1/2 items-center justify-center bg-lime-400'>
         <Image
-          src='/login_page.png'
+          src={AuthImage}
           alt='TraBook'
           width={0}
           height={0}

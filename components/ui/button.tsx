@@ -18,7 +18,7 @@ const buttonVariants = cva(
         naver: 'bg-naver text-white',
         kakao: 'bg-kakao text-black',
         google: 'bg-white text-black',
-        email: 'bg-basic text-black',
+        email: 'bg-tbPrimary text-black',
       },
       size: {
         default: 'h-10 px-4 py-2',
