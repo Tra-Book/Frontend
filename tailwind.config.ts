@@ -57,7 +57,8 @@ const config = {
         tbSecondary: '#FFEFCA',
         tbGreen: '#CCF39A',
         tbBlue: '#0277FF',
-        tbGray: '#A0A0A0',
+        tbGray: '#00000080',
+        tbPlaceholder: '#A0A0A0',
         tbRed: '#F45858',
         naver: '#03C75A',
         kakao: '#FEE500',
@@ -83,6 +84,9 @@ const config = {
       },
       fontFamily: {
         pretendard: ['var(--font-pretendard)'],
+      },
+      boxShadow: {
+        'tb-shadow': '0px 0px 3px 0px rgba(0, 0, 0, 0.08), 0px 2px 3px 0px rgba(0, 0, 0, 0.17)',
       },
     },
   },

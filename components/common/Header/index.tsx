@@ -9,7 +9,7 @@ import Slogan from './Slogan'
 
 const Header = (): ReactNode => {
   return (
-    <header className='relative h-24 w-full bg-red-400 xl:h-24'>
+    <header className='absolute h-24 w-full bg-red-400 xl:h-24'>
       <nav className='flex h-full w-full max-w-[1280px] items-center justify-between'>
         {/* Logo */}
         <Link href='/'>

@@ -1,30 +1,27 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import Slogan from '@/components/common/Header/Slogan'
 import AuthImage from '@/public/images/auth/index.png'
-
+import LogoImage from '@/public/images/logo.svg'
 interface AuthLayoutProps {
   children: React.ReactNode
 }
 
 const AuthLayout = ({ children }: AuthLayoutProps): ReactNode => {
   return (
-    <div className='flex h-dvh w-dvw'>
-      <div className='flex h-full w-1/2 items-center justify-center bg-lime-400'>
-        <Image
-          src={AuthImage}
-          alt='TraBook'
-          width={0}
-          height={0}
-          sizes='100dvw'
-          style={{ width: '100%', height: '100%' }}
-        />
+    <main className='flex h-dvh w-dvw pt-24'>
+      <div className='hidden h-full w-1/2 max-w-[550px] items-center justify-center sm:flex'>
+        <Image src={AuthImage} alt='TraBook' width={550} height={732} style={{ width: '100%', height: '100%' }} />
       </div>
-      <div className='flex h-full w-1/2 flex-col items-center justify-start'>
-        <div className='flex h-1/4 w-3/4 items-end justify-center text-3xl'>TraBook 로고</div>
+      <div className='flex min-h-full flex-grow flex-col items-center justify-start'>
+        <div className='flex h-1/4 min-h-[180px] w-3/4 flex-col items-center justify-end gap-2'>
+          <Image src={LogoImage} alt='TraBook Logo' width={94} height={69} />
+          <Slogan />
+        </div>
         {children}
       </div>
-    </div>
+    </main>
   )
 }
 
