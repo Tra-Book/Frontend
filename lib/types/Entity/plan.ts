@@ -1,4 +1,4 @@
-import { BaseEntity } from '../utils/typeUtils'
+import { BaseEntity } from '../../utils/typeUtils'
 import { Comment } from './comment'
 import { Place } from './place'
 

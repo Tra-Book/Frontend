@@ -84,6 +84,8 @@ const config = {
       },
       fontFamily: {
         pretendard: ['var(--font-pretendard)'],
+        mclaren: ['var(--font-mclaren)'],
+        mada: ['var(--font-mada)'],
       },
       boxShadow: {
         'tb-shadow': '0px 0px 3px 0px rgba(0, 0, 0, 0.08), 0px 2px 3px 0px rgba(0, 0, 0, 0.17)',
