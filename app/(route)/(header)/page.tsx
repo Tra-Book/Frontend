@@ -55,15 +55,18 @@ const Home = (): ReactNode => {
             <div className='text-xl'>{renderAnimatedText(SUBINTRODUCE_SECOND_LINE, 4)}</div>
           </div>
 
-          <Link href={ROUTES.LOGIN.url}>
-            <Button
-              variant='email'
-              className='relative flex h-14 w-52 items-center justify-center gap-5 text-xl font-semibold'
-            >
-              여행 계획하기
-              <Plane className='absolute right-5' />
-            </Button>
-          </Link>
+          <Motion animation={fadeIn(0.5, 5)}>
+            {/* TODO: 로그인 상태 검사해서 로그인O (/plan), 로그인X(로그인 창 이동) */}
+            <Link href={ROUTES.LOGIN.url}>
+              <Button
+                variant='email'
+                className='relative flex h-14 w-52 items-center justify-center gap-5 text-xl font-semibold'
+              >
+                여행 계획하기
+                <Plane className='absolute right-5' />
+              </Button>
+            </Link>
+          </Motion>
         </div>
       </div>
     </main>
