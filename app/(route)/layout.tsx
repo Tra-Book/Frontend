@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   title: 'TraBook',
   description: 'Travel and Plan with TraBook',
   icons: {
-    icon: '/images/logo.png',
+    icon: '/images/favicon.png',
   },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang='en'>
+    <html lang='ko'>
       <body className={pretendard.className}>{children}</body>
     </html>
   )

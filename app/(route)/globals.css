@@ -65,11 +65,5 @@
   }
   body {
     @apply bg-background text-foreground;
-    --color-primary: rgb(255, 210, 94);
-    --color-secondary: rgb(255, 239, 202);
-    --color-popup: rgb(204, 243, 154);
-    --color-link: rgb(2, 119, 255);
-    --color-placeholder: rgb(160, 160, 160);
-    --color-invalid: rgb(244, 88, 88);
   }
 }
