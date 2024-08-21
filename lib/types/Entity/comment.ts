@@ -1,4 +1,4 @@
-import { BaseEntity } from '../utils/typeUtils'
+import { BaseEntity } from '../../utils/typeUtils'
 
 /**
 필수: POST Request때 필요한 Data,

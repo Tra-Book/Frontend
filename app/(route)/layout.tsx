@@ -2,7 +2,8 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 
-import { pretendard } from '@/public/fonts/font'
+import { cn } from '@/lib/utils/cn'
+import { mada, mcLaren, pretendard } from '@/public/fonts/font'
 
 export const metadata: Metadata = {
   title: 'TraBook',
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang='ko'>
-      <body className={pretendard.className}>{children}</body>
+      <body className={cn(pretendard.className, mcLaren.className, mada.className)}>{children}</body>
     </html>
   )
 }
