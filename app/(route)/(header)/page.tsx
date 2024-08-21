@@ -28,10 +28,10 @@ const Home = (): ReactNode => {
   }
 
   return (
-    <main className='relative flex min-h-screen flex-col items-center justify-start'>
+    <main className='relative flex min-h-screen flex-grow flex-col items-center justify-start'>
       {/* 첫 페이지 */}
-      <div className='relative flex h-screen w-full items-center'>
-        <div className='flex h-full w-1/3 flex-col items-center justify-center gap-8'>
+      <div className='relative flex h-dvh w-full flex-grow flex-col items-center lg:flex-row'>
+        <div className='flex h-3/5 w-full flex-col items-center justify-center gap-8 lg:h-full lg:w-1/3'>
           {SLOGANS.map((slogan, index) => (
             <Motion
               key={slogan}
@@ -40,19 +40,20 @@ const Home = (): ReactNode => {
                 animate: { opacity: 1, x: 0 },
                 transition: { duration: 1, ease: [0.6, -0.05, 0.01, 0.9], delay: index * 0.5 },
               }}
-              className='font-mclaren text-5xl font-bold'
+              className='font-mclaren text-4xl font-bold md:text-5xl'
             >
               {slogan}
             </Motion>
           ))}
         </div>
-        <div className='relative flex h-full flex-grow flex-col items-center justify-center gap-12'>
-          <div className='flex items-center justify-start text-5xl font-semibold'>
+
+        <div className='relative flex h-2/5 flex-grow flex-col items-center justify-center gap-12'>
+          <div className='flex items-center justify-start text-3xl font-semibold sm:text-4xl md:text-5xl'>
             {renderAnimatedText(INTRODUCE_FIRST_LINE, 1.5)}
           </div>
           <div className='flex flex-col items-center gap-2'>
-            <div className='text-xl'>{renderAnimatedText(SUBINTRODUCE_FIRST_LINE, 2.5)}</div>
-            <div className='text-xl'>{renderAnimatedText(SUBINTRODUCE_SECOND_LINE, 4)}</div>
+            <div className='text-lg md:text-xl'>{renderAnimatedText(SUBINTRODUCE_FIRST_LINE, 2.5)}</div>
+            <div className='text-lg md:text-xl'>{renderAnimatedText(SUBINTRODUCE_SECOND_LINE, 4)}</div>
           </div>
 
           <Motion animation={fadeIn(0.5, 5)}>
