@@ -53,6 +53,7 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // TraBook 색
         tbPrimary: '#FFD25E',
         tbSecondary: '#FFEFCA',
         tbGreen: '#CCF39A',
@@ -60,8 +61,11 @@ const config = {
         tbGray: '#00000080',
         tbPlaceholder: '#A0A0A0',
         tbRed: '#F45858',
-        naver: '#03C75A',
-        kakao: '#FEE500',
+
+        // TraBook Hover 색
+        tbPrimaryHover: '#FFC52F',
+        tbSecondaryHover: '#FEE19E',
+        tbGreenHover: '#ABF250',
       },
       borderRadius: {
         lg: 'var(--radius)',
