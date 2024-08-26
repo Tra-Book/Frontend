@@ -1,6 +1,10 @@
+'use client'
+
 import { Mail } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -10,6 +14,7 @@ type SocialLoginButton = {
   variant: 'kakao' | 'naver' | 'google' | 'email'
   name: string
   ImageSrc?: string
+  auth: 'kakao' | 'naver' | 'google' | 'credentials'
 }
 
 const LOGIN_BUTTONS: Array<SocialLoginButton> = [
@@ -17,20 +22,24 @@ const LOGIN_BUTTONS: Array<SocialLoginButton> = [
     variant: 'kakao',
     name: '카카오 로그인',
     ImageSrc: '/images/auth/kakao.png',
+    auth: 'kakao',
   },
   {
     variant: 'naver',
     name: '네이버 로그인',
     ImageSrc: '/images/auth/naver.png',
+    auth: 'naver',
   },
   {
     variant: 'google',
     name: '구글 로그인',
     ImageSrc: '/images/auth/google.png',
+    auth: 'google',
   },
   {
     variant: 'email',
     name: '이메일 로그인',
+    auth: 'credentials',
   },
 ]
 
@@ -43,6 +52,16 @@ const Divider = ({ text }: { text: string }) => (
 )
 
 const LoginPage = (): ReactNode => {
+  const router = useRouter()
+
+  const onClickLoginBtn = async (provider: string) => {
+    if (provider === 'credentials') {
+      router.push(ROUTES.EMAIL_LOGIN.url)
+    } else {
+      const res = await signIn(provider)
+    }
+  }
+
   return (
     <div className='w-3/4 xl:w-3/5 2xl:w-1/2'>
       <div className='my-10 flex items-center justify-center'>
@@ -55,6 +74,7 @@ const LoginPage = (): ReactNode => {
             key={button.name}
             variant={button.variant}
             className='flex h-13 w-full items-center justify-center gap-14 pl-4'
+            onClick={() => onClickLoginBtn(button.auth)}
           >
             {button.ImageSrc ? (
               <Image src={button.ImageSrc} width={24} height={24} alt={button.name} />
