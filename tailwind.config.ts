@@ -58,7 +58,7 @@ const config = {
         tbGreen: '#CCF39A',
         tbBlue: '#0277FF',
         tbGray: '#00000080',
-        tbPlaceholder: '#A0A0A0',
+        tbPlaceholder: '#EBEBEB',
         tbRed: '#F45858',
         naver: '#03C75A',
         kakao: '#FEE500',

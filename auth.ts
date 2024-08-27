@@ -1,10 +1,21 @@
 import NextAuth from 'next-auth'
+import credentials from 'next-auth/providers/credentials'
 import google from 'next-auth/providers/google'
 import kakao from 'next-auth/providers/kakao'
 import naver from 'next-auth/providers/naver'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    credentials({
+      authorize: async credentials => {
+        console.log(credentials)
+
+        credentials.email = credentials.username
+        delete credentials.username
+
+        return credentials
+      },
+    }),
     google({
       clientId: process.env.GOOGLE_CLIENT || 'GOOGLE_CLIENT',
       clientSecret: process.env.GOOGLE_SECRET || 'GOOGLE_SECRET',
@@ -30,13 +41,72 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       console.log('account', account)
       console.log('user', user)
 
+      if (account?.provider === 'credentials') {
+        console.log('Login with credentials')
+
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: user.email,
+              password: user.password,
+            }),
+            credentials: 'include',
+          })
+
+          const status = res.status
+          const data = await res.json()
+
+          console.log(res)
+
+          console.log(data)
+
+          switch (status) {
+            case 200:
+              // `Set-Cookie` 헤더에서 쿠키를 가져옴
+              const setCookieHeader = res.headers.get('set-cookie')
+              // console.log('Set-Cookie Header:', setCookieHeader)
+
+              // // 원하는 쿠키 파싱 (예: refreshToken)
+              // if (setCookieHeader) {
+              //   // const cookiesArray = setCookieHeader.split(', ')
+              //   // const refreshToken = cookiesArray.find(cookie => cookie.startsWith('refreshToken='))
+
+              //   console.log('Refresh Token:', setCookieHeader?.split('refreshToken=')[1])
+              //   cookies().set('refreshToken', setCookieHeader?.split('refreshToken=')[1])
+              // }
+
+              // accessToken to session
+              user.accessToken = res.headers.get('Authorization')
+              break
+            case 404:
+              console.log(data.message)
+              return 'error'
+            case 404:
+              console.log(data.message)
+              return 'error'
+            default:
+              console.log('credentails login error')
+              return 'error'
+          }
+        } catch (error) {
+          console.log(error)
+          return 'error'
+        }
+      }
       // Kakao Login API : /auth/kakao
-      if (account?.provider === 'kakao') {
+      else if (account?.provider === 'kakao') {
         console.log('Login with kakao')
 
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/kakao`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/kakao-login`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
               email: user.email,
               access_token: account.access_token,
@@ -46,15 +116,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const status = res.status
           const data = await res.json()
 
+          console.log(res)
+
           console.log(data)
 
           switch (status) {
             case 200:
             case 201:
-              // 리프레시 토큰 -> 쿠키
-              // cookies().set('refreshToken', 'refreshToken')
-
-              // 헤더 -> accesstoken -> 세션에 저장
+              // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               break
             case 400:
@@ -71,15 +140,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
       // Google Login API : /auth/google
-      if (account?.provider === 'google') {
+      else if (account?.provider === 'google') {
         console.log('Login with google')
+        console.log(account['id_token'])
 
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/google`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/google-login`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
               email: user.email,
-              access_token: account.access_token,
+              access_token: account['id_token'],
             }),
           })
 
@@ -91,10 +164,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           switch (status) {
             case 200:
             case 201:
-              // 리프레시 토큰 -> 쿠키
-              // cookies().set('refreshToken', 'refreshToken')
-
-              // 헤더 -> accesstoken -> 세션에 저장
+              // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               break
             case 400:
@@ -109,6 +179,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.log(error)
           return 'error'
         }
+      } else {
+        return 'error'
       }
 
       // cookies().set('refreshToken', 'refreshToken')

@@ -4,9 +4,10 @@ import { Mail } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
+import Divider from '@/components/auth/Divider'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 
@@ -43,18 +44,13 @@ const LOGIN_BUTTONS: Array<SocialLoginButton> = [
   },
 ]
 
-const Divider = ({ text }: { text: string }) => (
-  <>
-    <div className='flex-grow border-t border-tbGray' />
-    <span className='px-4 text-tbGray'>{text}</span>
-    <div className='flex-grow border-t border-tbGray' />
-  </>
-)
-
 const LoginPage = (): ReactNode => {
+  const session = useSession()
+  console.log(session)
+
   const router = useRouter()
 
-  const onClickLoginBtn = async (provider: string) => {
+  const onClickLoginBtn = async (provider: string): Promise<void> => {
     if (provider === 'credentials') {
       router.push(ROUTES.EMAIL_LOGIN.url)
     } else {
