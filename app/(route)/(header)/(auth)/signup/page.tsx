@@ -3,45 +3,94 @@
 import { Circle } from 'lucide-react'
 import React, { ReactNode, useState } from 'react'
 
+import Divider from '@/components/auth/Divider'
+import EmailCheck from '@/components/auth/EmailCheck'
+import PolicyCheck from '@/components/auth/PolicyCheck'
+import UserInfoCheck from '@/components/auth/UserInfoCheck'
 import { Button } from '@/components/ui/button'
-
-import EmailCheck from './_component/EmailCheck'
-import PolicyCheck from './_component/PolicyCheck'
-import UserInfoCheck from './_component/UserInfoCheck'
+import { cn } from '@/lib/utils/cn'
 
 interface SignUpPageProps {}
 
 const SignUpPage = ({}: SignUpPageProps): ReactNode => {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState<number>(0)
+  const [isNext, setIsNext] = useState<boolean>(false)
 
   const onClickListener = () => {
     setStep(prev => (prev + 1) % 3)
   }
 
+  const onClickSignUp = () => {
+    signUp
+  }
+
+  const signUp = async (email: string, password: string, username: string) => {
+    try {
+      const res = await fetch('/auth/verify-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          username: username,
+        }),
+        credentials: 'include',
+      })
+
+      const status = res.status
+
+      switch (status) {
+        case 200:
+        // signin credentails
+        case 400:
+          break
+        default:
+          alert('이메일 인증이 실패하였습니다. 다시 시도해주세요')
+          break
+      }
+    } catch (error) {}
+  }
+
   return (
     <div className='flex h-full w-3/4 flex-col'>
-      <div className='my-6 flex items-center justify-center'>
-        <div className='flex-grow border-t border-gray-500'></div>
-        <span className='px-4 text-gray-500'>이메일 회원가입</span>
-        <div className='flex-grow border-t border-gray-500'></div>
+      <div className='mb-5 mt-10 flex items-center justify-center'>
+        <Divider text='이메일 회원가입' />
       </div>
       <div className='flex grow flex-col items-center justify-between'>
-        <div className='flex w-full flex-col items-center justify-center gap-5'>
-          {step === 0 ? <PolicyCheck /> : step === 1 ? <EmailCheck /> : <UserInfoCheck />}
+        <div className='mb-3 flex w-full flex-col items-center justify-center gap-5'>
+          {step === 0 ? (
+            <PolicyCheck setIsNext={setIsNext} />
+          ) : step === 1 ? (
+            <EmailCheck setIsNext={setIsNext} />
+          ) : (
+            <UserInfoCheck setIsNext={setIsNext} />
+          )}
         </div>
-        <div className='mb-16 flex w-full grow-0 flex-col items-center justify-center gap-2'>
-          <div className='flex justify-center gap-4'>
-            <Circle size={16} fill={step >= 0 ? 'black' : 'white'} />
-            <Circle size={16} fill={step >= 1 ? 'black' : 'white'} />
-            <Circle size={16} fill={step >= 2 ? 'black' : 'white'} />
+        <div className='mb-8 flex w-full flex-col items-center justify-center gap-2'>
+          <div className='flex items-center justify-end gap-4'>
+            <Circle size={step == 0 ? 16 : 12} fill='#00000080' color='#00000080' />
+            <Circle size={step == 1 ? 16 : 12} fill='#00000080' color='#00000080' />
+            <Circle size={step == 2 ? 16 : 12} fill='#00000080' color='#00000080' />
           </div>
-          <Button
-            onClick={onClickListener}
-            variant='secondary'
-            className='mt-2 h-11 w-full max-w-sm bg-slate-200 hover:bg-slate-300'
-          >
-            {step === 2 ? '회원가입 완료' : '다음'}
-          </Button>
+          {step === 2 ? (
+            <Button
+              onClick={onClickSignUp}
+              variant='primary'
+              className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
+            >
+              회원가입 완료
+            </Button>
+          ) : (
+            <Button
+              onClick={onClickListener}
+              variant='primary'
+              className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
+            >
+              다음
+            </Button>
+          )}
         </div>
       </div>
     </div>

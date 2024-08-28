@@ -84,7 +84,7 @@ const LoginPage = (): ReactNode => {
 
       <div className='mt-12 w-full text-center text-tbGray'>
         계정이 없으신가요?&nbsp;&nbsp;
-        <Link className='text-black underline' href={ROUTES.SIGNUP.url}>
+        <Link className='text-black hover:underline' href={ROUTES.SIGNUP.url}>
           이메일로 회원가입
         </Link>
       </div>

@@ -22,14 +22,14 @@ function validateEmail(email: string): boolean {
 const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [isEmailVaild, setIsEmailVaild] = useState<boolean>(true)
+  const [isEmailValid, setIsEmailValid] = useState<boolean>(true)
 
   const onChangeEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
     const email = e.target.value
     setEmail(email)
 
     if (validateEmail(email)) {
-      setIsEmailVaild(true)
+      setIsEmailValid(true)
     }
   }
 
@@ -38,7 +38,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
   }
 
   const onBlurEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
-    setIsEmailVaild(prev => {
+    setIsEmailValid(prev => {
       return validateEmail(email)
     })
   }
@@ -70,9 +70,9 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
               type='email'
               id='email'
               placeholder=''
-              className={cn(`h-13 bg-tbPlaceholder shadow-tb-shadow ${!isEmailVaild && 'ring-2 ring-red-600'}`)}
+              className={cn(`h-13 bg-tbPlaceholder shadow-tb-shadow ${!isEmailValid && 'ring-2 ring-red-600'}`)}
             />
-            <p className={cn(isEmailVaild ? 'hidden' : 'pl-3 pt-1 text-sm text-red-600')}>
+            <p className={cn(isEmailValid ? 'hidden' : 'pl-3 pt-1 text-sm text-red-600')}>
               * 올바른 이메일 형식이 아닙니다
             </p>
           </div>
