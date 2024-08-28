@@ -4,11 +4,31 @@ import google from 'next-auth/providers/google'
 import kakao from 'next-auth/providers/kakao'
 import naver from 'next-auth/providers/naver'
 
+type LoginApiKey = {
+  clientId: string
+  clientSecret: string
+}
+
+const LOGIN_API_KEYS: { [key: string]: LoginApiKey } = {
+  google: {
+    clientId: process.env.GOOGLE_CLIENT || 'GOOGLE_CLIENT',
+    clientSecret: process.env.GOOGLE_SECRET || 'GOOGLE_SECRET',
+  },
+  kakao: {
+    clientId: process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_API || 'KAKAO_CLIENT',
+    clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET || 'KAKAO_SECRET',
+  },
+  naver: {
+    clientId: process.env.NAVER_CLIENT || 'NAVER_CLIENT',
+    clientSecret: process.env.NAVER_SECRET || 'NAVER_SECRET',
+  },
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     credentials({
       authorize: async credentials => {
-        console.log(credentials)
+        // console.log(credentials)
 
         credentials.email = credentials.username
         delete credentials.username
@@ -16,27 +36,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return credentials
       },
     }),
-    google({
-      clientId: process.env.GOOGLE_CLIENT || 'GOOGLE_CLIENT',
-      clientSecret: process.env.GOOGLE_SECRET || 'GOOGLE_SECRET',
-      authorization: {
-        params: {
-          prompt: 'consent', // 사용자에게 항상 동의 화면을 표시하도록 강제!
-        },
-      },
-    }),
-    kakao({
-      clientId: process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_API || 'KAKAO_CLIENT',
-      clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET || 'KAKAO_SECRET',
-    }),
-    naver({
-      clientId: process.env.NAVER_CLIENT || 'NAVER_CLIENT',
-      clientSecret: process.env.NAVER_SECRET || 'NAVER_SECRET',
-    }),
+    google(LOGIN_API_KEYS.google),
+    kakao(LOGIN_API_KEYS.kakao),
+    naver(LOGIN_API_KEYS.naver),
   ],
   callbacks: {
-    // 로그인 시도했을 때 호출, 로그인 실패와 성공 구분하기
-    // 소셜 로그인인 경우에 토큰 받아오는 로직 추가 (Credential은 위에서 직접 처리)
     signIn: async ({ user, account }: { user: any; account: any }) => {
       console.log('account', account)
       console.log('user', user)
@@ -59,10 +63,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
-
-          console.log(res)
-
-          console.log(data)
 
           switch (status) {
             case 200:
@@ -116,10 +116,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const status = res.status
           const data = await res.json()
 
-          console.log(res)
-
-          console.log(data)
-
           switch (status) {
             case 200:
             case 201:
@@ -159,8 +155,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const status = res.status
           const data = await res.json()
 
-          console.log(data)
-
           switch (status) {
             case 200:
             case 201:
@@ -196,7 +190,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return `${baseUrl}/`
     },
-    // 세션에 토큰 저장하는 과정...
     jwt: async ({ token, user }: { token: any; user: any }) => {
       if (user) {
         token.accessToken = user.accessToken

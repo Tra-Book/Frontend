@@ -20,11 +20,11 @@ function validateEmail(email: string): boolean {
 }
 
 const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isEmailVaild, setIsEmailVaild] = useState(true)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [isEmailVaild, setIsEmailVaild] = useState<boolean>(true)
 
-  const onChangeEmail: ChangeEventHandler<HTMLInputElement> = e => {
+  const onChangeEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
     const email = e.target.value
     setEmail(email)
 
@@ -33,17 +33,17 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
     }
   }
 
-  const onChangePassword: ChangeEventHandler<HTMLInputElement> = e => {
+  const onChangePassword: ChangeEventHandler<HTMLInputElement> = (e): void => {
     setPassword(e.target.value)
   }
 
-  const onBlurEmail: ChangeEventHandler<HTMLInputElement> = e => {
+  const onBlurEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
     setIsEmailVaild(prev => {
       return validateEmail(email)
     })
   }
 
-  const onClickLogin = (e: FormEvent<HTMLFormElement>) => {
+  const onClickLogin = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     signIn('credentials', {
       username: email,
