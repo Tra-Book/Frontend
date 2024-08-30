@@ -15,6 +15,7 @@ export interface Route {
 interface Routes {
   HOME: Route
   LOGIN: Route
+  EMAIL_LOGIN: Route
   SIGNUP: Route
   SIGNOUT: Route
   MAIN: Route
@@ -29,6 +30,10 @@ export const ROUTES: Routes = {
   LOGIN: {
     name: '로그인',
     url: '/login',
+  },
+  EMAIL_LOGIN: {
+    name: '이메일 로그인',
+    url: '/login/email',
   },
   SIGNUP: {
     name: '회원가입',
