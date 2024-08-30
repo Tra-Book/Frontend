@@ -60,11 +60,11 @@ const Home = (): ReactNode => {
             {/* TODO: 로그인 상태 검사해서 로그인O (/plan), 로그인X(로그인 창 이동) */}
             <Link href={ROUTES.LOGIN.url}>
               <Button
-                variant='email'
-                className='relative flex h-14 w-52 items-center justify-center gap-5 text-xl font-semibold'
+                variant='tbPrimary'
+                className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
               >
                 여행 계획하기
-                <Plane className='absolute right-5' />
+                <Plane />
               </Button>
             </Link>
           </Motion>

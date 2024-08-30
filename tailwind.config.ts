@@ -55,17 +55,23 @@ const config = {
         },
         // TraBook 색
         tbPrimary: '#FFD25E',
-        tbSecondary: '#FFEFCA',
-        tbGreen: '#CCF39A',
-        tbBlue: '#0277FF',
-        tbGray: '#00000080',
-        tbPlaceholder: '#A0A0A0',
-        tbRed: '#F45858',
-
-        // TraBook Hover 색
         tbPrimaryHover: '#FFC52F',
+
+        tbSecondary: '#FFEFCA',
         tbSecondaryHover: '#FEE19E',
+
+        tbGreen: '#CCF39A',
         tbGreenHover: '#ABF250',
+
+        tbBlue: '#0277FF',
+        tbBlueHover: '#0051FF',
+
+        tbPlaceholder: '#A0A0A0',
+        tbPlaceHolderHover: '#DEDEDE',
+
+        tbGray: '#00000080',
+        tbRed: '#F45858',
+        tbOrange: '#FF8710',
       },
       borderRadius: {
         lg: 'var(--radius)',
