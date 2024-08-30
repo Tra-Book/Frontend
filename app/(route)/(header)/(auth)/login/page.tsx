@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 
 type SocialLoginButton = {
-  variant: 'kakao' | 'naver' | 'google' | 'email'
+  variant: 'kakao' | 'naver' | 'google' | 'tbPrimary'
   name: string
   ImageSrc?: string
   auth: 'kakao' | 'naver' | 'google' | 'credentials'
@@ -38,7 +38,7 @@ const LOGIN_BUTTONS: Array<SocialLoginButton> = [
     auth: 'google',
   },
   {
-    variant: 'email',
+    variant: 'tbPrimary',
     name: '이메일 로그인',
     auth: 'credentials',
   },
@@ -84,7 +84,7 @@ const LoginPage = (): ReactNode => {
 
       <div className='mt-12 w-full text-center text-tbGray'>
         계정이 없으신가요?&nbsp;&nbsp;
-        <Link className='text-black hover:underline' href={ROUTES.SIGNUP.url}>
+        <Link className='text-black underline hover:text-tbBlue' href={ROUTES.SIGNUP.url}>
           이메일로 회원가입
         </Link>
       </div>

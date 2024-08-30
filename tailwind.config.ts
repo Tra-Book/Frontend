@@ -53,15 +53,25 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // TraBook 색
         tbPrimary: '#FFD25E',
+        tbPrimaryHover: '#FFC52F',
+
         tbSecondary: '#FFEFCA',
+        tbSecondaryHover: '#FEE19E',
+
         tbGreen: '#CCF39A',
+        tbGreenHover: '#ABF250',
+
         tbBlue: '#0277FF',
+        tbBlueHover: '#0051FF',
+
+        tbPlaceholder: '#A0A0A0',
+        tbPlaceHolderHover: '#DEDEDE',
+
         tbGray: '#00000080',
-        tbPlaceholder: '#EBEBEB',
         tbRed: '#F45858',
-        naver: '#03C75A',
-        kakao: '#FEE500',
+        tbOrange: '#FF8710',
       },
       borderRadius: {
         lg: 'var(--radius)',
