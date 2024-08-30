@@ -91,7 +91,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
             />
           </div>
 
-          <Button type='submit' variant='primary' className='mt-2 h-13 w-full'>
+          <Button type='submit' variant='tbPrimary' className='mt-2 h-13 w-full'>
             로그인
           </Button>
 

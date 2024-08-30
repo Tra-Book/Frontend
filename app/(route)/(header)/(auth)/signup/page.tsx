@@ -16,6 +16,15 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
   const [step, setStep] = useState<number>(0)
   const [isNext, setIsNext] = useState<boolean>(false)
 
+  const [email, setEmail] = useState<string>('')
+
+  const [nickname, setNickname] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [validPassword, setvalidPassword] = useState<string>('')
+
+  //for signup button
+  const [isValid, setIsValid] = useState<boolean>(true)
+
   const onClickListener = () => {
     setStep(prev => (prev + 1) % 3)
   }
@@ -63,9 +72,17 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           {step === 0 ? (
             <PolicyCheck setIsNext={setIsNext} />
           ) : step === 1 ? (
-            <EmailCheck setIsNext={setIsNext} />
+            <EmailCheck setIsNext={setIsNext} email={email} setEmail={setEmail} />
           ) : (
-            <UserInfoCheck setIsNext={setIsNext} />
+            <UserInfoCheck
+              setIsNext={setIsNext}
+              email={email}
+              password={password}
+              validPassword={validPassword}
+              setNickname={setNickname}
+              setPassword={setPassword}
+              setvalidPassword={setvalidPassword}
+            />
           )}
         </div>
         <div className='mb-8 flex w-full flex-col items-center justify-center gap-2'>
@@ -77,7 +94,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           {step === 2 ? (
             <Button
               onClick={onClickSignUp}
-              variant='primary'
+              variant='tbPrimary'
               className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
             >
               회원가입 완료
@@ -85,7 +102,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           ) : (
             <Button
               onClick={onClickListener}
-              variant='primary'
+              variant='tbPrimary'
               className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
             >
               다음

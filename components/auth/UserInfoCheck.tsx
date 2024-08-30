@@ -1,12 +1,18 @@
 'use client'
 
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 interface UserInfoCheckProps {
   setIsNext: Dispatch<SetStateAction<boolean>>
+  email: string
+  password: string
+  validPassword: string
+  setNickname: Dispatch<SetStateAction<string>>
+  setPassword: Dispatch<SetStateAction<string>>
+  setvalidPassword: Dispatch<SetStateAction<string>>
 }
 
 function isValidPassword(password: string) {
@@ -17,12 +23,15 @@ function isValidPassword(password: string) {
   return hasLetter && hasNumber && hasSpecialChar
 }
 
-const UserInfoCheck = ({ setIsNext }: UserInfoCheckProps): ReactNode => {
-  const [nickname, setNickname] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [validPassword, setvalidPassword] = useState<string>('')
-  const [isValid, setIsValid] = useState<boolean>(true)
-
+const UserInfoCheck = ({
+  setIsNext,
+  email,
+  password,
+  validPassword,
+  setNickname,
+  setPassword,
+  setvalidPassword,
+}: UserInfoCheckProps): ReactNode => {
   useEffect(() => {
     setIsNext(false)
   }, [])

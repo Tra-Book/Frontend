@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils/cn'
 
 interface EmailCheckProps {
   setIsNext: Dispatch<SetStateAction<boolean>>
+  email: string
+  setEmail: Dispatch<SetStateAction<string>>
 }
 
 // Eamil Validation Check Function
@@ -18,8 +20,8 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email)
 }
 
-const EmailCheck = ({ setIsNext }: EmailCheckProps): ReactNode => {
-  const [email, setEmail] = useState<string>('')
+const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode => {
+  // const [email, setEmail] = useState<string>('')
   const [code, setCode] = useState<string>('')
   const [isSend, setIsSend] = useState<boolean>(false)
   const [isEmailValid, setIsEmailValid] = useState<boolean>(true)
@@ -120,13 +122,13 @@ const EmailCheck = ({ setIsNext }: EmailCheckProps): ReactNode => {
         <div className='gap flex justify-between gap-2'>
           <Input
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={e => setEmail(prev => e.target.value)}
             type='text'
             id='email'
             placeholder=''
             className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isEmailValid && 'ring-2 ring-red-600')}
           />
-          <Button onClick={onClickSendButton} variant='primary' className='h-13 w-1/5 p-2'>
+          <Button onClick={onClickSendButton} variant='tbPrimary' className='h-13 w-1/5 p-2'>
             {!isSend ? '전송' : '재전송'}
           </Button>
         </div>
@@ -148,7 +150,7 @@ const EmailCheck = ({ setIsNext }: EmailCheckProps): ReactNode => {
             placeholder=''
             className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isCodeVerfiy && 'ring-2 ring-red-600')}
           />
-          <Button onClick={onClickVerifyButton} variant='primary' className='h-13 w-1/5 p-2'>
+          <Button onClick={onClickVerifyButton} variant='tbPrimary' className='h-13 w-1/5 p-2'>
             확인
           </Button>
         </div>
