@@ -35,7 +35,7 @@ export const ROUTES = {
     },
   },
   MAIN: {
-    MYPLAN: {
+    MY_PLAN: {
       name: '내 여행',
       url: '/main',
     },

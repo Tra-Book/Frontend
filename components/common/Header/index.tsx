@@ -17,10 +17,10 @@ const Header = (): ReactNode => {
         </Link>
 
         {/* Mobile, Tablet <= xl */}
-        <MobileMenu />
+        <MobileMenu className='lg:hidden' />
 
         {/* Desktop >= xl */}
-        <div className='hidden h-full w-fit items-center justify-center gap-9 text-2xl xl:flex'>
+        <div className='hidden h-full w-fit items-center justify-center gap-9 text-2xl lg:flex'>
           <div className='flex items-center gap-2'>
             커뮤니티
             <LucideIcon name='ChevronDown' />
