@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import React, { ChangeEventHandler, FormEvent, ReactNode, useState } from 'react'
 
-import Divider from '@/components/auth/Divider'
+import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -54,7 +54,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
   return (
     <div className='w-3/4 xl:w-3/5 2xl:w-1/2'>
       <div className='my-10 flex items-center justify-center'>
-        <Divider text='이메일 로그인' />
+        <TextDivider text='이메일 로그인' />
       </div>
 
       <form onSubmit={onClickLogin}>
@@ -91,7 +91,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
             />
           </div>
 
-          <Button type='submit' variant='primary' className='mt-2 h-13 w-full'>
+          <Button type='submit' variant='tbPrimary' className='mt-2 h-13 w-full'>
             로그인
           </Button>
 

@@ -3,10 +3,10 @@
 import { Circle } from 'lucide-react'
 import React, { ReactNode, useState } from 'react'
 
-import Divider from '@/components/auth/Divider'
 import EmailCheck from '@/components/auth/EmailCheck'
 import PolicyCheck from '@/components/auth/PolicyCheck'
 import UserInfoCheck from '@/components/auth/UserInfoCheck'
+import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 
@@ -56,7 +56,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
   return (
     <div className='flex h-full w-3/4 flex-col'>
       <div className='mb-5 mt-10 flex items-center justify-center'>
-        <Divider text='이메일 회원가입' />
+        <TextDivider text='이메일 회원가입' />
       </div>
       <div className='flex grow flex-col items-center justify-between'>
         <div className='mb-3 flex w-full flex-col items-center justify-center gap-5'>
@@ -77,7 +77,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           {step === 2 ? (
             <Button
               onClick={onClickSignUp}
-              variant='primary'
+              variant='tbPrimary'
               className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
             >
               회원가입 완료
@@ -85,7 +85,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           ) : (
             <Button
               onClick={onClickListener}
-              variant='primary'
+              variant='tbPrimary'
               className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
             >
               다음

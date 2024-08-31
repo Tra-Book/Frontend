@@ -24,7 +24,7 @@ interface Routes {
 
 export const ROUTES: Routes = {
   HOME: {
-    name: '시작페이지',
+    name: '홈',
     url: '/',
   },
   LOGIN: {
