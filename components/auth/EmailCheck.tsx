@@ -25,7 +25,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
   const [code, setCode] = useState<string>('')
   const [isSend, setIsSend] = useState<boolean>(false)
   const [isEmailValid, setIsEmailValid] = useState<boolean>(true)
-  const [isCodeVerfiy, setIsCodeVerify] = useState<boolean>(true)
+  const [isCodeVerify, setIsCodeVerify] = useState<boolean>(true)
 
   const onClickSendButton = async (): Promise<void> => {
     console.log(email)
@@ -75,6 +75,8 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     }
 
     try {
+      console.log(email, code)
+
       const res = await fetch('/auth/verify-code', {
         method: 'POST',
         headers: {
@@ -89,9 +91,12 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
 
       const status = res.status
 
+      console.log(status)
+
       switch (status) {
         case 200:
           setIsCodeVerify(true)
+          setIsNext(true)
           return
         case 400:
           setIsCodeVerify(false)
@@ -109,15 +114,11 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     setIsNext(prev => false)
   }, [])
 
-  useEffect(() => {
-    if (isCodeVerfiy && isSend) setIsNext(true)
-  }, [isCodeVerfiy])
-
   return (
     <>
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='email' className='mb-2'>
-          이메일 <span className='text-red-600'>*</span>
+          이메일 <span className='text-tbRed'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input
@@ -126,7 +127,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
             type='text'
             id='email'
             placeholder=''
-            className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isEmailValid && 'ring-2 ring-red-600')}
+            className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isEmailValid && 'ring-2 ring-tbRed')}
           />
           <Button onClick={onClickSendButton} variant='tbPrimary' className='h-13 w-1/5 p-2'>
             {!isSend ? '전송' : '재전송'}
@@ -139,7 +140,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
 
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='code' className='mb-2'>
-          인증번호 <span className='text-red-600'>*</span>
+          인증번호 <span className='text-tbRed'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input
@@ -148,15 +149,13 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
             type='text'
             id='code'
             placeholder=''
-            className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isCodeVerfiy && 'ring-2 ring-red-600')}
+            className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isCodeVerify && 'ring-2 ring-tbRed')}
           />
           <Button onClick={onClickVerifyButton} variant='tbPrimary' className='h-13 w-1/5 p-2'>
             확인
           </Button>
         </div>
-        <p className={cn(isCodeVerfiy ? 'invisible' : 'pl-3 pt-1 text-sm text-red-600')}>
-          * 올바른 인증번호가 아닙니다.
-        </p>
+        <p className={cn(isCodeVerify ? 'invisible' : 'pl-3 pt-1 text-sm ring-tbRed')}>* 올바른 인증번호가 아닙니다.</p>
       </div>
 
       <div className='mt-2 text-center text-slate-500'>

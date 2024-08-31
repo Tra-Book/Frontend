@@ -87,9 +87,9 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
         </div>
         <div className='mb-8 flex w-full flex-col items-center justify-center gap-2'>
           <div className='flex items-center justify-end gap-4'>
-            <Circle size={step == 0 ? 16 : 12} fill='#00000080' color='#00000080' />
-            <Circle size={step == 1 ? 16 : 12} fill='#00000080' color='#00000080' />
-            <Circle size={step == 2 ? 16 : 12} fill='#00000080' color='#00000080' />
+            <Circle size={step == 0 ? 16 : 12} fill='#00000080' color='#00000080' strokeWidth={0} />
+            <Circle size={step == 1 ? 16 : 12} fill='#00000080' color='#00000080' strokeWidth={0} />
+            <Circle size={step == 2 ? 16 : 12} fill='#00000080' color='#00000080' strokeWidth={0} />
           </div>
           {step === 2 ? (
             <Button

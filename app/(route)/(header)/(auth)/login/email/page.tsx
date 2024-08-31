@@ -61,7 +61,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
         <div className='flex flex-col items-center gap-7'>
           <div className='grid w-full items-center gap-1.5'>
             <Label htmlFor='email' className='mb-2'>
-              이메일 <span className='text-red-600'>*</span>
+              이메일 <span className='text-tbRed'>*</span>
             </Label>
             <Input
               onChange={onChangeEmail}
@@ -70,16 +70,16 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
               type='email'
               id='email'
               placeholder=''
-              className={cn(`h-13 bg-tbPlaceholder shadow-tb-shadow ${!isEmailValid && 'ring-2 ring-red-600'}`)}
+              className={cn(`h-13 bg-tbPlaceholder shadow-tb-shadow ${!isEmailValid && 'ring-2 ring-tbRed'}`)}
             />
-            <p className={cn(isEmailValid ? 'hidden' : 'pl-3 pt-1 text-sm text-red-600')}>
+            <p className={cn(isEmailValid ? 'hidden' : 'pl-3 pt-1 text-sm text-tbRed')}>
               * 올바른 이메일 형식이 아닙니다
             </p>
           </div>
 
           <div className='grid w-full items-center gap-1.5'>
             <Label htmlFor='email' className='mb-2'>
-              비밀번호 <span className='text-red-600'>*</span>
+              비밀번호 <span className='text-tbRed'>*</span>
             </Label>
             <Input
               onChange={onChangePassword}
