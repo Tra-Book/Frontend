@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
+import { Button } from '@/components/ui/button'
 import { Route, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
@@ -67,6 +68,7 @@ const MobileMenu = ({ className }: MobileMenuProps): ReactNode => {
       </ul>
     )
   }
+
   return (
     <>
       <LucideIcon
@@ -82,8 +84,10 @@ const MobileMenu = ({ className }: MobileMenuProps): ReactNode => {
       >
         <LucideIcon name='X' className='mr-4 mt-4 self-end' size={20} onClick={toggleDropdown} />
         {/* Todo: 로그인 상태에 따라 로그인하기 or 여행 계획하기 표시하기 */}
-        <Link href={ROUTES.AUTH.LOGIN.url} className='p-4'>
-          로그인하기
+        <Link href={ROUTES.AUTH.LOGIN.url} className='mx-2 w-full p-4'>
+          <Button variant='tbPrimary' className='w-full'>
+            로그인하기
+          </Button>
         </Link>
         {/* <Link href={ROUTES.PLAN.url}>여행 계획하기</Link> */}
         {renderNavLinks(HOME_SECTION)}

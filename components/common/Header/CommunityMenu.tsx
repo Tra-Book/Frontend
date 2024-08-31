@@ -40,11 +40,7 @@ const NavSections: Array<RouteWithDescription> = [
 const CommunityMenu = ({ className }: CommunityMenuProps): ReactNode => {
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
   return (
-    <div
-      className={cn(className, 'relative flex cursor-pointer items-center gap-2')}
-      onMouseEnter={toggleDropdown}
-      onMouseLeave={toggleDropdown}
-    >
+    <div className={cn(className, 'relative flex cursor-pointer items-center gap-2')} onClick={toggleDropdown}>
       커뮤니티
       <LucideIcon name={isOpen ? 'ChevronUp' : 'ChevronDown'} />
       {isOpen && (
