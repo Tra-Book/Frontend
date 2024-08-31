@@ -52,7 +52,7 @@ const LoginPage = (): ReactNode => {
 
   const onClickLoginBtn = async (provider: string): Promise<void> => {
     if (provider === 'credentials') {
-      router.push(ROUTES.EMAIL_LOGIN.url)
+      router.push(ROUTES.AUTH.EMAIL_LOGIN.url)
     } else {
       const res = await signIn(provider)
     }
@@ -84,7 +84,7 @@ const LoginPage = (): ReactNode => {
 
       <div className='mt-12 w-full text-center text-tbGray'>
         계정이 없으신가요?&nbsp;&nbsp;
-        <Link className='text-black underline hover:text-tbBlue' href={ROUTES.SIGNUP.url}>
+        <Link className='text-black underline hover:text-tbBlue' href={ROUTES.AUTH.SIGNUP.url}>
           이메일로 회원가입
         </Link>
       </div>

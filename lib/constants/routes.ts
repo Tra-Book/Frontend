@@ -11,44 +11,63 @@ export interface Route {
 /**
  * 새로운 Route 생성시 추가
  */
-
-interface Routes {
-  HOME: Route
-  LOGIN: Route
-  EMAIL_LOGIN: Route
-  SIGNUP: Route
-  SIGNOUT: Route
-  MAIN: Route
-  COMMUNITY: Route
-}
-
-export const ROUTES: Routes = {
+export const ROUTES = {
   HOME: {
     name: '홈',
     url: '/',
   },
-  LOGIN: {
-    name: '로그인',
-    url: '/login',
-  },
-  EMAIL_LOGIN: {
-    name: '이메일 로그인',
-    url: '/login/email',
-  },
-  SIGNUP: {
-    name: '회원가입',
-    url: '/signup',
-  },
-  SIGNOUT: {
-    name: '회원탈퇴',
-    url: '/signout',
+  AUTH: {
+    LOGIN: {
+      name: '로그인',
+      url: '/login',
+    },
+    EMAIL_LOGIN: {
+      name: '이메일 로그인',
+      url: '/login/email',
+    },
+    SIGNUP: {
+      name: '회원가입',
+      url: '/signup',
+    },
+    SIGNOUT: {
+      name: '회원탈퇴',
+      url: '/signout',
+    },
   },
   MAIN: {
-    name: '내 여행',
-    url: '/main',
+    MYPLAN: {
+      name: '내 여행',
+      url: '/main',
+    },
+    STORE_PLAN: {
+      name: '여행 계획 보관함',
+      url: '/main/store_plan',
+    },
+    STORE_PLACE: {
+      name: '여행지 보관함',
+      url: '/main/store_place',
+    },
+    INFO: {
+      name: '내 정보',
+      url: '/main/info',
+    },
+  },
+  PLAN: {
+    name: '여행 계획하기',
+    url: '/plan',
   },
   COMMUNITY: {
-    name: '커뮤니티',
-    url: '/community',
+    PLACE: {
+      name: '여행 계획 커뮤니티',
+      url: '/community/plan',
+    },
+    PLAN: {
+      name: '여행지 커뮤니티',
+      url: '/community/place',
+    },
+    COMPANION: {
+      name: '동행 모집 커뮤니티',
+      url: '/community/companion',
+    },
   },
 }

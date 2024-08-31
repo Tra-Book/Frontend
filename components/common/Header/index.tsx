@@ -28,7 +28,7 @@ const Header = (): ReactNode => {
           <Link href='/plan'>여행 계획하기</Link>
           {/* Todo: 로그인 상태에 따라 내 여행 or 로그인 구분  */}
           {/* <Link href={ROUTES.MAIN.url}>내 여행</Link> */}
-          <Link href={ROUTES.LOGIN.url}>로그인</Link>
+          <Link href={ROUTES.AUTH.LOGIN.url}>로그인</Link>
         </div>
       </nav>
     </header>
