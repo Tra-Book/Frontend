@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
-import Slogan from '@/components/common/Header/Slogan'
+import Slogan from '@/components/common/Slogan'
 import AuthImage from '@/public/images/auth/index.png'
 import LogoImage from '@/public/images/logo.svg'
 interface AuthLayoutProps {

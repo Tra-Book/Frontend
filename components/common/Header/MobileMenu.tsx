@@ -47,8 +47,7 @@ const MY_SECTION: NavSection = {
 }
 
 const MobileMenu = ({ className }: MobileMenuProps): ReactNode => {
-  // 드롭다운 상태 관리
-  const { ref, isOpen, toggleDropdown } = useDropdown()
+  const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
 
   /**
    * 각 Session 상수에 대한 Link를 렌더링합니다
