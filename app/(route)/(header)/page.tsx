@@ -2,8 +2,8 @@ import { Plane } from 'lucide-react'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
-import { SLOGANS } from '@/components/common/Header/Slogan'
 import { Motion } from '@/components/common/MotionWrapper'
+import { SLOGANS } from '@/components/common/Slogan'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import { fadeIn } from '@/lib/types/animation'
@@ -58,7 +58,7 @@ const Home = (): ReactNode => {
 
           <Motion animation={fadeIn(0.5, 5)}>
             {/* TODO: 로그인 상태 검사해서 로그인O (/plan), 로그인X(로그인 창 이동) */}
-            <Link href={ROUTES.LOGIN.url}>
+            <Link href={ROUTES.AUTH.LOGIN.url}>
               <Button
                 variant='tbPrimary'
                 className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'

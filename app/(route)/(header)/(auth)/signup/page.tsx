@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
-import Divider from '@/components/auth/Divider'
 import EmailCheck from '@/components/auth/EmailCheck'
 import PolicyCheck from '@/components/auth/PolicyCheck'
 import UserInfoCheck from '@/components/auth/UserInfoCheck'
+import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 
@@ -78,8 +78,8 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
 
   return (
     <div className='flex h-full w-3/4 flex-col'>
-      <div className='mb-1 mt-10 flex items-center justify-center'>
-        <Divider text='이메일 회원가입' />
+      <div className='mb-5 mt-10 flex items-center justify-center'>
+        <TextDivider text='이메일 회원가입' />
       </div>
       <div className='flex grow flex-col items-center justify-between'>
         <div className='mb-3 flex w-full flex-col items-center justify-center gap-5'>

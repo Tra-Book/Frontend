@@ -66,7 +66,7 @@ const config = {
         tbBlue: '#0277FF',
         tbBlueHover: '#0051FF',
 
-        tbPlaceholder: '#A0A0A0',
+        tbPlaceholder: '#EBEBEB',
         tbPlaceHolderHover: '#DEDEDE',
 
         tbGray: '#00000080',
