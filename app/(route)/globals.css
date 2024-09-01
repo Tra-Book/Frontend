@@ -67,3 +67,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .h-screen-header {
+    height: calc(100dvh - 6rem);
+  }
+}
