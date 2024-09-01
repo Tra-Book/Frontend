@@ -1,6 +1,8 @@
 'use client'
 
 import { Circle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
 import Divider from '@/components/auth/Divider'
@@ -20,22 +22,17 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
 
   const [nickname, setNickname] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [validPassword, setvalidPassword] = useState<string>('')
+  const [validPassword, setValidPassword] = useState<string>('')
 
-  //for signup button
-  const [isValid, setIsValid] = useState<boolean>(true)
+  const router = useRouter()
 
   const onClickListener = () => {
     setStep(prev => (prev + 1) % 3)
   }
 
-  const onClickSignUp = () => {
-    signUp
-  }
-
   const signUp = async (email: string, password: string, username: string) => {
     try {
-      const res = await fetch('/auth/verify-code', {
+      const res = await fetch('/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,20 +48,37 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
       const status = res.status
 
       switch (status) {
-        case 200:
-        // signin credentails
+        case 201:
+          // 모달로 변경 예정
+          alert('회원가입에 성공하였습니다!')
+          // signin credentails
+          signIn('credentials', {
+            username: email,
+            password,
+          })
+          break
         case 400:
+          alert('이미 존재하는 이메일입니다.')
+          router.push('/')
           break
         default:
-          alert('이메일 인증이 실패하였습니다. 다시 시도해주세요')
+          alert('회원가입이 실패하였습니다. 다시 시도해주세요')
+          router.push('/')
           break
       }
-    } catch (error) {}
+    } catch (error) {
+      alert('회원가입이 실패하였습니다. 다시 시도해주세요')
+      router.push('/')
+    }
+  }
+
+  const onClickSignUp = () => {
+    signUp(email, password, nickname)
   }
 
   return (
     <div className='flex h-full w-3/4 flex-col'>
-      <div className='mb-5 mt-10 flex items-center justify-center'>
+      <div className='mb-1 mt-10 flex items-center justify-center'>
         <Divider text='이메일 회원가입' />
       </div>
       <div className='flex grow flex-col items-center justify-between'>
@@ -81,7 +95,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
               validPassword={validPassword}
               setNickname={setNickname}
               setPassword={setPassword}
-              setvalidPassword={setvalidPassword}
+              setValidPassword={setValidPassword}
             />
           )}
         </div>

@@ -67,7 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           switch (status) {
             case 200:
               // `Set-Cookie` 헤더에서 쿠키를 가져옴
-              const setCookieHeader = res.headers.get('set-cookie')
+              // const setCookieHeader = res.headers.get('set-cookie')
               // console.log('Set-Cookie Header:', setCookieHeader)
 
               // // 원하는 쿠키 파싱 (예: refreshToken)

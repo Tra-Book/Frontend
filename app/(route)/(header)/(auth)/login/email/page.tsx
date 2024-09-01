@@ -1,5 +1,6 @@
 'use client'
 
+import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import React, { ChangeEventHandler, FormEvent, ReactNode, useState } from 'react'
@@ -23,6 +24,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [isEmailValid, setIsEmailValid] = useState<boolean>(true)
+  const [isShow, setIsShow] = useState<boolean>(false)
 
   const onChangeEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
     const email = e.target.value
@@ -51,6 +53,10 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
     })
   }
 
+  const onClickEye = () => {
+    setIsShow(!isShow)
+  }
+
   return (
     <div className='w-3/4 xl:w-3/5 2xl:w-1/2'>
       <div className='my-10 flex items-center justify-center'>
@@ -77,18 +83,37 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
             </p>
           </div>
 
-          <div className='grid w-full items-center gap-1.5'>
+          <div className='relative grid w-full items-center gap-1.5'>
             <Label htmlFor='email' className='mb-2'>
               비밀번호 <span className='text-tbRed'>*</span>
             </Label>
-            <Input
-              onChange={onChangePassword}
-              value={password}
-              type='password'
-              id='password'
-              placeholder=''
-              className='h-13 bg-tbPlaceholder shadow-tb-shadow'
-            />
+            <div className='relative flex justify-between gap-2'>
+              <Input
+                onChange={onChangePassword}
+                value={password}
+                type={isShow ? 'text' : 'password'}
+                id='password'
+                placeholder=''
+                className='h-13 bg-tbPlaceholder shadow-tb-shadow'
+              />
+              {!isShow ? (
+                <EyeOff
+                  onClick={onClickEye}
+                  className='absolute right-2 h-full opacity-40'
+                  width={24}
+                  height={24}
+                  color='#000000'
+                />
+              ) : (
+                <Eye
+                  onClick={onClickEye}
+                  className='absolute right-2 h-full opacity-40'
+                  width={24}
+                  height={24}
+                  color='#000000'
+                />
+              )}
+            </div>
           </div>
 
           <Button type='submit' variant='tbPrimary' className='mt-2 h-13 w-full'>
