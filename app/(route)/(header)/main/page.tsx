@@ -62,6 +62,21 @@ const MainPage = ({}: MainPageProps): ReactNode => {
       <DesktopMenu className='hidden md:flex' />
       {/* 카드 */}
       {/* Todo: 서버 컴포넌트로 따로 뺴서 Data Fetching */}
+      {/* 데이터 없을때  */}
+      {/* <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-3xl font-bold'>
+        <p>아직 생성한 여행 계획이 없습니다!</p>
+        <p>TRABOOK과 함께 신나는 여행을 계획하세요</p>
+        <Link href={ROUTES.AUTH.LOGIN.url}>
+          <Button
+            variant='tbPrimary'
+            className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
+          >
+            여행 계획하기
+            <LucideIcon name='Plane' size={26} />
+          </Button>
+        </Link>
+      </div> */}
+      {/* 데이터 있을때 */}
       <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
@@ -72,7 +87,6 @@ const MainPage = ({}: MainPageProps): ReactNode => {
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
       </div>
-      {/* 페이지네이션 */}
       <CustomPagination className='my-4' />
     </div>
   )

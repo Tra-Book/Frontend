@@ -19,6 +19,9 @@ const config = {
       height: {
         '13': '3.25rem',
       },
+      minHeight: {
+        'screen-header': 'calc(100dvh - 6rem)',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

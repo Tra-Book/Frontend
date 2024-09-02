@@ -72,8 +72,8 @@
   }
 }
 
-@layer utilities {
-  .h-screen-header {
+/* @layer utilities {
+  .screen-header {
     height: calc(100dvh - 6rem);
   }
-}
+} */
