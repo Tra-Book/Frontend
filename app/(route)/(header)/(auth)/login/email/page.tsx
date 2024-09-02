@@ -1,14 +1,14 @@
 'use client'
 
-import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
-import React, { ChangeEventHandler, FormEvent, ReactNode, useState } from 'react'
+import React, { ChangeEventHandler, FormEvent, MouseEventHandler, ReactNode, useState } from 'react'
 
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
 interface EmailLoginPageProps {}
@@ -57,6 +57,14 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
     setIsShow(!isShow)
   }
 
+  const renderEye = (onClickHandler: MouseEventHandler<HTMLOrSVGElement>) => {
+    return isShow ? (
+      <LucideIcon name='EyeOff' onClick={onClickHandler} className='absolute right-2 h-full opacity-40' size={24} />
+    ) : (
+      <LucideIcon name='Eye' onClick={onClickHandler} className='absolute right-2 h-full opacity-40' size={24} />
+    )
+  }
+
   return (
     <div className='w-3/4 xl:w-3/5 2xl:w-1/2'>
       <div className='my-10 flex items-center justify-center'>
@@ -66,7 +74,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
       <form onSubmit={onClickLogin}>
         <div className='flex flex-col items-center gap-7'>
           <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='email' className='mb-2'>
+            <Label htmlFor='email' className='mb-2 text-base'>
               이메일 <span className='text-tbRed'>*</span>
             </Label>
             <Input
@@ -84,7 +92,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
           </div>
 
           <div className='relative grid w-full items-center gap-1.5'>
-            <Label htmlFor='email' className='mb-2'>
+            <Label htmlFor='email' className='mb-2 text-base'>
               비밀번호 <span className='text-tbRed'>*</span>
             </Label>
             <div className='relative flex justify-between gap-2'>
@@ -96,23 +104,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
                 placeholder=''
                 className='h-13 bg-tbPlaceholder shadow-tb-shadow'
               />
-              {!isShow ? (
-                <EyeOff
-                  onClick={onClickEye}
-                  className='absolute right-2 h-full opacity-40'
-                  width={24}
-                  height={24}
-                  color='#000000'
-                />
-              ) : (
-                <Eye
-                  onClick={onClickEye}
-                  className='absolute right-2 h-full opacity-40'
-                  width={24}
-                  height={24}
-                  color='#000000'
-                />
-              )}
+              {renderEye(onClickEye)}
             </div>
           </div>
 
@@ -122,7 +114,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
 
           <div className='mt-2 text-slate-500'>
             계정이 없으신가요?&nbsp;&nbsp;
-            <Link className='text-black hover:underline' href='/signup'>
+            <Link className='text-black underline hover:text-tbBlue' href='/signup'>
               이메일로 회원가입
             </Link>
           </div>
