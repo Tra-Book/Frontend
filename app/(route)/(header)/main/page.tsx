@@ -23,13 +23,13 @@ const MainPage = ({}: MainPageProps): ReactNode => {
   return (
     <div className='relative flex h-min min-h-screen-header flex-grow flex-col items-center justify-start bg-white px-10'>
       {/* 제목 */}
-      <div className='flex h-[8dvh] min-h-[60px] w-full items-end justify-start gap-4'>
+      <div className='flex h-[8dvh] min-h-[60px] w-full items-end justify-start gap-4 pl-1'>
         <span className='text-2xl font-semibold xl:text-3xl'>내 여행 계획</span>
         <span className='text-sm font-medium xl:text-base'>10개</span>
       </div>
       {/* 필터 / 검색 */}
-      <MobileMenu className='md:hidden' />
-      <DesktopMenu className='hidden md:flex' />
+      <MobileMenu className='pl-1 md:hidden' />
+      <DesktopMenu className='hidden pl-1 md:flex' />
       {/* 카드 */}
       {/* Todo: 서버 컴포넌트로 따로 뺴서 Data Fetching */}
       {/* 데이터 없을때  */}
@@ -47,7 +47,7 @@ const MainPage = ({}: MainPageProps): ReactNode => {
         </Link>
       </div> */}
       {/* 데이터 있을때 */}
-      <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+      <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
