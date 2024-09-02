@@ -8,7 +8,7 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps): ReactNode => {
   return (
-    <main className='flex h-dvh w-dvw pt-24'>
+    <main className='flex h-min w-screen bg-tbSecondary pt-24'>
       <SideBar />
       {children}
     </main>

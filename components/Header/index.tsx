@@ -9,8 +9,8 @@ import MobileMenu from './MobileMenu'
 
 const Header = (): ReactNode => {
   return (
-    <header className='fixed left-0 right-0 top-0 z-10 flex h-24 w-full items-center justify-center border-b border-solid border-tbGray bg-transparent xl:h-24'>
-      <nav className='relative flex h-full w-full max-w-[1280px] items-center justify-between px-6'>
+    <header className='fixed left-0 right-0 top-0 z-10 flex h-24 w-screen items-center justify-center border-b border-solid border-tbGray bg-white xl:h-24'>
+      <nav className='relative flex h-full w-full items-center justify-between pl-10 pr-14'>
         {/* Logo */}
         <Link href={ROUTES.HOME.url}>
           <Slogan />

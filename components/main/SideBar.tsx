@@ -23,31 +23,28 @@ const SideBar = ({}: SideBarProps): ReactNode => {
   const pathname = usePathname()
 
   return (
-    <div className='h-screen-header relative flex w-1/6 max-w-[200px] flex-col items-center justify-start bg-tbSecondary'>
+    // md부터 보임
+    <div className='min-h-screen-header relative hidden h-auto w-1/6 min-w-[140px] max-w-[200px] flex-col items-center justify-start md:flex'>
       {/* 프로필 */}
       <div className='flex w-full flex-col items-center justify-start border-b border-solid border-tbGray py-7'>
         <Image alt='프로필 이미지' src={dummy_user.imageSrc} className='aspect-square w-2/5 rounded-full' />
         <div className='py-3 text-lg font-semibold'>{dummy_user.name}</div>
-        <div className='text-sm font-medium'>{dummy_user.statusMessage}</div>
+        <div className='text-pretty text-center text-sm font-medium'>{dummy_user.statusMessage}</div>
       </div>
       {/* 링크 */}
-      <div className='flex w-full flex-col items-center justify-start gap-8 py-10'>
+      <div className='flex w-full flex-col items-center justify-start gap-8 py-10 text-xl font-medium 2xl:text-2xl'>
         <Link href={ROUTES.MAIN.MY_PLAN.url} className='flex items-center justify-center gap-4'>
-          <LucideIcon name='Plane' size={30} strokeWidth={1.5} />
-          <span
-            className={cn('text-xl font-medium hover:text-tbRed', pathname === '/main' && 'font-semibold text-tbRed')}
-          >
-            내 계획
-          </span>
+          <LucideIcon name='Plane' size={26} strokeWidth={1.5} />
+          <span className={cn('hover:text-tbRed', pathname === '/main' && 'font-semibold text-tbRed')}>내 계획</span>
         </Link>
         <div className='flex w-full items-start justify-center gap-4'>
-          <LucideIcon name='Bookmark' size={30} strokeWidth={1.5} />
-          <div className='flex flex-col items-start justify-start gap-2 text-xl font-medium'>
+          <LucideIcon name='Bookmark' size={26} strokeWidth={1.5} />
+          <div className='flex flex-col items-start justify-start gap-2'>
             <Link href={ROUTES.MAIN.STORE_PLAN.url}>보관함</Link>
             <Link
               href={ROUTES.MAIN.STORE_PLAN.url}
               className={cn(
-                'text-base hover:text-tbRed',
+                'text-base hover:text-tbRed 2xl:text-lg',
                 pathname.includes('store_plan') && 'font-semibold text-tbRed',
               )}
             >
@@ -56,7 +53,7 @@ const SideBar = ({}: SideBarProps): ReactNode => {
             <Link
               href={ROUTES.MAIN.STORE_PLACE.url}
               className={cn(
-                'text-base hover:text-tbRed',
+                'text-base hover:text-tbRed 2xl:text-lg',
                 pathname.includes('store_place') && 'font-semibold text-tbRed',
               )}
             >
@@ -65,13 +62,8 @@ const SideBar = ({}: SideBarProps): ReactNode => {
           </div>
         </div>
         <Link href={ROUTES.MAIN.INFO.url} className='flex items-center justify-center gap-4'>
-          <LucideIcon name='Settings' size={30} strokeWidth={1.5} />
-          <span
-            className={cn(
-              'text-xl font-medium hover:text-tbRed',
-              pathname.includes('info') && 'font-semibold text-tbRed',
-            )}
-          >
+          <LucideIcon name='Settings' size={26} strokeWidth={1.5} />
+          <span className={cn('hover:text-tbRed', pathname.includes('info') && 'font-semibold text-tbRed')}>
             내 정보
           </span>
         </Link>
