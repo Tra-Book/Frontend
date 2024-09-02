@@ -72,6 +72,7 @@ const config = {
         tbPlaceholder: '#EBEBEB',
         tbPlaceHolderHover: '#DEDEDE',
 
+        tbBackdrop: '#00000033',
         tbGray: '#00000080',
         tbRed: '#F45858',
         tbOrange: '#FF8710',

@@ -18,6 +18,8 @@ export const colorSet = {
   tbPlaceHolderHover: config.theme.extend.colors.tbPlaceHolderHover,
 
   tbGray: config.theme.extend.colors.tbGray,
+  tbBackdrop: config.theme.extend.colors.tbBackdrop,
+
   tbRed: config.theme.extend.colors.tbRed,
   tbOrange: config.theme.extend.colors.tbOrange,
 }
