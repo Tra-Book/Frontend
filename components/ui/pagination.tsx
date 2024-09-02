@@ -40,8 +40,8 @@ const PaginationLink = ({ className, isActive, size = 'icon', ...props }: Pagina
         variant: isActive ? 'tbPrimary' : 'ghost',
         size,
       }),
-      '!shadow-none',
       className,
+      '!shadow-none',
     )}
     {...props}
   />

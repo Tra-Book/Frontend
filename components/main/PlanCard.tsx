@@ -3,6 +3,8 @@ import React, { ReactNode } from 'react'
 
 import LucideIcon from '@/lib/icons/LucideIcon'
 
+import Backdrop from '../common/Backdrop'
+
 interface PlanCardProps {
   data: {
     title: string
@@ -19,11 +21,14 @@ interface PlanCardProps {
 // Todo: data props type 지정
 const PlanCard = ({ data }: PlanCardProps): ReactNode => {
   return (
-    <div className='flex h-min w-full flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
-      <Image src={data.imageSrc} alt='Plan Image' className='aspect-video w-full rounded-md object-cover' />
+    <div className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
+      <div className='group relative w-full overflow-hidden rounded-md'>
+        <Image src={data.imageSrc} alt='Plan Image' className='aspect-video w-full rounded-md object-cover' />
+        <Backdrop className='hidden aspect-video w-full items-center justify-center rounded-md group-hover:flex' />
+      </div>
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>
-          <h2 className='text-lg font-bold lg:text-xl'>{data.title}</h2>
+          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{data.title}</h2>
           <span className='text-xs'>{data.region}</span>
         </div>
 

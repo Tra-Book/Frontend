@@ -32,7 +32,8 @@ const MobileMenu = ({ className }: { className?: string }): ReactNode => {
 
 const DesktopMenu = ({ className }: { className?: string }): ReactNode => {
   // Style
-  const listStyle = 'w-1/3 max-w-[80px] text-center text-base 2xl:text-lg xl:max-w-[100px]'
+  const listStyle =
+    'w-1/3 max-w-[80px] text-center text-base 2xl:text-lg xl:max-w-[100px] cursor-pointer hover:text-black'
   return (
     <div className={cn(className, 'h-[9dvh] min-h-[60px] w-full items-center justify-between font-medium')}>
       <div className='flex items-center justify-start'>
@@ -60,8 +61,8 @@ const MainPage = ({}: MainPageProps): ReactNode => {
       <MobileMenu className='md:hidden' />
       <DesktopMenu className='hidden md:flex' />
       {/* 카드 */}
-      {/* Todo: 개수 고정 (8) */}
-      <div className='relative grid w-full grid-cols-1 gap-6 overflow-x-hidden sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+      {/* Todo: 서버 컴포넌트로 따로 뺴서 Data Fetching */}
+      <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
@@ -72,7 +73,7 @@ const MainPage = ({}: MainPageProps): ReactNode => {
         <PlanCard data={dummy_plan} />
       </div>
       {/* 페이지네이션 */}
-      <CustomPagination className='py-4' />
+      <CustomPagination className='my-4' />
     </div>
   )
 }
