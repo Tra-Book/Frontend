@@ -11,15 +11,24 @@ export interface LucideIconProps extends HTMLAttributes<HTMLOrSVGElement> {
   size?: number
   className?: string
   fill?: ColorType
+  strokeWidth?: number
 }
 
-const LucideIcon = ({ name, color, size = 16, className, ...props }: LucideIconProps) => {
+const LucideIcon = ({ name, color, strokeWidth = 2, size = 16, className, ...props }: LucideIconProps) => {
   const LucideIcon = icons[name]
 
   const isClickEvent = !!props.onClick
   const pointerStyle = isClickEvent ? 'cursor-pointer' : ''
 
-  return <LucideIcon color={color && colorSet[color]} size={size} className={cn(pointerStyle, className)} {...props} />
+  return (
+    <LucideIcon
+      color={color && colorSet[color]}
+      size={size}
+      strokeWidth={strokeWidth}
+      className={cn(pointerStyle, className)}
+      {...props}
+    />
+  )
 }
 
 export default LucideIcon
