@@ -1,6 +1,6 @@
 import config from '@/tailwind.config'
 
-// tailwindcss colors
+// tailwindcss colors (값)
 export const colorSet = {
   tbPrimary: config.theme.extend.colors.tbPrimary,
   tbPrimaryHover: config.theme.extend.colors.tbPrimaryHover,

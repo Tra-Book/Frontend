@@ -8,7 +8,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import ToggleWrapper, { useDropdown } from '@/lib/utils/useToggle'
 
-import { Divider } from '../Dividers'
+import { Divider } from '../common/Dividers'
 
 interface MobileMenuProps {
   className?: string

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import Header from '@/components/common/Header/index'
+import Header from '@/components/Header/index'
 
 interface IncludeHeaderLayoutProps {
   children: React.ReactNode
