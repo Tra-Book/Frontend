@@ -60,8 +60,8 @@ const MainPage = ({}: MainPageProps): ReactNode => {
       <MobileMenu className='md:hidden' />
       <DesktopMenu className='hidden md:flex' />
       {/* 카드 */}
-      <div className='relative grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
-        {/* Todo: 개수 고정 (8) */}
+      {/* Todo: 개수 고정 (8) */}
+      <div className='relative grid w-full grid-cols-1 gap-6 overflow-x-hidden sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
         <PlanCard data={dummy_plan} />
