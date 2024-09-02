@@ -61,9 +61,19 @@
 
 @layer base {
   * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .h-screen-header {
+    height: calc(100dvh - 6rem);
   }
 }
