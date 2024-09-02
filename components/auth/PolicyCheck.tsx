@@ -3,6 +3,7 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 
 import { Checkbox } from '@/components/ui/checkbox'
+import LucideIcon from '@/lib/icons/LucideIcon'
 
 interface PolicyCheckProps {
   setIsNext: Dispatch<SetStateAction<boolean>>
@@ -56,7 +57,6 @@ const PolicyCheck = ({ setIsNext }: PolicyCheckProps): ReactNode => {
     setIsCheckedList(newCheckedList)
   }
 
-  // useEffect
   // 1. 다음 버튼 활성화
   // 2. 전체 동의 자동 체크
   useEffect(() => {
@@ -78,42 +78,45 @@ const PolicyCheck = ({ setIsNext }: PolicyCheckProps): ReactNode => {
   }, [isCheckedList])
 
   return (
-    <div className='w-5/6 text-lg'>
-      <div className='h mb-6 text-center'>
-        TrabBook에 오신걸 환영합니다!
-        <br />
-        서비스를 이용하기 위한 약관 동의를 해주세요.
+    <div className='flex w-full flex-col items-center justify-center text-lg'>
+      <div className='mb-6 max-w-sm text-center text-xl leading-9'>
+        <div>
+          TrabBook에 오신걸 환영합니다!
+          <br />
+          서비스를 이용하기 위한 약관 동의를 해주세요.
+        </div>
       </div>
-      <div>
-        <div className='text-xl font-semibold'>
+      <div className='flex max-w-md flex-col justify-center'>
+        <div className='mt-3 flex h-13 items-start font-semibold'>
           <Checkbox
             id='allTerms'
-            className='border-tbGray data-[state=checked]:bg-tbSecondary data-[state=checked]:text-tbPrimary'
+            className='h-5 w-5 border-tbGray data-[state=checked]:bg-tbSecondary data-[state=checked]:text-tbPrimary'
             checked={isAllChecked}
             onClick={onClickAllCheck}
           />
           <label
             htmlFor='allTerms'
-            className='text-l font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+            className='pl-2 text-xl font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
           >
-            &nbsp;전체 동의
+            전체 동의
           </label>
         </div>
 
         {POLICIES.map((policy, index) => (
-          <div key={policy.link} className='my-3'>
+          <div key={policy.link} className='flex h-13 items-start'>
             <Checkbox
               id={policy.link}
-              className='border-tbGray data-[state=checked]:bg-tbSecondary data-[state=checked]:text-tbPrimary'
+              className='h-5 w-5 border-tbGray data-[state=checked]:bg-tbSecondary data-[state=checked]:text-tbPrimary'
               checked={isCheckedList[index]}
               onClick={() => onClickCheckBox(index)}
             />
             <label
               htmlFor={policy.link}
-              className='text-l font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+              className='grow pl-2 text-lg font-normal leading-5 peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
             >
-              &nbsp;{policy.required ? '(필수)' : '(선택)'}&nbsp;{policy.text}
+              {policy.required ? '(필수)' : '(선택)'}&nbsp;{policy.text}
             </label>
+            <LucideIcon name='ChevronRight' className='right-0 ml-4 h-5 w-5' onClick={() => true} />
           </div>
         ))}
       </div>

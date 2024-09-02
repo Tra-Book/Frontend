@@ -10,6 +10,8 @@ export interface LucideIconProps extends HTMLAttributes<HTMLOrSVGElement> {
   color?: ColorType
   size?: number
   className?: string
+  fill?: ColorType
+  strokeWidth?: ColorType
 }
 
 const LucideIcon = ({ name, color, size = 16, className, ...props }: LucideIconProps) => {

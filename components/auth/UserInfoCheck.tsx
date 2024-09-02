@@ -1,17 +1,10 @@
 'use client'
 
-import { Eye, EyeOff } from 'lucide-react'
-import React, {
-  ChangeEventHandler,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react'
+import React, { ChangeEventHandler, Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
 interface UserInfoCheckProps {
@@ -69,8 +62,16 @@ const UserInfoCheck = ({
     setIsShowPw(!isShowPw)
   }
 
-  const conClickValidPwEye = () => {
+  const onClickValidPwEye = () => {
     setIsShowValidPw(!isShowValidPw)
+  }
+
+  const renderEye = (isShow: boolean, onClickEye: () => void) => {
+    return !isShow ? (
+      <LucideIcon name='EyeOff' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
+    ) : (
+      <LucideIcon name='Eye' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
+    )
   }
 
   useEffect(() => {
@@ -85,7 +86,7 @@ const UserInfoCheck = ({
   return (
     <>
       <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='nickname' className='mb-1'>
+        <Label htmlFor='nickname' className='mb-1 text-base'>
           닉네임 <span className='text-tbRed'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
@@ -100,7 +101,7 @@ const UserInfoCheck = ({
       </div>
 
       <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='password' className='mb-1'>
+        <Label htmlFor='password' className='mb-1 text-base'>
           비밀번호 <span className='text-tbRed'>*</span> &#40;10문자 이상&#41;
         </Label>
         <div className='gap relative flex justify-between gap-2'>
@@ -112,23 +113,7 @@ const UserInfoCheck = ({
             placeholder=''
             className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isValid && 'ring-2 ring-tbRed')}
           />
-          {!isShowPw ? (
-            <EyeOff
-              onClick={onClickPwEye}
-              className='absolute right-2 h-full opacity-40'
-              width={24}
-              height={24}
-              color='#000000'
-            />
-          ) : (
-            <Eye
-              onClick={onClickPwEye}
-              className='absolute right-2 h-full opacity-40'
-              width={24}
-              height={24}
-              color='#000000'
-            />
-          )}
+          {renderEye(isShowPw, onClickPwEye)}
         </div>
 
         <p className={cn(isValid ? 'invisible text-sm' : 'pl-2 text-sm text-tbRed')}>* 올바른 형식이 아닙니다.</p>
@@ -140,7 +125,7 @@ const UserInfoCheck = ({
         </div>
 
         <div className='grid w-full items-center gap-1.5'>
-          <Label htmlFor='validPassword' className='mb-1'>
+          <Label htmlFor='validPassword' className='mb-1 text-base'>
             비밀번호 확인 <span className='text-tbRed'>*</span>
           </Label>
           <div className='gap relative flex justify-between gap-2'>
@@ -151,23 +136,7 @@ const UserInfoCheck = ({
               placeholder=''
               className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isSame && 'ring-2 ring-tbRed')}
             />
-            {!isShowValidPw ? (
-              <EyeOff
-                onClick={conClickValidPwEye}
-                className='absolute right-2 h-full opacity-40'
-                width={24}
-                height={24}
-                color='#000000'
-              />
-            ) : (
-              <Eye
-                onClick={conClickValidPwEye}
-                className='absolute right-2 h-full opacity-40'
-                width={24}
-                height={24}
-                color='#000000'
-              />
-            )}
+            {renderEye(isShowValidPw, onClickValidPwEye)}
           </div>
 
           <p className={cn(isSame ? 'invisible text-sm' : 'pl-2 text-sm text-tbRed')}>* 비밀번호를 확인해주세요.</p>

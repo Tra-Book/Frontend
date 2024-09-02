@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
+import React, { ChangeEventHandler, Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,6 +26,21 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
   const [isSend, setIsSend] = useState<boolean>(false)
   const [isEmailValid, setIsEmailValid] = useState<boolean>(true)
   const [isCodeVerify, setIsCodeVerify] = useState<boolean>(true)
+
+  const onChangeEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
+    const email = e.target.value
+    setEmail(email)
+
+    if (validateEmail(email)) {
+      setIsEmailValid(true)
+    }
+  }
+
+  const onBlurEmail: ChangeEventHandler<HTMLInputElement> = (e): void => {
+    setIsEmailValid(prev => {
+      return validateEmail(email)
+    })
+  }
 
   const onClickSendButton = async (): Promise<void> => {
     if (!validateEmail(email) || email.trim() === '') {
@@ -113,22 +128,27 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     setIsNext(prev => false)
   }, [])
 
+  useEffect(() => {
+    if (isCodeVerify && isSend) setIsNext(true)
+  }, [isCodeVerify])
+
   return (
     <>
       <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='email' className='mb-2'>
+        <Label htmlFor='email' className='mb-2 text-base'>
           이메일 <span className='text-tbRed'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
           <Input
             value={email}
-            onChange={e => setEmail(prev => e.target.value)}
+            onChange={onChangeEmail}
+            onBlur={onBlurEmail}
             type='text'
             id='email'
             placeholder=''
             className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isEmailValid && 'ring-2 ring-tbRed')}
           />
-          <Button onClick={onClickSendButton} variant='tbPrimary' className='h-13 w-1/5 p-2'>
+          <Button onClick={onClickSendButton} variant='tbSecondary' className='h-13 w-1/5 p-2'>
             {!isSend ? '전송' : '재전송'}
           </Button>
         </div>
@@ -138,7 +158,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
       </div>
 
       <div className='grid w-full items-center gap-1.5'>
-        <Label htmlFor='code' className='mb-2'>
+        <Label htmlFor='code' className='mb-2 text-base'>
           인증번호 <span className='text-tbRed'>*</span>
         </Label>
         <div className='gap flex justify-between gap-2'>
@@ -150,7 +170,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
             placeholder=''
             className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isCodeVerify && 'ring-2 ring-tbRed')}
           />
-          <Button onClick={onClickVerifyButton} variant='tbPrimary' className='h-13 w-1/5 p-2'>
+          <Button onClick={onClickVerifyButton} variant='tbSecondary' className='h-13 w-1/5 p-2'>
             확인
           </Button>
         </div>

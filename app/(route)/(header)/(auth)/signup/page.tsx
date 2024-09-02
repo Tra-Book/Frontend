@@ -1,6 +1,5 @@
 'use client'
 
-import { Circle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
@@ -10,6 +9,7 @@ import PolicyCheck from '@/components/auth/PolicyCheck'
 import UserInfoCheck from '@/components/auth/UserInfoCheck'
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
+import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
 interface SignUpPageProps {}
@@ -28,6 +28,16 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
 
   const onClickListener = () => {
     setStep(prev => (prev + 1) % 3)
+  }
+
+  const onClickStep = (clickStep: number) => {
+    if (clickStep < step) {
+      setStep(clickStep)
+    } else if (clickStep > step) {
+      alert('현재 회원가입 단계를 완료해주세요')
+    }
+
+    return
   }
 
   const signUp = async (email: string, password: string, username: string) => {
@@ -76,52 +86,65 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
     signUp(email, password, nickname)
   }
 
+  //
+  const signUpStep =
+    step === 0 ? (
+      <PolicyCheck setIsNext={setIsNext} />
+    ) : step === 1 ? (
+      <EmailCheck setIsNext={setIsNext} email={email} setEmail={setEmail} />
+    ) : (
+      <UserInfoCheck
+        setIsNext={setIsNext}
+        email={email}
+        password={password}
+        validPassword={validPassword}
+        setNickname={setNickname}
+        setPassword={setPassword}
+        setValidPassword={setValidPassword}
+      />
+    )
+
+  const nextButton =
+    step === 2 ? (
+      <Button
+        onClick={onClickSignUp}
+        variant='tbPrimary'
+        className={cn('mt-2 h-11 w-full', !isNext && 'pointer-events-none opacity-70')}
+      >
+        회원가입 완료
+      </Button>
+    ) : (
+      <Button
+        onClick={onClickListener}
+        variant='tbPrimary'
+        className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-70'}`)}
+      >
+        다음
+      </Button>
+    )
+
   return (
     <div className='flex h-full w-3/4 flex-col'>
       <div className='mb-5 mt-10 flex items-center justify-center'>
         <TextDivider text='이메일 회원가입' />
       </div>
       <div className='flex grow flex-col items-center justify-between'>
-        <div className='mb-3 flex w-full flex-col items-center justify-center gap-5'>
-          {step === 0 ? (
-            <PolicyCheck setIsNext={setIsNext} />
-          ) : step === 1 ? (
-            <EmailCheck setIsNext={setIsNext} email={email} setEmail={setEmail} />
-          ) : (
-            <UserInfoCheck
-              setIsNext={setIsNext}
-              email={email}
-              password={password}
-              validPassword={validPassword}
-              setNickname={setNickname}
-              setPassword={setPassword}
-              setValidPassword={setValidPassword}
-            />
-          )}
-        </div>
+        <div className='mb-3 flex w-full grow flex-col items-center justify-start gap-5'>{signUpStep}</div>
         <div className='mb-8 flex w-full flex-col items-center justify-center gap-2'>
           <div className='flex items-center justify-end gap-4'>
-            <Circle size={step == 0 ? 16 : 12} fill='#00000080' color='#00000080' strokeWidth={0} />
-            <Circle size={step == 1 ? 16 : 12} fill='#00000080' color='#00000080' strokeWidth={0} />
-            <Circle size={step == 2 ? 16 : 12} fill='#00000080' color='#00000080' strokeWidth={0} />
+            {[0, 1, 2].map(index => (
+              <LucideIcon
+                key={index}
+                name='Circle'
+                onClick={() => onClickStep(index)}
+                size={step === index ? 16 : 12}
+                className='opacity-50'
+                color='tbGray'
+                fill='tbGray'
+              />
+            ))}
           </div>
-          {step === 2 ? (
-            <Button
-              onClick={onClickSignUp}
-              variant='tbPrimary'
-              className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
-            >
-              회원가입 완료
-            </Button>
-          ) : (
-            <Button
-              onClick={onClickListener}
-              variant='tbPrimary'
-              className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-60 hover:brightness-100'}`)}
-            >
-              다음
-            </Button>
-          )}
+          {nextButton}
         </div>
       </div>
     </div>

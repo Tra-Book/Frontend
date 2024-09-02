@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
-import React, { ChangeEventHandler, FormEvent, MouseEventHandler, ReactNode, useState } from 'react'
+import React, { ChangeEventHandler, FormEvent, ReactNode, useState } from 'react'
 
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
@@ -57,13 +57,11 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
     setIsShow(!isShow)
   }
 
-  const renderEye = (onClickHandler: MouseEventHandler<HTMLOrSVGElement>) => {
-    return isShow ? (
-      <LucideIcon name='EyeOff' onClick={onClickHandler} className='absolute right-2 h-full opacity-40' size={24} />
-    ) : (
-      <LucideIcon name='Eye' onClick={onClickHandler} className='absolute right-2 h-full opacity-40' size={24} />
-    )
-  }
+  const passwordEye = isShow ? (
+    <LucideIcon name='EyeOff' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
+  ) : (
+    <LucideIcon name='Eye' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
+  )
 
   return (
     <div className='w-3/4 xl:w-3/5 2xl:w-1/2'>
@@ -104,7 +102,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
                 placeholder=''
                 className='h-13 bg-tbPlaceholder shadow-tb-shadow'
               />
-              {renderEye(onClickEye)}
+              {passwordEye}
             </div>
           </div>
 
