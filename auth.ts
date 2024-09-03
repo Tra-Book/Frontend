@@ -212,6 +212,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.provider = token.provider
       session.userId = token.userId
 
+      delete session.user
+
       console.log('session', session)
 
       return session
