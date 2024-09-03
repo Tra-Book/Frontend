@@ -45,6 +45,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       console.log('account', account)
       console.log('user', user)
 
+      user.provider = account.provider
+
       if (account?.provider === 'credentials') {
         console.log('Login with credentials')
 
@@ -63,6 +65,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
+          console.log(data, data)
 
           switch (status) {
             case 200:
@@ -81,6 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
+              user.userId = data.userId
               break
             case 404:
               console.log(data.message)
@@ -121,6 +125,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             case 201:
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
+              user.userId = data.userId
               break
             case 400:
               console.log(data.message)
@@ -138,7 +143,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Google Login API : /auth/google
       else if (account?.provider === 'google') {
         console.log('Login with google')
-        console.log(account['id_token'])
+        // console.log(account['id_token'])
 
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/google-login`, {
@@ -160,6 +165,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             case 201:
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
+              user.userId = data.userId
               break
             case 400:
               console.log(data.message)
@@ -193,6 +199,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt: async ({ token, user }: { token: any; user: any }) => {
       if (user) {
         token.accessToken = user.accessToken
+        token.provider = user.provider
+        token.userId = user.userId
       }
 
       console.log('jwt', token)
@@ -201,6 +209,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session: async ({ session, token }: { session: any; token: any }) => {
       session.accessToken = token.accessToken
+      session.provider = token.provider
+      session.userId = token.userId
+
       console.log('session', session)
 
       return session
