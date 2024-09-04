@@ -42,7 +42,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
-      const res = await fetch('/auth/signup', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

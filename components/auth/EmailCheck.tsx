@@ -49,7 +49,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     }
 
     try {
-      const res = await fetch('/auth/send-verify-email', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/send-verify-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     try {
       console.log(email, code)
 
-      const res = await fetch('/auth/verify-code', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/verify-code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
