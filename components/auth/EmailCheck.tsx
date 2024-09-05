@@ -5,6 +5,7 @@ import React, { ChangeEventHandler, Dispatch, ReactNode, SetStateAction, useEffe
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { cn } from '@/lib/utils/cn'
 
 interface EmailCheckProps {
@@ -49,8 +50,8 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     }
 
     try {
-      const res = await fetch('/auth/send-verify-email', {
-        method: 'POST',
+      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_EMAIL.url}`, {
+        method: BACKEND_ROUTES.AUTH.VERIFY_EMAIL.method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -91,8 +92,8 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     try {
       console.log(email, code)
 
-      const res = await fetch('/auth/verify-code', {
-        method: 'POST',
+      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_CODE.url}`, {
+        method: BACKEND_ROUTES.AUTH.VERIFY_CODE.method,
         headers: {
           'Content-Type': 'application/json',
         },

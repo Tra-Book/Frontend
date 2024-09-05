@@ -13,3 +13,5 @@ export type ReadOnly<T> = {
 export type Required<T> = {
   [p in keyof T]-?: T[p]
 }
+
+export type Nullable<T> = T | null
