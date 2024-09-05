@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils/cn'
 interface SignUpPageProps {}
 
 const SignUpPage = ({}: SignUpPageProps): ReactNode => {
-  const [step, setStep] = useState<number>(0)
+  const [step, setStep] = useState<number>(2)
   const [isNext, setIsNext] = useState<boolean>(false)
 
   const [email, setEmail] = useState<string>('')
