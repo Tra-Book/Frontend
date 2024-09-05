@@ -75,37 +75,48 @@ export const ROUTES = {
 export const BACKEND_ROUTES = {
   AUTH: {
     EMAIL_LOGIN: {
-      url: 'auth/login',
+      method: 'POST',
+      url: '/auth/login',
     },
     GOOGLE_LOGIN: {
-      url: 'auth/google-login',
+      method: 'POST',
+      url: '/auth/google-login',
     },
     KAKAO_LOGIN: {
-      url: 'auth/kakao-login',
+      method: 'POST',
+      url: '/auth/kakao-login',
     },
     NAVER_LOGIN: {
-      url: 'auth/naver-login',
+      method: 'POST',
+      url: '/auth/naver-login',
     },
     SIGNUP: {
+      method: 'POST',
       url: '/auth/signup',
     },
     VERIFY_EMAIL: {
+      method: 'POST',
       url: '/auth/send-verify-email',
     },
     VERIFY_CODE: {
+      method: 'POST',
       url: '/auth/verify-code',
     },
     SIGNOUT: {
+      method: 'DELETE',
       url: '/auth/signout',
     },
     UPDATE_PROFILE: {
+      method: 'POST',
       url: '/auth/update-profile',
     },
     UPDATE_PASSWORD: {
+      method: 'POST',
       url: '/auth/update-password',
     },
     RENEW_TOKEN: {
-      url: 'auth/renew-token',
+      method: 'GET',
+      url: '/auth/renew-token',
     },
   },
 }

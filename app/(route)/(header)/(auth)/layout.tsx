@@ -11,7 +11,7 @@ interface AuthLayoutProps {
 const AuthLayout = ({ children }: AuthLayoutProps): ReactNode => {
   return (
     <main className='flex h-dvh w-dvw pt-24'>
-      <div className='hidden h-full w-1/2 max-w-[550px] items-center justify-center sm:flex'>
+      <div className='hidden h-full w-1/2 max-w-[550px] items-center justify-center lg:flex'>
         <Image src={AuthImage} alt='TraBook' width={550} height={732} style={{ width: '100%', height: '100%' }} />
       </div>
       <div className='flex min-h-full flex-grow flex-col items-center justify-start'>

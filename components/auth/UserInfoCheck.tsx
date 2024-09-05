@@ -67,10 +67,13 @@ const UserInfoCheck = ({
   }
 
   const renderEye = (isShow: boolean, onClickEye: () => void) => {
-    return !isShow ? (
-      <LucideIcon name='EyeOff' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
-    ) : (
-      <LucideIcon name='Eye' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
+    return (
+      <LucideIcon
+        name={!isShow ? 'EyeOff' : 'Eye'}
+        onClick={onClickEye}
+        className='absolute right-2 h-full opacity-40'
+        size={24}
+      />
     )
   }
 

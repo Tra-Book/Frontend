@@ -50,8 +50,8 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     }
 
     try {
-      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_EMAIL}`, {
-        method: 'POST',
+      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_EMAIL.url}`, {
+        method: BACKEND_ROUTES.AUTH.VERIFY_EMAIL.method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -92,8 +92,8 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     try {
       console.log(email, code)
 
-      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_CODE}`, {
-        method: 'POST',
+      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_CODE.url}`, {
+        method: BACKEND_ROUTES.AUTH.VERIFY_CODE.method,
         headers: {
           'Content-Type': 'application/json',
         },

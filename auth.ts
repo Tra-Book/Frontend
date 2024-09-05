@@ -53,8 +53,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.log('Login with credentials')
 
         try {
-          const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.EMAIL_LOGIN, {
-            method: 'POST',
+          const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.EMAIL_LOGIN.url, {
+            method: BACKEND_ROUTES.AUTH.EMAIL_LOGIN.method,
             headers: {
               'Content-Type': 'application/json',
             },
@@ -95,8 +95,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.log('Login with kakao')
 
         try {
-          const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.KAKAO_LOGIN, {
-            method: 'POST',
+          const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.KAKAO_LOGIN.url, {
+            method: BACKEND_ROUTES.AUTH.KAKAO_LOGIN.method,
             headers: {
               'Content-Type': 'application/json',
             },
@@ -135,8 +135,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // console.log(account['id_token'])
 
         try {
-          const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.GOOGLE_LOGIN, {
-            method: 'POST',
+          const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.GOOGLE_LOGIN.url, {
+            method: BACKEND_ROUTES.AUTH.GOOGLE_LOGIN.method,
             headers: {
               'Content-Type': 'application/json',
             },

@@ -43,8 +43,8 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
-      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.SIGNUP}`, {
-        method: 'POST',
+      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.SIGNUP.url}`, {
+        method: BACKEND_ROUTES.AUTH.SIGNUP.method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -105,24 +105,15 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
       />
     )
 
-  const nextButton =
-    step === 2 ? (
-      <Button
-        onClick={onClickSignUp}
-        variant='tbPrimary'
-        className={cn('mt-2 h-11 w-full', !isNext && 'pointer-events-none opacity-70')}
-      >
-        회원가입 완료
-      </Button>
-    ) : (
-      <Button
-        onClick={onClickListener}
-        variant='tbPrimary'
-        className={cn('mt-2 h-11 w-full', `${!isNext && 'pointer-events-none opacity-70'}`)}
-      >
-        다음
-      </Button>
-    )
+  const nextButton = (
+    <Button
+      onClick={step === 2 ? onClickSignUp : onClickListener}
+      variant='tbPrimary'
+      className={cn('mt-2 h-11 w-full', !isNext && 'pointer-events-none opacity-70')}
+    >
+      {step === 2 ? '회원가입 완료' : '다음'}
+    </Button>
+  )
 
   return (
     <div className='flex h-full w-3/4 flex-col'>
@@ -139,7 +130,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
                 name='Circle'
                 onClick={() => onClickStep(index)}
                 size={step === index ? 16 : 12}
-                className='opacity-50'
+                className={cn('opacity-50', index < step && 'hover:scale-150')}
                 color='tbGray'
                 fill='tbGray'
               />
