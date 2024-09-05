@@ -9,6 +9,7 @@ import PolicyCheck from '@/components/auth/PolicyCheck'
 import UserInfoCheck from '@/components/auth/UserInfoCheck'
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
+import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
@@ -42,7 +43,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/signup`, {
+      const res = await fetch(`server/${BACKEND_ROUTES.AUTH.SIGNUP}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
