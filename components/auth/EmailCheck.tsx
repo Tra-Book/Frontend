@@ -26,7 +26,6 @@ const EmailCheck = ({ setIsNext }: EmailCheckProps): ReactNode => {
   const [isCodeVerfiy, setIsCodeVerify] = useState<boolean>(true)
 
   const onClickSendButton = async (): Promise<void> => {
-    console.log(email)
     if (!validateEmail(email) || email.trim() === '') {
       setIsEmailValid(false)
       return

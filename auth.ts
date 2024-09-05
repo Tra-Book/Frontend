@@ -28,8 +28,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     credentials({
       authorize: async credentials => {
-        // console.log(credentials)
-
         credentials.email = credentials.username
         delete credentials.username
 
@@ -42,12 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     signIn: async ({ user, account }: { user: any; account: any }) => {
-      console.log('account', account)
-      console.log('user', user)
-
       if (account?.provider === 'credentials') {
-        console.log('Login with credentials')
-
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/login`, {
             method: 'POST',
@@ -137,9 +130,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       // Google Login API : /auth/google
       else if (account?.provider === 'google') {
-        console.log('Login with google')
-        console.log(account['id_token'])
-
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL!}/auth/google-login`, {
             method: 'POST',
@@ -194,15 +184,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.accessToken = user.accessToken
       }
-
-      console.log('jwt', token)
-
       return token
     },
     session: async ({ session, token }: { session: any; token: any }) => {
       session.accessToken = token.accessToken
-      console.log('session', session)
-
       return session
     },
   },
