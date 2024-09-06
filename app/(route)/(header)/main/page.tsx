@@ -39,7 +39,7 @@ const dummy_plans1 = new Array(5).fill({
 const dummy_plans2 = new Array(5).fill({
   ...dummy_plan2,
 })
-const dummy_plans = []
+const dummy_plans = [...dummy_plans1, ...dummy_plans2]
 
 const MainPage = ({}: MainPageProps): ReactNode => {
   return (

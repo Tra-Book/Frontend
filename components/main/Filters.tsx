@@ -1,6 +1,8 @@
 'use client'
+import { usePathname } from 'next/navigation'
 import React, { ReactNode } from 'react'
 
+import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
@@ -29,30 +31,48 @@ export interface FilterDisplayType {
 
 // 역할: UI 보여주고, onClick 핸들링
 const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
-  const FILTER_VALUES: Array<FilterDisplayType> = [
-    {
-      id: 'isFinished',
-      filter: filter.isFinished,
-      placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : '바뀐 값',
-      choices: isFinishedChoices,
-    },
-    {
-      id: 'region',
-      filter: filter.region,
-      placeHolder: '지역',
-      choices: regionChoices,
-    },
-  ]
+  const pathname = usePathname()
+  /**
+   * URL에 따른 필터 버튼
+   */
+  let FILTER_BUTTONS: Array<FilterDisplayType> = []
+  if (pathname === ROUTES.MAIN.MY_PLAN.url) {
+    FILTER_BUTTONS = [
+      {
+        id: 'isFinished',
+        filter: filter.isFinished,
+        placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : '바뀐 값',
+        choices: isFinishedChoices,
+      },
+      {
+        id: 'region',
+        filter: filter.region,
+        placeHolder: '지역',
+        choices: regionChoices,
+      },
+    ]
+  }
+  if (pathname === ROUTES.MAIN.STORE_PLAN.url) {
+    FILTER_BUTTONS = [
+      {
+        id: 'region',
+        filter: filter.region,
+        placeHolder: '지역',
+        choices: regionChoices,
+      },
+    ]
+  }
+
   return (
     <div className='flex h-[8dvh] min-h-[30px] w-full items-center justify-start gap-4 pl-1 text-xs font-medium md:text-sm'>
       <LucideIcon name='SlidersHorizontal' size={24} />
-      {FILTER_VALUES.map(FILTER => (
+      {FILTER_BUTTONS.map(FILTER_BUTTON => (
         <Filter
-          key={FILTER.placeHolder}
-          id={FILTER.id}
-          filter={FILTER.filter}
-          placeHolder={FILTER.placeHolder}
-          choices={FILTER.choices}
+          key={FILTER_BUTTON.placeHolder}
+          id={FILTER_BUTTON.id}
+          filter={FILTER_BUTTON.filter}
+          placeHolder={FILTER_BUTTON.placeHolder}
+          choices={FILTER_BUTTON.choices}
           handleFilters={handleFilters}
         />
       ))}

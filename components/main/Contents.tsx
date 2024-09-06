@@ -82,7 +82,7 @@ const applyRequests = (
 
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const [filter, setFilter] = useState(initFilters.plan)
-  const [arrange, setArrange] = useState<ArrangeChoiceType>('좋아요순')
+  const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
   const [searchInput, setSearchInput] = useState<string>('')
 
   const handleFilters = (
@@ -118,7 +118,8 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
    * 2. 검색값 적용하기
    * 3. 정렬 하기
    */
-  let contents
+  let contents,
+    filteredData: Array<DummyPlanType> = []
 
   if (datas.length === 0) {
     contents = (
@@ -137,7 +138,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       </div>
     )
   } else {
-    const filteredData = applyRequests(datas, filter, searchInput, arrange) // 필터, 검색, 정렬 적용
+    filteredData = applyRequests(datas, filter, searchInput, arrange) // 필터, 검색, 정렬 적용
 
     if (filteredData.length === 0) {
       contents = (
@@ -158,7 +159,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     } else {
       contents = (
         <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
-          {datas.map((data, index) =>
+          {filteredData.map((data, index) =>
             name === 'Plan' ? <PlanCard key={index} data={data} /> : <PlaceCard key={index} data={data} />,
           )}
         </div>
@@ -170,7 +171,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     <>
       <Filters filter={filter} handleFilters={handleFilters} />
       <div className='relative mb-3 flex h-auto min-h-min w-full items-center justify-between pl-1'>
-        <p className='hidden text-xl font-medium md:block'>총 계획 {datas.length}개</p>
+        <p className='hidden text-xl font-medium md:block'>총 계획 {filteredData.length}개</p>
         <div className='mr-3 flex w-full flex-row-reverse flex-wrap-reverse items-center justify-between gap-4 text-xs text-tbGray md:w-fit md:flex-row md:flex-nowrap md:text-sm'>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex h-full w-fit items-end justify-between gap-1 md:items-center'>
