@@ -14,28 +14,33 @@ import Filter from './Filter'
 interface FiltersProps {
   filter: PlanFilterType // Or PlaceFilterType
   handleFilters: (
-    spec: 'isFinished' | 'region' | 'all',
+    id: 'isFinished' | 'region' | 'all',
     type: 'change' | 'reset',
     filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
   ) => void
 }
 
 export interface FilterDisplayType {
-  spec: 'isFinished' | 'region'
+  id: 'isFinished' | 'region'
+  filter: Array<IsFinishedChoicesType> | Array<RegionChoicesType>
   placeHolder: string // 처음에 보여줄 값
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<RegionChoicesType>>
 }
 
 // 역할: UI 보여주고, onClick 핸들링
 const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
+  console.log(filter)
+
   const FILTER_VALUES: Array<FilterDisplayType> = [
     {
-      spec: 'isFinished',
+      id: 'isFinished',
+      filter: filter.isFinished,
       placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : '바뀐 값',
       choices: isFinishedChoices,
     },
     {
-      spec: 'region',
+      id: 'region',
+      filter: filter.region,
       placeHolder: '지역',
       choices: regionChoices,
     },
@@ -46,7 +51,8 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
       {FILTER_VALUES.map(FILTER => (
         <Filter
           key={FILTER.placeHolder}
-          spec={FILTER.spec}
+          id={FILTER.id}
+          filter={FILTER.filter}
           placeHolder={FILTER.placeHolder}
           choices={FILTER.choices}
           handleFilters={handleFilters}

@@ -45,12 +45,12 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
 
   // FilterHandling
   const handleFilters = (
-    spec: 'isFinished' | 'region' | 'all',
+    id: 'isFinished' | 'region' | 'all',
     type: 'change' | 'reset',
     filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
   ) => {
     // #. 완료 여부
-    if (spec === 'isFinished') {
+    if (id === 'isFinished') {
       if (type === 'reset') {
         setFilter(prev => ({ ...prev, isFinished: initFilters.plan.isFinished }))
         return
@@ -58,7 +58,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       if (filterValues) setFilter(prev => ({ ...prev, isFinished: filterValues as Array<IsFinishedChoicesType> }))
     }
     // # 지역
-    if (spec === 'region') {
+    if (id === 'region') {
       if (type === 'reset') {
         setFilter(prev => ({ ...prev, region: initFilters.plan.region }))
         return
@@ -66,7 +66,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       if (filterValues) setFilter(prev => ({ ...prev, region: filterValues as Array<RegionChoicesType> }))
     }
     // # 전체 초기화
-    if (spec === 'all' && type === 'reset') {
+    if (id === 'all' && type === 'reset') {
       setFilter(initFilters.plan)
       return
     }

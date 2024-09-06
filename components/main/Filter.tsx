@@ -10,28 +10,68 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuT
 import { IsFinishedChoicesType, RegionChoicesType } from './Contents'
 
 interface FilterProps {
-  spec: 'isFinished' | 'region'
+  id: 'isFinished' | 'region'
+  filter: Array<IsFinishedChoicesType> | Array<RegionChoicesType>
   placeHolder: string // 처음에 보여줄 값
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<RegionChoicesType>>
   handleFilters: (
-    spec: 'isFinished' | 'region' | 'all',
+    id: 'isFinished' | 'region' | 'all',
     type: 'change' | 'reset',
     filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
   ) => void
 }
 
-const Filter = ({ spec, placeHolder, choices, handleFilters }: FilterProps): ReactNode => {
+const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps): ReactNode => {
   const [isOpen, setIsOpen] = useState<boolean>(false) // 드롭다운 열림 상태 관리
+  const [isSaved, setIsSaved] = useState<boolean>(false) // 저장 여부 상태 관리
+  const [checkedFilters, setCheckedFilters] = useState<Array<IsFinishedChoicesType> | Array<RegionChoicesType>>(filter)
 
-  const [checkedFilters, setCheckedFilters] = useState<Array<IsFinishedChoicesType> | Array<RegionChoicesType>>([])
-
-  const handleCheckBox = (choice: IsFinishedChoicesType | RegionChoicesType) => {
-    if (!checkedFilters.includes(choice as any)) {
-      setCheckedFilters(prev => [...prev, choice] as IsFinishedChoicesType[] | RegionChoicesType[])
+  const handleOpenChange = (open: boolean) => {
+    // 열릴때 현재 상태 가져오기
+    if (open) {
+      setCheckedFilters(filter)
     }
+    // 닫힐 떄 저장 버튼을 클릭하지 않았으면
+    else {
+      if (!isSaved) {
+        setCheckedFilters(filter)
+      }
+    }
+    setIsOpen(open)
   }
+
+  // const handleCheckBox = (choice: IsFinishedChoicesType | RegionChoicesType) => {
+  //   setCheckedFilters(prev => {
+  //     if (prev.includes(choice as any)) {
+  //       // 선택된 필터가 이미 존재하면 제거
+  //       return prev.filter(item => item !== choice) as typeof prev
+  //     } else {
+  //       // 선택된 필터가 없으면 추가
+  //       return [...prev, choice] as typeof prev
+  //     }
+  //   })
+  // }
+  const handleCheckBox = (choice: IsFinishedChoicesType | RegionChoicesType) => {
+    setCheckedFilters(prev => {
+      // "전체"를 선택한 경우, 나머지 선택 해제 후 "전체"만 선택
+      if (choice === '전체') {
+        return ['전체'] as typeof prev
+      }
+      // 다른 항목을 선택한 경우 "전체" 선택 해제
+      else {
+        // 만약 현재 "전체"가 선택되어 있으면, "전체"를 해제하고 새로운 항목 추가
+        const withoutAll = prev.filter(item => item !== '전체') as typeof prev
+        if (withoutAll.includes(choice as any)) {
+          return withoutAll.filter(item => item !== choice) as typeof prev
+        } else {
+          return [...withoutAll, choice] as typeof prev
+        }
+      }
+    })
+  }
+
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger className='relative flex h-3/4 max-h-8 items-center justify-between gap-1 rounded-2xl border-[0.5px] border-solid border-black px-2'>
         <span>{placeHolder}</span>
         <LucideIcon name='ChevronDown' />
@@ -44,6 +84,7 @@ const Filter = ({ spec, placeHolder, choices, handleFilters }: FilterProps): Rea
               className='relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
             >
               <Checkbox
+                checked={checkedFilters.includes(choice as any) ? true : false}
                 id={choice}
                 className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
                 onClick={() => handleCheckBox(choice)}
@@ -60,7 +101,7 @@ const Filter = ({ spec, placeHolder, choices, handleFilters }: FilterProps): Rea
             variant='tbGray'
             className='w-1/2'
             onClick={() => {
-              handleFilters(spec, 'reset')
+              handleFilters(id, 'reset')
               setIsOpen(false)
             }}
           >
@@ -70,7 +111,8 @@ const Filter = ({ spec, placeHolder, choices, handleFilters }: FilterProps): Rea
             variant='tbPrimary'
             className='w-1/2'
             onClick={() => {
-              handleFilters(spec, 'change', checkedFilters)
+              handleFilters(id, 'change', checkedFilters)
+              setIsSaved(true)
               setIsOpen(false)
             }}
           >
