@@ -35,32 +35,37 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
   /**
    * URL에 따른 필터 버튼
    */
-  let FILTER_BUTTONS: Array<FilterDisplayType> = []
-  if (pathname === ROUTES.MAIN.MY_PLAN.url) {
-    FILTER_BUTTONS = [
-      {
+  const makeFilterButton = (id: 'isFinished' | 'region'): FilterDisplayType | undefined => {
+    if (id === 'isFinished') {
+      return {
         id: 'isFinished',
         filter: filter.isFinished,
-        placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : '바뀐 값',
+        placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : filter.isFinished[0],
         choices: isFinishedChoices,
-      },
-      {
+      }
+    }
+    //
+    else if (id === 'region') {
+      return {
         id: 'region',
         filter: filter.region,
-        placeHolder: '지역',
+        placeHolder: filter.region.includes('전체')
+          ? '지역'
+          : filter.region.length === 1
+            ? filter.region[0]
+            : `${filter.region[0]} 외 ${filter.region.length - 1}`,
         choices: regionChoices,
-      },
-    ]
+      }
+    }
+    return undefined
+  }
+  let FILTER_BUTTONS: Array<FilterDisplayType> = []
+
+  if (pathname === ROUTES.MAIN.MY_PLAN.url) {
+    FILTER_BUTTONS = [makeFilterButton('isFinished'), makeFilterButton('region')] as Array<FilterDisplayType>
   }
   if (pathname === ROUTES.MAIN.STORE_PLAN.url) {
-    FILTER_BUTTONS = [
-      {
-        id: 'region',
-        filter: filter.region,
-        placeHolder: '지역',
-        choices: regionChoices,
-      },
-    ]
+    FILTER_BUTTONS = [makeFilterButton('region')] as Array<FilterDisplayType>
   }
 
   return (
