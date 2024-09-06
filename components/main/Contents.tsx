@@ -169,7 +169,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   return (
     <>
       <Filters filter={filter} handleFilters={handleFilters} />
-      <div className='relative mb-3 flex h-[5dvh] w-full items-center justify-between pl-1'>
+      <div className='relative mb-3 flex h-auto min-h-min w-full items-center justify-between pl-1'>
         <p className='hidden text-xl font-medium md:block'>총 계획 {datas.length}개</p>
         <div className='mr-3 flex w-full flex-row-reverse flex-wrap-reverse items-center justify-between gap-4 text-xs text-tbGray md:w-fit md:flex-row md:flex-nowrap md:text-sm'>
           <DropdownMenu>
