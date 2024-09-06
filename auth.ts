@@ -44,8 +44,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     signIn: async ({ user, account }: { user: any; account: any }) => {
-      console.log('account', account)
-      console.log('user', user)
+      // console.log('account', account)
+      // console.log('user', user)
 
       user.provider = account.provider
 
@@ -192,7 +192,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.userId = user.userId
       }
 
-      console.log('jwt', token)
+      // console.log('jwt', token)
 
       return token
     },
@@ -203,7 +203,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       delete session.user
 
-      console.log('session', session)
+      // console.log('session', session)
 
       return session
     },
