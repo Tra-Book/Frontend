@@ -7,7 +7,7 @@ import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { planRegions, PlanRegionType } from '@/lib/types/Entity/plan'
 
-import CustomPagination from '../common/Pagination'
+import CustomPagination, { ELEMENTS_PER_PAGE } from '../common/Pagination'
 import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Input } from '../ui/input'
@@ -84,7 +84,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const [filter, setFilter] = useState(initFilters.plan)
   const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
   const [searchInput, setSearchInput] = useState<string>('')
-
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const handleFilters = (
     id: 'isFinished' | 'region' | 'all',
     type: 'change' | 'reset',
@@ -111,8 +111,16 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       setFilter(initFilters.plan)
       return
     }
+    movePageHandler(1)
   }
 
+  const movePageHandler = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
+  const arrangeHandler = (arrange: ArrangeChoiceType) => {
+    setArrange(arrange)
+    movePageHandler(1)
+  }
   /** 필터/검색이 적용된 값
    * 1. 필터 적용하기
    * 2. 검색값 적용하기
@@ -138,7 +146,12 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       </div>
     )
   } else {
-    filteredData = applyRequests(datas, filter, searchInput, arrange) // 필터, 검색, 정렬 적용
+    // #1. 필터, 검색, 정렬 적용
+    filteredData = applyRequests(datas, filter, searchInput, arrange)
+    // #2. 페이지에 맞는 데이터 (로직 필요)
+    const startIndex = (currentPage - 1) * ELEMENTS_PER_PAGE
+    const endIndex = startIndex + ELEMENTS_PER_PAGE
+    const displayedData = filteredData.slice(startIndex, endIndex)
 
     if (filteredData.length === 0) {
       contents = (
@@ -159,7 +172,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     } else {
       contents = (
         <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
-          {filteredData.map((data, index) =>
+          {displayedData.map((data, index) =>
             name === 'Plan' ? <PlanCard key={index} data={data} /> : <PlaceCard key={index} data={data} />,
           )}
         </div>
@@ -183,7 +196,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
                 <DropdownMenuItem
                   key={choice}
                   className='px-3 py-2 text-xs hover:!bg-tbPrimary hover:font-medium hover:text-black md:text-sm'
-                  onClick={() => setArrange(choice)}
+                  onClick={() => arrangeHandler(choice)}
                 >
                   {choice}
                 </DropdownMenuItem>
@@ -201,7 +214,12 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         </div>
       </div>
       {contents}
-      <CustomPagination className='my-4' />
+      <CustomPagination
+        total={Math.ceil(filteredData.length / ELEMENTS_PER_PAGE)}
+        current={currentPage}
+        movePageHandler={movePageHandler}
+        className='my-4'
+      />
     </>
   )
 }
