@@ -19,19 +19,17 @@ const dummy_plan = {
 export type DummyPlanType = typeof dummy_plan
 // Todo: 서버 컴포넌트로 따로 뺴서 Data Fetching
 
-const dummy_plans = new Array(6).fill({
+const dummy_plans = new Array(10).fill({
   ...dummy_plan,
 })
 
 const MainPage = ({}: MainPageProps): ReactNode => {
   return (
-    <div className='relative flex h-min min-h-screen-header flex-grow flex-col items-center justify-start bg-white px-10'>
-      {/* Title */}
-      <p className='flex h-[8dvh] min-h-[60px] w-full items-end pl-1 text-2xl font-semibold xl:text-3xl'>
+    <div className='relative flex h-min min-h-screen-header flex-grow flex-col items-start justify-start gap-2 bg-white px-6 md:px-10'>
+      <p className='flex h-[10dvh] min-h-[60px] w-full items-end pl-1 text-3xl font-semibold xl:text-4xl'>
         내 여행 계획
       </p>
-
-      <Contents plans={dummy_plans} />
+      <Contents name='Plan' datas={dummy_plans} />
     </div>
   )
 }

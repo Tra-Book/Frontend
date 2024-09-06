@@ -13,6 +13,9 @@ const config = {
       },
     },
     extend: {
+      screens: {
+        ssm: '400px',
+      },
       width: {
         '102': '28rem',
       },

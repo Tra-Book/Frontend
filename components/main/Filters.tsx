@@ -1,89 +1,64 @@
+'use client'
 import React, { ReactNode } from 'react'
 
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { planRegions } from '@/lib/types/Entity/plan'
-import { Nullable } from '@/lib/utils/typeUtils'
+import { ReadOnly } from '@/lib/utils/typeUtils'
 
-import { Button } from '../ui/button'
-import { Checkbox } from '../ui/checkbox'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { FilterType } from './Contents'
+import { isFinishedChoices, IsFinishedChoicesType, PlanFilterType, regionChoices, RegionChoicesType } from './Contents'
+import Filter from './Filter'
 
-interface FilterProps {
-  value: Nullable<any> // 초기 filter값
-  placeHolder: string // 처음에 보여줄 값
-  choices: Readonly<Array<string>>
-}
+// export type PlaceFilterType = {
 
-const Filter = ({ value, placeHolder, choices }: FilterProps): ReactNode => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant='filter'>
-          {placeHolder} <LucideIcon name='ChevronDown' />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <div className='min-h max-h-36 overflow-y-auto'>
-          {choices.map(choice => (
-            <div
-              key={choice}
-              className='relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
-            >
-              <Checkbox
-                id={choice}
-                className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
-              />
-              <label htmlFor={choice} className='peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-                {choice}
-              </label>
-            </div>
-          ))}
-        </div>
-        <DropdownMenuSeparator />
-        <div className='relative flex items-center justify-end gap-4 p-2'>
-          <Button variant='tbGray' className='w-1/2'>
-            초기화
-          </Button>
-          <Button variant='tbPrimary' className='w-1/2'>
-            적용
-          </Button>
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+// }
 
 interface FiltersProps {
-  filter: FilterType
+  filter: PlanFilterType // Or PlaceFilterType
+  handleFilters: (
+    spec: 'isFinished' | 'region' | 'all',
+    type: 'change' | 'reset',
+    filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
+  ) => void
 }
 
-const Filters = ({ filter }: FiltersProps): ReactNode => {
-  const FILTER_VALUES: Array<FilterProps> = [
-    // 완료 여부
+export interface FilterDisplayType {
+  spec: 'isFinished' | 'region'
+  placeHolder: string // 처음에 보여줄 값
+  choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<RegionChoicesType>>
+}
+
+// 역할: UI 보여주고, onClick 핸들링
+const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
+  const FILTER_VALUES: Array<FilterDisplayType> = [
     {
-      value: filter.isFinished,
-      placeHolder: '완료 여부',
-      choices: ['전체', '계획 중', '계획 완료'],
+      spec: 'isFinished',
+      placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : '바뀐 값',
+      choices: isFinishedChoices,
     },
-    // 지역
     {
-      value: filter.region,
+      spec: 'region',
       placeHolder: '지역',
-      choices: planRegions,
+      choices: regionChoices,
     },
   ]
   return (
-    <div className='flex h-[9dvh] min-h-[60px] w-full items-center justify-start gap-4 font-medium'>
-      <LucideIcon name='SlidersHorizontal' size={26} />
+    <div className='flex h-[8dvh] min-h-[30px] w-full items-center justify-start gap-4 pl-1 text-xs font-medium md:text-sm'>
+      <LucideIcon name='SlidersHorizontal' size={24} />
       {FILTER_VALUES.map(FILTER => (
         <Filter
           key={FILTER.placeHolder}
-          value={FILTER.value}
+          spec={FILTER.spec}
           placeHolder={FILTER.placeHolder}
           choices={FILTER.choices}
+          handleFilters={handleFilters}
         />
       ))}
+      <div
+        onClick={() => handleFilters('all', 'reset')}
+        className='flex cursor-pointer items-center gap-2 text-tbGray hover:text-tbRed'
+      >
+        <LucideIcon name='RotateCw' size={20} />
+        <p>초기화</p>
+      </div>
     </div>
   )
 }

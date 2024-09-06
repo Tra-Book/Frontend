@@ -20,8 +20,6 @@ const variant = {
   tbSecondary: 'bg-tbSecondary hover:bg-tbSecondaryHover',
   tbGreen: 'bg-tbGreen hover:bg-tbGreenHover',
   tbGray: 'text-tbGray border-none bg-tbPlaceholder hover:text-black hover:border-black',
-  // Filter
-  filter: '!rounded-3xl border-[0.5px] border-solid border-black !shadow-none',
 }
 
 const buttonVariants = cva(
