@@ -39,34 +39,28 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
     }
     setIsOpen(open)
   }
-
-  // const handleCheckBox = (choice: IsFinishedChoicesType | RegionChoicesType) => {
-  //   setCheckedFilters(prev => {
-  //     if (prev.includes(choice as any)) {
-  //       // 선택된 필터가 이미 존재하면 제거
-  //       return prev.filter(item => item !== choice) as typeof prev
-  //     } else {
-  //       // 선택된 필터가 없으면 추가
-  //       return [...prev, choice] as typeof prev
-  //     }
-  //   })
-  // }
   const handleCheckBox = (choice: IsFinishedChoicesType | RegionChoicesType) => {
     setCheckedFilters(prev => {
       // "전체"를 선택한 경우, 나머지 선택 해제 후 "전체"만 선택
       if (choice === '전체') {
         return ['전체'] as typeof prev
       }
+
       // 다른 항목을 선택한 경우 "전체" 선택 해제
-      else {
-        // 만약 현재 "전체"가 선택되어 있으면, "전체"를 해제하고 새로운 항목 추가
-        const withoutAll = prev.filter(item => item !== '전체') as typeof prev
-        if (withoutAll.includes(choice as any)) {
-          return withoutAll.filter(item => item !== choice) as typeof prev
-        } else {
-          return [...withoutAll, choice] as typeof prev
-        }
+      let withoutAll = prev.filter(item => item !== '전체') as typeof prev
+      if (withoutAll.includes(choice as any)) {
+        withoutAll = withoutAll.filter(item => item !== choice) as typeof prev
+      } else {
+        withoutAll = [...withoutAll, choice] as typeof prev
       }
+
+      // 나머지 모든 항목이 선택되면 "전체"를 자동으로 선택
+      const allChoicesExceptAll = choices.filter(item => item !== '전체') // "전체"를 제외한 모든 선택지
+      if (withoutAll.length === allChoicesExceptAll.length) {
+        return ['전체'] as typeof prev // 모든 항목이 선택되었으므로 "전체"로 변경
+      }
+
+      return withoutAll
     })
   }
 

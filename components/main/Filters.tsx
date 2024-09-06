@@ -29,8 +29,6 @@ export interface FilterDisplayType {
 
 // 역할: UI 보여주고, onClick 핸들링
 const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
-  console.log(filter)
-
   const FILTER_VALUES: Array<FilterDisplayType> = [
     {
       id: 'isFinished',

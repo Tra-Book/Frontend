@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
+import { PlanRegionType } from '@/lib/types/Entity/plan'
 import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 interface MainPageProps {}
 
@@ -9,19 +10,36 @@ const dummy_plan = {
   id: 1,
   title: '가족 여행',
   description: '아들 전역 기념 여행',
-  region: '제주도',
+  region: '제주도' as PlanRegionType,
   likes: 30,
   comments: 3,
   scraps: 15,
   schedule: '24.04.20~24.04.23',
   imageSrc: DummyThumbNail,
+  isFinished: true,
+}
+const dummy_plan2 = {
+  id: 1,
+  title: '가족 여행',
+  description: '아들 전역 기념 여행',
+  region: '제주도' as PlanRegionType,
+  likes: 32,
+  comments: 3,
+  scraps: 15,
+  schedule: '24.04.20~24.04.23',
+  imageSrc: DummyThumbNail,
+  isFinished: true,
 }
 export type DummyPlanType = typeof dummy_plan
 // Todo: 서버 컴포넌트로 따로 뺴서 Data Fetching
 
-const dummy_plans = new Array(10).fill({
+const dummy_plans1 = new Array(5).fill({
   ...dummy_plan,
 })
+const dummy_plans2 = new Array(5).fill({
+  ...dummy_plan2,
+})
+const dummy_plans = [...dummy_plans1, ...dummy_plans2]
 
 const MainPage = ({}: MainPageProps): ReactNode => {
   return (
