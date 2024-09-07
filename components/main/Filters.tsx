@@ -6,15 +6,11 @@ import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
-import { isFinishedChoices, IsFinishedChoicesType, PlanFilterType, stateChoices, StateChoicesType } from './Contents'
+import { FilterType, isFinishedChoices, IsFinishedChoicesType, stateChoices, StateChoicesType } from './Contents'
 import Filter from './Filter'
 
-// export type PlaceFilterType = {
-
-// }
-
 interface FiltersProps {
-  filter: PlanFilterType // Or PlaceFilterType
+  filter: FilterType
   handleFilters: (
     id: 'isFinished' | 'state' | 'all',
     type: 'change' | 'reset',

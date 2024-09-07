@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import React, { ReactNode, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
+import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
 import { CITIES, STATES } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -28,55 +29,64 @@ export const cityChoices = CITIES
 const arrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
 type ArrangeChoiceType = (typeof arrangeChoices)[number]
 
-export type PlanFilterType = {
+export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
   state: Array<StateChoicesType>
+  city: Array<string>
 }
-// export type PlaceFilterType = {
-//   state:
-// }
 
 const allElements = ['전체']
-const initFilters = {
-  plan: { isFinished: allElements, state: allElements } as PlanFilterType,
-  place: { state: allElements },
+const initFilters: FilterType = {
+  isFinished: allElements as Array<IsFinishedChoicesType>,
+  state: allElements as Array<StateChoicesType>,
+  city: allElements,
 }
 
 //Filter Apply Function
-const applyRequests = (
-  data: Array<DummyPlanType>,
-  filter: PlanFilterType,
+const applyAllFilters = (
+  data: Array<DummyPlanType> | Array<DummyPlaceType>,
+  filter: FilterType,
   searchInput: string,
   arrange: ArrangeChoiceType,
-): Array<DummyPlanType> => {
-  // #1. 필터 적용하기
-  // #1-1. 완료여부
-  if (filter.isFinished !== allElements) {
-    data = filter.isFinished.includes('계획 중')
-      ? data.filter(data => data.isFinished === false)
-      : data.filter(data => data.isFinished === true)
+): Array<DummyPlanType> | Array<DummyPlaceType> => {
+  // Plan 필터
+  if ('isFinished' in data[0]) {
+    data = data as Array<DummyPlanType>
+    if (filter.isFinished !== allElements) {
+      // #1. 필터 적용하기
+      // #1-1. 완료여부
+      data = filter.isFinished.includes('계획 중')
+        ? data.filter(data => data.isFinished === false)
+        : data.filter(data => data.isFinished === true)
+    }
+    // #1-2. 지역
+    if (filter.state !== allElements) {
+      data = data.filter(data => filter.state.includes(data.state))
+    }
+    // #2. 검색 적용하기
+    data = data.filter(data => data.title.includes(searchInput))
+    // #3. 정렬하기
+    switch (arrange) {
+      case '최신순':
+        // Todo: 실제 Date객체를 받아서 해봐야함
+        // filteredData.sort((a,b) => )
+        break
+      case '좋아요순':
+        data.sort((a, b) => b.likes - a.likes)
+        break
+      case '댓글순':
+        data.sort((a, b) => b.comments - a.comments)
+        break
+      case '스크랩순':
+        data.sort((a, b) => b.scraps - a.scraps)
+        break
+    }
   }
-  // #1-2. 지역
-  if (filter.state !== allElements) {
-    data = data.filter(data => filter.state.includes(data.state))
-  }
-  // #2. 검색 적용하기
-  data = data.filter(data => data.title.includes(searchInput))
-  // #3. 정렬하기
-  switch (arrange) {
-    case '최신순':
-      // Todo: 실제 Date객체를 받아서 해봐야함
-      // filteredData.sort((a,b) => )
-      break
-    case '좋아요순':
-      data.sort((a, b) => b.likes - a.likes)
-      break
-    case '댓글순':
-      data.sort((a, b) => b.comments - a.comments)
-      break
-    case '스크랩순':
-      data.sort((a, b) => b.scraps - a.scraps)
-      break
+  // Place 필터
+  else {
+    data = data as Array<DummyPlaceType>
+    // #1. 지역 필터 적용하기
+    // #2. 정렬하기
   }
   return data
 }
@@ -125,13 +135,13 @@ const generateErrorContent = (pathname: string) => {
 // Todo: DummyPlanType을 실제 받는 데이터 Type으로 변경
 interface ContentsProps {
   name: 'Plan' | 'Place'
-  datas: Array<DummyPlanType>
+  datas: Array<DummyPlanType> | Array<DummyPlaceType>
 }
 
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const pathname = usePathname()
 
-  const [filter, setFilter] = useState(initFilters.plan)
+  const [filter, setFilter] = useState(initFilters)
   const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -145,7 +155,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     // 완료 여부
     if (id === 'isFinished') {
       if (type === 'reset') {
-        setFilter(prev => ({ ...prev, isFinished: initFilters.plan.isFinished }))
+        setFilter(prev => ({ ...prev, isFinished: initFilters.isFinished }))
         return
       }
       if (filterValues) setFilter(prev => ({ ...prev, isFinished: filterValues as Array<IsFinishedChoicesType> }))
@@ -153,14 +163,14 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     // 지역
     if (id === 'state') {
       if (type === 'reset') {
-        setFilter(prev => ({ ...prev, state: initFilters.plan.state }))
+        setFilter(prev => ({ ...prev, state: initFilters.state }))
         return
       }
       if (filterValues) setFilter(prev => ({ ...prev, state: filterValues as Array<StateChoicesType> }))
     }
     // 전체 초기화
     if (id === 'all' && type === 'reset') {
-      setFilter(initFilters.plan)
+      setFilter(initFilters)
       return
     }
     movePageHandler(1)
@@ -203,7 +213,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     )
   } else {
     // #1. 필터, 검색, 정렬 적용
-    filteredData = applyRequests(datas, filter, searchInput, arrange)
+    filteredData = applyAllFilters(datas, filter, searchInput, arrange)
     // #2. 페이지에 맞는 데이터 (로직 필요)
     const startIndex = (currentPage - 1) * ELEMENTS_PER_PAGE
     const endIndex = startIndex + ELEMENTS_PER_PAGE
@@ -228,7 +238,11 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         <>
           <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
             {displayedData.map((data, index) =>
-              name === 'Plan' ? <PlanCard key={index} data={data} /> : <PlaceCard key={index} data={data} />,
+              name === 'Plan' ? (
+                <PlanCard key={index} data={data as DummyPlanType} />
+              ) : (
+                <PlaceCard key={index} data={data as DummyPlaceType} />
+              ),
             )}
           </div>
           <CustomPagination
@@ -257,7 +271,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
               {arrangeChoices.map(choice => (
                 <DropdownMenuItem
                   key={choice}
-                  className='px-3 py-2 text-xs hover:!bg-tbPrimary hover:font-medium hover:text-black md:text-sm'
+                  className='flex items-center justify-center px-3 py-2 text-xs hover:!bg-tbPrimary hover:font-medium hover:text-black md:text-sm'
                   onClick={() => arrangeHandler(choice)}
                 >
                   {choice}

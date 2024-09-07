@@ -11,10 +11,8 @@ interface MainStorePlacePageProps {}
 const dummy_place = {
   id: 1,
   name: '성산일출봉',
-  state: {
-    city: '서울특별시',
-    state: '강남구',
-  },
+  state: '서울특별시',
+  city: '강남구',
   location: {
     latitude: 127,
     longitude: 32,
@@ -23,7 +21,11 @@ const dummy_place = {
   tag: '휴양지',
   star: 4.3,
   reviewCnt: 20,
-  reviews: ['가족들과 가기 좋아요', '친구들과 가기 좋아요', '연인과 가기 좋아요'],
+  reviews: [
+    '성산일출봉을 가지 않는 것은 제주도 여행을 가지 않겠다는 것이랑 같다.',
+    '친구들과 가기 좋아요',
+    '연인과 가기 좋아요',
+  ],
   usedCnt: 120,
 }
 export type DummyPlaceType = typeof dummy_place

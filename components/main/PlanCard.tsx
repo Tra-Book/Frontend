@@ -1,21 +1,13 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import LucideIcon from '@/lib/icons/LucideIcon'
 
 import Backdrop from '../common/Backdrop'
 
 interface PlanCardProps {
-  data: {
-    title: string
-    description: string
-    state: string
-    likes: number
-    comments: number
-    scraps: number
-    schedule: string // 변동 예정
-    imageSrc: any
-  }
+  data: DummyPlanType
 }
 
 // Todo: data props type 지정
