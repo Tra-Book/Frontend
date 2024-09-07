@@ -67,7 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
-          console.log(data, data)
+          console.log(data)
 
           switch (status) {
             case 200:
@@ -108,6 +108,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
+          console.log(data)
 
           switch (status) {
             case 200:
@@ -185,12 +186,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return `${baseUrl}/`
     },
-    jwt: async ({ token, user }: { token: any; user: any }) => {
+    jwt: async ({ token, user, trigger, session }: { token: any; user: any; trigger?: string; session?: any }) => {
+      if (trigger === 'update' && session !== null) {
+        return {
+          ...token,
+          ...session,
+        }
+      }
+
       if (user) {
         token.accessToken = user.accessToken
         token.provider = user.provider
         token.userId = user.userId
+        token.image = user.image
+        token.status_message = user.status_message
       }
+
+      // console.log('user', user)
 
       // console.log('jwt', token)
 
@@ -200,6 +212,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.accessToken = token.accessToken
       session.provider = token.provider
       session.userId = token.userId
+      session.image = token.image
+      session.status_message = token.status_message
 
       delete session.user
 
