@@ -1,11 +1,13 @@
 'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React, { ReactNode, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
+import { CITIES, STATES } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { planRegions, PlanRegionType } from '@/lib/types/Entity/plan'
+import { StateType } from '@/lib/types/Entity/plan'
 
 import CustomPagination, { ELEMENTS_PER_PAGE } from '../common/Pagination'
 import { Button } from '../ui/button'
@@ -15,30 +17,29 @@ import Filters from './Filters'
 import PlaceCard from './PlaceCard'
 import PlanCard from './PlanCard'
 
-// Todo: DummyPlanType을 실제 받는 데이터 Type으로 변경
-interface ContentsProps {
-  name: 'Plan' | 'Place'
-  datas: Array<DummyPlanType>
-}
-
 export const isFinishedChoices = ['전체', '계획 중', '계획 완료'] as const
 export type IsFinishedChoicesType = (typeof isFinishedChoices)[number]
 
-export const regionChoices = ['전체', ...planRegions] as const
-export type RegionChoicesType = PlanRegionType | '전체'
+export const stateChoices = ['전체', ...STATES] as const
+export type StateChoicesType = StateType | '전체'
+
+export const cityChoices = CITIES
 
 const arrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
 type ArrangeChoiceType = (typeof arrangeChoices)[number]
 
 export type PlanFilterType = {
   isFinished: Array<IsFinishedChoicesType>
-  region: Array<RegionChoicesType>
+  state: Array<StateChoicesType>
 }
+// export type PlaceFilterType = {
+//   state:
+// }
 
 const allElements = ['전체']
 const initFilters = {
-  plan: { isFinished: allElements, region: allElements } as PlanFilterType,
-  // place: {}
+  plan: { isFinished: allElements, state: allElements } as PlanFilterType,
+  place: { state: allElements },
 }
 
 //Filter Apply Function
@@ -56,8 +57,8 @@ const applyRequests = (
       : data.filter(data => data.isFinished === true)
   }
   // #1-2. 지역
-  if (filter.region !== allElements) {
-    data = data.filter(data => filter.region.includes(data.region))
+  if (filter.state !== allElements) {
+    data = data.filter(data => filter.state.includes(data.state))
   }
   // #2. 검색 적용하기
   data = data.filter(data => data.title.includes(searchInput))
@@ -80,15 +81,66 @@ const applyRequests = (
   return data
 }
 
+// 데이터 없을때 contents
+// Todo: "여행 계획하기" 버튼에 onClick 필요 (post 생성 API 연결)
+const generateErrorContent = (pathname: string) => {
+  const errorMap: Record<
+    string,
+    { message: string[]; btnInfo: { route: string; placeHolder: string; Icon: React.JSX.Element } }
+  > = {
+    [ROUTES.MAIN.MY_PLAN.url]: {
+      message: ['아직 생성한 여행 계획이 없습니다!', 'TRABOOK과 함께 신나는 여행을 계획하세요'],
+      btnInfo: {
+        route: ROUTES.PLAN.url,
+        placeHolder: '여행 계획하기',
+        Icon: <LucideIcon name='Plane' size={26} />,
+      },
+    },
+    [ROUTES.MAIN.STORE_PLAN.url]: {
+      message: ['보관함에 여행 계획이 없습니다!', '회원들의 재밌는 여행 계획을 참고하세요'],
+      btnInfo: {
+        route: ROUTES.COMMUNITY.PLAN.url,
+        placeHolder: '커뮤니티 가기',
+        Icon: <LucideIcon name='ArrowUpRight' size={26} />,
+      },
+    },
+    [ROUTES.MAIN.STORE_PLACE.url]: {
+      message: ['보관함에 여행지가 없습니다!', '다양한 여행지를 참고하여 여행을 완성하세요'],
+      btnInfo: {
+        route: ROUTES.COMMUNITY.PLACE.url,
+        placeHolder: '커뮤니티 가기',
+        Icon: <LucideIcon name='ArrowUpRight' size={26} />,
+      },
+    },
+  }
+
+  const defaultError = {
+    message: ['오류가 발생했습니다.', '다시 시도해주세요.'],
+    btnInfo: { route: '/', placeHolder: '홈으로 가기', Icon: <LucideIcon name='House' size={26} /> },
+  }
+
+  return errorMap[pathname] || defaultError
+}
+
+// Todo: DummyPlanType을 실제 받는 데이터 Type으로 변경
+interface ContentsProps {
+  name: 'Plan' | 'Place'
+  datas: Array<DummyPlanType>
+}
+
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
+  const pathname = usePathname()
+
   const [filter, setFilter] = useState(initFilters.plan)
   const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
+
+  // 데이터처리 함수
   const handleFilters = (
-    id: 'isFinished' | 'region' | 'all',
+    id: 'isFinished' | 'state' | 'all',
     type: 'change' | 'reset',
-    filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
+    filterValues?: Array<IsFinishedChoicesType> | Array<StateChoicesType>,
   ) => {
     // 완료 여부
     if (id === 'isFinished') {
@@ -99,12 +151,12 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       if (filterValues) setFilter(prev => ({ ...prev, isFinished: filterValues as Array<IsFinishedChoicesType> }))
     }
     // 지역
-    if (id === 'region') {
+    if (id === 'state') {
       if (type === 'reset') {
-        setFilter(prev => ({ ...prev, region: initFilters.plan.region }))
+        setFilter(prev => ({ ...prev, state: initFilters.plan.state }))
         return
       }
-      if (filterValues) setFilter(prev => ({ ...prev, region: filterValues as Array<RegionChoicesType> }))
+      if (filterValues) setFilter(prev => ({ ...prev, state: filterValues as Array<StateChoicesType> }))
     }
     // 전체 초기화
     if (id === 'all' && type === 'reset') {
@@ -114,33 +166,37 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     movePageHandler(1)
   }
 
+  // 페이지네이션
   const movePageHandler = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
+  // 정렬
   const arrangeHandler = (arrange: ArrangeChoiceType) => {
     setArrange(arrange)
     movePageHandler(1)
   }
+
   /** 필터/검색이 적용된 값
    * 1. 필터 적용하기
    * 2. 검색값 적용하기
    * 3. 정렬 하기
    */
-  let contents,
-    filteredData: Array<DummyPlanType> = []
+  let contents
+  let filteredData: Array<DummyPlanType> = []
 
   if (datas.length === 0) {
+    const { message, btnInfo } = generateErrorContent(pathname)
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-3xl font-bold'>
-        <p>아직 생성한 여행 계획이 없습니다!</p>
-        <p>TRABOOK과 함께 신나는 여행을 계획하세요</p>
-        <Link href={ROUTES.AUTH.LOGIN.url}>
+        <p>{message[0]}</p>
+        <p>{message[1]}</p>
+        <Link href={btnInfo.route}>
           <Button
             variant='tbPrimary'
             className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
           >
-            여행 계획하기
-            <LucideIcon name='Plane' size={26} />
+            {btnInfo.placeHolder}
+            {btnInfo.Icon}
           </Button>
         </Link>
       </div>
@@ -155,27 +211,33 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
 
     if (filteredData.length === 0) {
       contents = (
-        <>
-          <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-3xl font-bold'>
-            <p>검색 결과가 없습니다!</p>
-            <Button
-              variant='tbPrimary'
-              className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
-              onClick={() => handleFilters('all', 'reset')}
-            >
-              필터 초기화
-              <LucideIcon name='RotateCw' size={26} />
-            </Button>
-          </div>
-        </>
+        <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-3xl font-bold'>
+          <p>검색 결과가 없습니다!</p>
+          <Button
+            variant='tbPrimary'
+            className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
+            onClick={() => handleFilters('all', 'reset')}
+          >
+            필터 초기화
+            <LucideIcon name='RotateCw' size={26} />
+          </Button>
+        </div>
       )
     } else {
       contents = (
-        <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
-          {displayedData.map((data, index) =>
-            name === 'Plan' ? <PlanCard key={index} data={data} /> : <PlaceCard key={index} data={data} />,
-          )}
-        </div>
+        <>
+          <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+            {displayedData.map((data, index) =>
+              name === 'Plan' ? <PlanCard key={index} data={data} /> : <PlaceCard key={index} data={data} />,
+            )}
+          </div>
+          <CustomPagination
+            total={Math.ceil(filteredData.length / ELEMENTS_PER_PAGE)}
+            current={currentPage}
+            movePageHandler={movePageHandler}
+            className='my-4'
+          />
+        </>
       )
     }
   }
@@ -214,12 +276,6 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         </div>
       </div>
       {contents}
-      <CustomPagination
-        total={Math.ceil(filteredData.length / ELEMENTS_PER_PAGE)}
-        current={currentPage}
-        movePageHandler={movePageHandler}
-        className='my-4'
-      />
     </>
   )
 }

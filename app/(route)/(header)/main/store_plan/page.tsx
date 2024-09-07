@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { PlanRegionType } from '@/lib/types/Entity/plan'
+import { StateType } from '@/lib/types/Entity/plan'
 import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 
 interface MainStorePlanPageProps {}
@@ -13,7 +13,7 @@ const dummy_plan = (randomLikes: number) => {
     id: 1,
     title: '가족 여행',
     description: '아들 전역 기념 여행',
-    region: '제주도' as PlanRegionType,
+    state: '제주도' as StateType,
     likes: randomLikes,
     comments: 3,
     scraps: 15,
@@ -27,7 +27,7 @@ const dummy_plan2 = (randomLikes: number) => {
     id: 1,
     title: '가족 여행',
     description: '아들 전역 기념 여행',
-    region: '서울특별시' as PlanRegionType,
+    state: '서울특별시' as StateType,
     likes: Math.floor(Math.random() * 20),
     comments: 3,
     scraps: 15,
@@ -37,10 +37,10 @@ const dummy_plan2 = (randomLikes: number) => {
   }
 }
 let dummy_plans = []
-for (let i = 0; i < 40; i++) {
+for (let i = 0; i < 0; i++) {
   dummy_plans.push(dummy_plan(Math.floor(Math.random() * 10)))
 }
-for (let i = 0; i < 21; i++) {
+for (let i = 0; i < 0; i++) {
   dummy_plans.push(dummy_plan2(Math.floor(Math.random() * 20)))
 }
 

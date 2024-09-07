@@ -6,7 +6,7 @@ import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
-import { isFinishedChoices, IsFinishedChoicesType, PlanFilterType, regionChoices, RegionChoicesType } from './Contents'
+import { isFinishedChoices, IsFinishedChoicesType, PlanFilterType, stateChoices, StateChoicesType } from './Contents'
 import Filter from './Filter'
 
 // export type PlaceFilterType = {
@@ -16,17 +16,17 @@ import Filter from './Filter'
 interface FiltersProps {
   filter: PlanFilterType // Or PlaceFilterType
   handleFilters: (
-    id: 'isFinished' | 'region' | 'all',
+    id: 'isFinished' | 'state' | 'all',
     type: 'change' | 'reset',
-    filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
+    filterValues?: Array<IsFinishedChoicesType> | Array<StateChoicesType>,
   ) => void
 }
 
 export interface FilterDisplayType {
-  id: 'isFinished' | 'region'
-  filter: Array<IsFinishedChoicesType> | Array<RegionChoicesType>
+  id: 'isFinished' | 'state'
+  filter: Array<IsFinishedChoicesType> | Array<StateChoicesType>
   placeHolder: string // 처음에 보여줄 값
-  choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<RegionChoicesType>>
+  choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
 }
 
 // 역할: UI 보여주고, onClick 핸들링
@@ -35,7 +35,7 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
   /**
    * URL에 따른 필터 버튼
    */
-  const makeFilterButton = (id: 'isFinished' | 'region'): FilterDisplayType | undefined => {
+  const makeFilterButton = (id: 'isFinished' | 'state'): FilterDisplayType | undefined => {
     if (id === 'isFinished') {
       return {
         id: 'isFinished',
@@ -45,16 +45,16 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
       }
     }
     //
-    else if (id === 'region') {
+    else if (id === 'state') {
       return {
-        id: 'region',
-        filter: filter.region,
-        placeHolder: filter.region.includes('전체')
+        id: 'state',
+        filter: filter.state,
+        placeHolder: filter.state.includes('전체')
           ? '지역'
-          : filter.region.length === 1
-            ? filter.region[0]
-            : `${filter.region[0]} 외 ${filter.region.length - 1}`,
-        choices: regionChoices,
+          : filter.state.length === 1
+            ? filter.state[0]
+            : `${filter.state[0]} 외 ${filter.state.length - 1}`,
+        choices: stateChoices,
       }
     }
     return undefined
@@ -62,10 +62,10 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
   let FILTER_BUTTONS: Array<FilterDisplayType> = []
 
   if (pathname === ROUTES.MAIN.MY_PLAN.url) {
-    FILTER_BUTTONS = [makeFilterButton('isFinished'), makeFilterButton('region')] as Array<FilterDisplayType>
+    FILTER_BUTTONS = [makeFilterButton('isFinished'), makeFilterButton('state')] as Array<FilterDisplayType>
   }
   if (pathname === ROUTES.MAIN.STORE_PLAN.url) {
-    FILTER_BUTTONS = [makeFilterButton('region')] as Array<FilterDisplayType>
+    FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
   }
 
   return (

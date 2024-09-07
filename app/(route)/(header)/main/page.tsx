@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
-import { PlanRegionType } from '@/lib/types/Entity/plan'
+import { StateType } from '@/lib/types/Entity/plan'
 import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 interface MainPageProps {}
 
@@ -10,7 +10,7 @@ const dummy_plan = {
   id: 1,
   title: '가족 여행',
   description: '아들 전역 기념 여행',
-  region: '제주도' as PlanRegionType,
+  state: '제주도' as StateType,
   likes: 30,
   comments: 3,
   scraps: 15,
@@ -22,7 +22,7 @@ const dummy_plan2 = {
   id: 1,
   title: '가족 여행',
   description: '아들 전역 기념 여행',
-  region: '제주도' as PlanRegionType,
+  state: '제주도' as StateType,
   likes: 32,
   comments: 3,
   scraps: 15,

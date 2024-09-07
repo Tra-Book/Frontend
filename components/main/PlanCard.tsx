@@ -9,7 +9,7 @@ interface PlanCardProps {
   data: {
     title: string
     description: string
-    region: string
+    state: string
     likes: number
     comments: number
     scraps: number
@@ -29,7 +29,7 @@ const PlanCard = ({ data }: PlanCardProps): ReactNode => {
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>
           <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{data.title}</h2>
-          <span className='text-xs'>{data.region}</span>
+          <span className='text-xs'>{data.state}</span>
         </div>
 
         <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{data.description}</p>

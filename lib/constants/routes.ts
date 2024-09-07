@@ -1,3 +1,5 @@
+import { ExtractValueByKey } from '../utils/typeUtils'
+
 /**
  * Route vs ApiEndpoint
  * - Route: 클라이언트에서 사용하는 path
@@ -70,4 +72,7 @@ export const ROUTES = {
       url: '/community/companion',
     },
   },
-}
+} as const
+
+// 자동으로 갱신되는 Url 타입
+export type RouteType = ExtractValueByKey<typeof ROUTES, 'url'>

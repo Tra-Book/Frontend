@@ -7,24 +7,24 @@ import { ReadOnly } from '@/lib/utils/typeUtils'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { IsFinishedChoicesType, RegionChoicesType } from './Contents'
+import { IsFinishedChoicesType, StateChoicesType } from './Contents'
 
 interface FilterProps {
-  id: 'isFinished' | 'region'
-  filter: Array<IsFinishedChoicesType> | Array<RegionChoicesType>
+  id: 'isFinished' | 'state'
+  filter: Array<IsFinishedChoicesType> | Array<StateChoicesType>
   placeHolder: string // 처음에 보여줄 값
-  choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<RegionChoicesType>>
+  choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
   handleFilters: (
-    id: 'isFinished' | 'region' | 'all',
+    id: 'isFinished' | 'state' | 'all',
     type: 'change' | 'reset',
-    filterValues?: Array<IsFinishedChoicesType> | Array<RegionChoicesType>,
+    filterValues?: Array<IsFinishedChoicesType> | Array<StateChoicesType>,
   ) => void
 }
 
 const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps): ReactNode => {
   const [isOpen, setIsOpen] = useState<boolean>(false) // 드롭다운 열림 상태 관리
   const [isSaved, setIsSaved] = useState<boolean>(false) // 저장 여부 상태 관리
-  const [checkedFilters, setCheckedFilters] = useState<Array<IsFinishedChoicesType> | Array<RegionChoicesType>>(filter)
+  const [checkedFilters, setCheckedFilters] = useState<Array<IsFinishedChoicesType> | Array<StateChoicesType>>(filter)
 
   const handleOpenChange = (open: boolean) => {
     // 열릴때 현재 상태 가져오기
@@ -39,7 +39,7 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
     }
     setIsOpen(open)
   }
-  const handleCheckBox = (choice: IsFinishedChoicesType | RegionChoicesType) => {
+  const handleCheckBox = (choice: IsFinishedChoicesType | StateChoicesType) => {
     setCheckedFilters(prev => {
       // "전체"를 선택한 경우, 나머지 선택 해제 후 "전체"만 선택
       if (choice === '전체') {
