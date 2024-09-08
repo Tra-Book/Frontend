@@ -34,7 +34,7 @@ const SideBar = ({ isCredentails }: SideBarProps): ReactNode => {
         <div className='text-pretty text-center text-sm font-medium'>{dummy_user.statusMessage}</div>
       </div>
       {/* 링크 */}
-      <div className='flex w-2/3 flex-col items-start justify-start gap-8 py-10 text-xl font-medium 2xl:text-2xl'>
+      <div className='flex w-3/4 flex-col items-start justify-start gap-8 py-10 text-xl font-medium 2xl:text-2xl'>
         <Link href={ROUTES.MAIN.MY_PLAN.url} className='flex items-center justify-center gap-4'>
           <LucideIcon name='Plane' size={26} strokeWidth={1.5} />
           <span className={cn('hover:text-tbRed', pathname === '/main' && 'font-semibold text-tbRed')}>내 계획</span>
