@@ -1,16 +1,19 @@
 'use client'
 import Link from 'next/link'
+import { Session } from 'next-auth'
 import React, { ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Route, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import { Nullable } from '@/lib/utils/typeUtils'
 import ToggleWrapper, { useDropdown } from '@/lib/utils/useToggle'
 
 import { Divider } from '../common/Dividers'
 
 interface MobileMenuProps {
+  session: Nullable<Session>
   className?: string
 }
 
@@ -47,7 +50,7 @@ const MY_SECTION: NavSection = {
   sections: [{ name: '내 정보', url: ROUTES.MAIN.INFO.url }],
 }
 
-const MobileMenu = ({ className }: MobileMenuProps): ReactNode => {
+const MobileMenu = ({ session, className }: MobileMenuProps): ReactNode => {
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
 
   /**
@@ -83,13 +86,12 @@ const MobileMenu = ({ className }: MobileMenuProps): ReactNode => {
         className='right-6 top-3/4 flex w-1/3 min-w-[250px] max-w-[300px] flex-grow flex-col items-center justify-start rounded-md bg-white font-medium shadow-tb-shadow'
       >
         <LucideIcon name='X' className='mr-4 mt-4 self-end' size={20} onClick={toggleDropdown} />
-        {/* Todo: 로그인 상태에 따라 로그인하기 or 여행 계획하기 표시하기 */}
-        <Link href={ROUTES.AUTH.LOGIN.url} className='mx-2 w-full p-4'>
+
+        <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.url} className='mx-2 w-full p-4'>
           <Button variant='tbPrimary' className='w-full'>
-            로그인하기
+            {!session ? '로그인하기' : '여행 계획하기'}
           </Button>
         </Link>
-        {/* <Link href={ROUTES.PLAN.url}>여행 계획하기</Link> */}
         {renderNavLinks(HOME_SECTION)}
         <Divider />
         {renderNavLinks(STORE_SECTION)}

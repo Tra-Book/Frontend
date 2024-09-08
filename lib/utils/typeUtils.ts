@@ -28,3 +28,4 @@ export type ExtractValueByKey<T, K extends string> = T extends { [key in K]: inf
   : {
       [key in keyof T]: ExtractValueByKey<T[key], K>
     }[keyof T]
+

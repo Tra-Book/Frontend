@@ -9,11 +9,14 @@ export interface LucideIconProps extends HTMLAttributes<HTMLOrSVGElement> {
   name: keyof typeof icons
   color?: ColorType
   size?: number
+  className?: string
+  fill?: ColorType
   strokeWidth?: number
   fill?: string
 }
 
-const LucideIcon = ({ name, color, strokeWidth = 2, size = 16, fill, ...props }: LucideIconProps) => {
+
+const LucideIcon = ({ name, color, strokeWidth = 2, size = 16, fill, className ...props }: LucideIconProps) => {
   const LucideIcon = icons[name]
 
   const isClickEvent = !!props.onClick
@@ -25,7 +28,7 @@ const LucideIcon = ({ name, color, strokeWidth = 2, size = 16, fill, ...props }:
       size={size}
       fill={fill ? fill : 'transparent'}
       strokeWidth={strokeWidth}
-      className={cn(pointerStyle, props.className)}
+      className={cn(pointerStyle, className)}
       {...props}
     />
   )

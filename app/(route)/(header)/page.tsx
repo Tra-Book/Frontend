@@ -2,6 +2,7 @@ import { Plane } from 'lucide-react'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
+import { auth } from '@/auth'
 import { Motion } from '@/components/common/MotionWrapper'
 import { SLOGANS } from '@/components/common/Slogan'
 import { Button } from '@/components/ui/button'
@@ -13,23 +14,24 @@ const INTRODUCE_FIRST_LINE: Array<string> = ['여행 계획', '을 위한 최적
 const SUBINTRODUCE_FIRST_LINE: Array<string> = ['빅데이터 ', '여행지 정보와 ', '참신한 계획들을 통해']
 const SUBINTRODUCE_SECOND_LINE: Array<string> = ['손쉽게 여행 일정을 완성하세요']
 
-const Home = (): ReactNode => {
-  const renderAnimatedText = (text: Array<string>, delay: number) => {
-    return text.map((item: string, index: number) => (
-      <Motion
-        key={item}
-        tag='span'
-        animation={fadeIn(1, 0.5 * index + delay)}
-        className={cn(item === '여행 계획' && 'text-tbPrimary')}
-      >
-        {item}
-      </Motion>
-    ))
-  }
+const renderAnimatedText = (text: Array<string>, delay: number) => {
+  return text.map((item: string, index: number) => (
+    <Motion
+      key={item}
+      tag='span'
+      animation={fadeIn(1, 0.5 * index + delay)}
+      className={cn(item === '여행 계획' && 'text-tbPrimary')}
+    >
+      {item}
+    </Motion>
+  ))
+}
+
+const Home = async (): Promise<ReactNode> => {
+  const session = await auth()
 
   return (
     <main className='relative flex min-h-screen flex-grow flex-col items-center justify-start'>
-      {/* 첫 페이지 */}
       <div className='relative flex h-dvh w-full flex-grow flex-col items-center lg:flex-row'>
         <div className='flex h-3/5 w-full flex-col items-center justify-center gap-8 lg:h-full lg:w-1/3'>
           {SLOGANS.map((slogan, index) => (
@@ -57,8 +59,7 @@ const Home = (): ReactNode => {
           </div>
 
           <Motion animation={fadeIn(0.5, 5)}>
-            {/* TODO: 로그인 상태 검사해서 로그인O (/plan), 로그인X(로그인 창 이동) */}
-            <Link href={ROUTES.AUTH.LOGIN.url}>
+            <Link href={!session ? ROUTES.PLAN.url : ROUTES.AUTH.LOGIN.url}>
               <Button
                 variant='tbPrimary'
                 className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
