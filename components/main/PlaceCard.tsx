@@ -44,9 +44,9 @@ const PlaceCard = ({ data }: PlaceCardProps): ReactNode => {
           </div>
         </div>
 
-        <p className='flex items-center text-pretty rounded-md bg-tbPlaceholder px-1 py-2 text-xs hover:bg-tbPlaceHolderHover lg:text-sm'>
+        <div className='flex items-center text-wrap break-words rounded-md bg-tbPlaceholder px-1 py-2 text-xs hover:bg-tbPlaceHolderHover lg:text-sm'>
           {data.reviews[0]}
-        </p>
+        </div>
       </div>
     </div>
   )
