@@ -19,7 +19,7 @@ interface FiltersProps {
 }
 
 export interface FilterDisplayType {
-  id: 'isFinished' | 'state'
+  id: 'isFinished' | 'state' | 'stateCity'
   filter: Array<IsFinishedChoicesType> | Array<StateChoicesType>
   placeHolder: string // 처음에 보여줄 값
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
@@ -31,7 +31,7 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
   /**
    * URL에 따른 필터 버튼
    */
-  const makeFilterButton = (id: 'isFinished' | 'state'): FilterDisplayType | undefined => {
+  const makeFilterButton = (id: 'isFinished' | 'state' | 'stateCity'): FilterDisplayType => {
     if (id === 'isFinished') {
       return {
         id: 'isFinished',
@@ -52,16 +52,23 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
             : `${filter.state[0]} 외 ${filter.state.length - 1}`,
         choices: stateChoices,
       }
+    } else if (id === 'stateCity') {
+      return {
+        id: 'stateCity',
+        filter: filter.state,
+        placeHolder: '지역',
+        choices: stateChoices,
+      }
     }
-    return undefined
   }
   let FILTER_BUTTONS: Array<FilterDisplayType> = []
 
   if (pathname === ROUTES.MAIN.MY_PLAN.url) {
     FILTER_BUTTONS = [makeFilterButton('isFinished'), makeFilterButton('state')] as Array<FilterDisplayType>
-  }
-  if (pathname === ROUTES.MAIN.STORE_PLAN.url) {
+  } else if (pathname === ROUTES.MAIN.STORE_PLAN.url) {
     FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
+  } else if (pathname === ROUTES.MAIN.STORE_PLACE.url) {
+    FILTER_BUTTONS = [makeFilterButton('stateCity')] as Array<FilterDisplayType>
   }
 
   return (

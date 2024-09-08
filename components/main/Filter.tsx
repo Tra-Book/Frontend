@@ -1,6 +1,7 @@
 'use client'
 import React, { ReactNode, useState } from 'react'
 
+import { CITIES } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
@@ -10,9 +11,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuT
 import { IsFinishedChoicesType, StateChoicesType } from './Contents'
 
 interface FilterProps {
-  id: 'isFinished' | 'state'
+  id: 'isFinished' | 'state' | 'stateCity'
   filter: Array<IsFinishedChoicesType> | Array<StateChoicesType>
-  placeHolder: string // 처음에 보여줄 값
+  placeHolder: string
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
   handleFilters: (
     id: 'isFinished' | 'state' | 'all',
@@ -26,6 +27,7 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
   const [isSaved, setIsSaved] = useState<boolean>(false) // 저장 여부 상태 관리
   const [checkedFilters, setCheckedFilters] = useState<Array<IsFinishedChoicesType> | Array<StateChoicesType>>(filter)
 
+  const [selectedState, setSelectedState] = useState<StateChoicesType>('전체')
   const handleOpenChange = (open: boolean) => {
     // 열릴때 현재 상태 가져오기
     if (open) {
@@ -38,6 +40,88 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
       }
     }
     setIsOpen(open)
+  }
+
+  const getChoices = () => {
+    if (id !== 'stateCity') {
+      return (
+        <div className='min-h max-h-36 overflow-y-auto'>
+          {choices.map(choice => (
+            <div
+              key={choice}
+              className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
+            >
+              <Checkbox
+                checked={checkedFilters.includes(choice as any) ? true : false}
+                id={choice}
+                className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
+                onClick={() => handleCheckBox(choice)}
+              />
+              <label htmlFor={choice} className='peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                {choice}
+              </label>
+            </div>
+          ))}
+        </div>
+      )
+    }
+    // 여행지 필터
+    else {
+      choices = choices as ReadOnly<Array<StateChoicesType>> // Type Assertion
+      return (
+        <div className='relative flex items-start justify-between'>
+          <div className='max-h-36 min-w-min overflow-y-auto'>
+            {choices.map(choice => (
+              <div
+                key={choice}
+                onClick={() => setSelectedState(choice)}
+                className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
+              >
+                {/* <Checkbox
+                  checked={checkedFilters.includes(choice as any) ? true : false}
+                  id={choice}
+                  className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
+                  onClick={() => handleCheckBox(choice)}
+                /> */}
+                {/* <label htmlFor={choice} className='peer-disabled:cursor-not-allowed peer-disabled:opacity-70'> */}
+                {choice}
+                {/* </label> */}
+              </div>
+            ))}
+          </div>
+          <div className='grid h-36 min-w-[200px] grid-cols-2 overflow-y-auto px-1 text-sm'>
+            {selectedState !== '전체' ? (
+              <>
+                {/* 선택한 지역의 전체 버튼 */}
+                <div className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'>
+                  <Checkbox
+                    id={`${selectedState} 전체`}
+                    className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
+                  />
+                  <label htmlFor={`${selectedState} 전체`}>{`${selectedState.slice(0, 2)} 전체`}</label>
+                </div>
+
+                {/* 해당 지역의 세부 도시 목록 */}
+                {CITIES[selectedState].map(city => (
+                  <div
+                    key={city}
+                    className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
+                  >
+                    <Checkbox
+                      id={city}
+                      className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
+                    />
+                    <label htmlFor={city}>{city}</label>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className='col-span-2 flex items-center justify-center text-base'>지역을 선택해주세요</div>
+            )}
+          </div>
+        </div>
+      )
+    }
   }
   const handleCheckBox = (choice: IsFinishedChoicesType | StateChoicesType) => {
     setCheckedFilters(prev => {
@@ -71,24 +155,7 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
         <LucideIcon name='ChevronDown' />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <div className='min-h max-h-36 overflow-y-auto'>
-          {choices.map(choice => (
-            <div
-              key={choice}
-              className='relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
-            >
-              <Checkbox
-                checked={checkedFilters.includes(choice as any) ? true : false}
-                id={choice}
-                className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
-                onClick={() => handleCheckBox(choice)}
-              />
-              <label htmlFor={choice} className='peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
-                {choice}
-              </label>
-            </div>
-          ))}
-        </div>
+        {getChoices()}
         <DropdownMenuSeparator />
         <div className='relative flex items-center justify-end gap-4 p-2'>
           <Button

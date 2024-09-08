@@ -240,4 +240,4 @@ export const CITIES = {
     '합천군',
   ],
   제주도: ['서귀포시', '제주시'],
-} as const
+}

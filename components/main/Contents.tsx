@@ -32,7 +32,7 @@ type ArrangeChoiceType = (typeof arrangeChoices)[number]
 export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
   state: Array<StateChoicesType>
-  city: Array<string>
+  city: Array<string> // 여행지 필터
 }
 
 const allElements = ['전체']
@@ -192,7 +192,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
    * 3. 정렬 하기
    */
   let contents
-  let filteredData: Array<DummyPlanType> = []
+  let filteredData: Array<DummyPlanType> | Array<DummyPlaceType> = []
 
   if (datas.length === 0) {
     const { message, btnInfo } = generateErrorContent(pathname)
