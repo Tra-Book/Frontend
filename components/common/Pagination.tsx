@@ -16,7 +16,7 @@ interface PaginationProps {
   className?: string
 }
 
-export const ELEMENTS_PER_PAGE = 6
+export const ELEMENTS_PER_PAGE = 12
 const PAGE_GROUP_SIZE = 5 // 한 번에 보여줄 페이지 버튼 수
 
 const CustomPagination = ({ total, current, movePageHandler, className }: PaginationProps): ReactNode => {
@@ -43,7 +43,7 @@ const CustomPagination = ({ total, current, movePageHandler, className }: Pagina
     <Pagination className={className}>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious onClick={handlePrevious} disabled={current === 1} />
+          <PaginationPrevious onClick={handlePrevious} />
         </PaginationItem>
 
         {/* 페이지 번호 렌더링 */}
@@ -59,7 +59,7 @@ const CustomPagination = ({ total, current, movePageHandler, className }: Pagina
         })}
 
         <PaginationItem>
-          <PaginationNext onClick={handleNext} disabled={current === total} />
+          <PaginationNext onClick={handleNext} />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

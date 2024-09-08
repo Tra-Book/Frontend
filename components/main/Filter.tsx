@@ -12,12 +12,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuT
 import { CityChoicesType, FilterType, IsFinishedChoicesType, StateChoicesType } from './Contents'
 
 interface FilterProps {
-  id: 'isFinished' | 'state' | 'stateCity'
+  id: 'isFinished' | 'state' | 'city'
   filter: FilterType['isFinished' | 'state' | 'city']
   placeHolder: string
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
   handleFilters: (
-    id: 'isFinished' | 'state' | 'stateCity' | 'all',
+    id: 'isFinished' | 'state' | 'city' | 'all',
     type: 'change' | 'reset',
     filterValues?: FilterType['isFinished' | 'state' | 'city'],
     selectedState?: string,
@@ -73,23 +73,46 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
     setCheckedFilters(prev => {
       // 초기 상태 (["전체"])
       if (Array.isArray(prev)) {
+        const stateIdx = getStateIdx(state)
         if (checkedFilters.length === 1) {
           const newCheckedFilters: string[][] = Array.from({ length: STATES.length }, () => [])
-          newCheckedFilters[getStateIdx(state)].push(city)
+          // "전체"가 선택된 경우 해당 state에 속하는 모든 city 추가
+          if (city === '전체') {
+            newCheckedFilters[stateIdx] = ['전체', ...CITIES[stateIdx]]
+          } else {
+            newCheckedFilters[stateIdx].push(city)
+          }
           return newCheckedFilters
         }
         // 값이 있던 상태
         else {
           const newArray: string[][] = prev.map(arr => [...arr]) // 깊은 복사
-          const stateIdx = getStateIdx(state)
-
-          const cityIndex = newArray[stateIdx].indexOf(city)
-
-          // city가 이미 선택되어 있으면 제거, 없으면 추가
-          if (cityIndex === -1) {
-            newArray[stateIdx].push(city) // city 추가
+          // "전체"가 선택된 경우
+          if (city === '전체') {
+            // "전체"가 이미 선택된 경우에는 빈 배열로 설정
+            if (newArray[stateIdx].includes('전체')) {
+              newArray[stateIdx] = [] // 해당 state의 배열을 비운다
+            }
+            // "전체"가 선택되지 않았을 경우 모든 도시를 추가
+            else {
+              newArray[stateIdx] = ['전체', ...CITIES[stateIdx]] // 해당 state의 모든 city 추가
+            }
           } else {
-            newArray[stateIdx].splice(cityIndex, 1) // city 제거
+            const cityIndex = newArray[stateIdx].indexOf(city)
+
+            if (cityIndex === -1) {
+              newArray[stateIdx].push(city) // city 추가
+            } else {
+              newArray[stateIdx].splice(cityIndex, 1) // city 제거
+              if (newArray[stateIdx].includes('전체')) {
+                newArray[stateIdx].splice(0, 1) // 전체 제거
+              }
+            }
+
+            // 모든 city가 선택 해제된 경우 "전체" 추가
+            if (newArray[stateIdx].length === 0) {
+              newArray[stateIdx].push('전체') // 선택이 없으면 다시 "전체"로 변경
+            }
           }
 
           return newArray
@@ -99,13 +122,9 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
     })
   }
 
-  // useEffect(() => {
-  //   console.log(checkedFilters)
-  // }, [checkedFilters])
-
   // 선택지 나열
   const getChoices = () => {
-    if (id !== 'stateCity') {
+    if (id !== 'city') {
       return (
         <div className='min-h max-h-36 overflow-y-auto'>
           {choices.map(choice => (

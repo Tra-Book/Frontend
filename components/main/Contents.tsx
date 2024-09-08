@@ -1,14 +1,15 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
-import { CITIES, STATES } from '@/lib/constants/regions'
+import { CITIES, getStateIdx, STATES } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { StateType } from '@/lib/types/Entity/plan'
+import { scrollToTop } from '@/lib/utils/scroll'
 
 import CustomPagination, { ELEMENTS_PER_PAGE } from '../common/Pagination'
 import { Button } from '../ui/button'
@@ -27,8 +28,9 @@ export type StateChoicesType = StateType | '전체'
 export const cityChoices = CITIES
 export type CityChoicesType = ['전체'] | string[][]
 
-const arrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
-type ArrangeChoiceType = (typeof arrangeChoices)[number]
+const planArrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
+const placeArrangeChoices = ['최신순', '평점순', '인용순', '리뷰순'] as const
+type ArrangeChoiceType = (typeof planArrangeChoices)[number] | (typeof placeArrangeChoices)[number]
 
 export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
@@ -87,7 +89,33 @@ const applyAllFilters = (
   else {
     data = data as Array<DummyPlaceType>
     // #1. 지역 필터 적용하기
-    // #2. 정렬하기
+    if (filter.city !== allElements) {
+      data = data.filter(item => {
+        const stateIdx = getStateIdx(item.state)
+        if (filter.city[stateIdx].includes('전체')) {
+          return true
+        }
+        return filter.city[stateIdx].includes(item.city)
+      })
+    }
+    // #2. 검색
+    data = data.filter(data => data.name.includes(searchInput))
+    // #3. 정렬하기
+    switch (arrange) {
+      case '평점순':
+        data.sort((a, b) => b.star - a.star)
+        break
+      case '최신순':
+        // Todo: 실제 Date객체를 받아서 해봐야함
+        // data.sort((a, b) => b. a.likes)
+        break
+      case '인용순':
+        data.sort((a, b) => b.usedCnt - a.usedCnt)
+        break
+      case '리뷰순':
+        data.sort((a, b) => b.reviewCnt - a.reviewCnt)
+        break
+    }
   }
   return data
 }
@@ -141,15 +169,16 @@ interface ContentsProps {
 
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const pathname = usePathname()
+  const arrangeChoices = name === 'Plan' ? planArrangeChoices : placeArrangeChoices
 
   const [filter, setFilter] = useState<FilterType>(initFilters)
-  const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
+  const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '평점순')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   // 데이터처리 함수
   const handleFilters = (
-    id: 'isFinished' | 'state' | 'stateCity' | 'all',
+    id: 'isFinished' | 'state' | 'city' | 'all',
     type: 'change' | 'reset',
     filterValues?: FilterType['isFinished' | 'state' | 'city'],
   ) => {
@@ -170,7 +199,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       if (filterValues) setFilter(prev => ({ ...prev, state: filterValues as FilterType['state'] }))
     }
     // 여행지
-    if (id === 'stateCity') {
+    if (id === 'city') {
       if (type === 'reset') {
         setFilter(prev => ({ ...prev, city: initFilters.city }))
         return
@@ -179,6 +208,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         setFilter(prev => ({ ...prev, city: filterValues as FilterType['city'] }))
       }
     }
+
     // 전체 초기화
     if (id === 'all' && type === 'reset') {
       setFilter(initFilters)
@@ -187,13 +217,10 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     movePageHandler(1)
   }
 
-  useEffect(() => {
-    console.log(filter)
-  }, [filter])
-
   // 페이지네이션
   const movePageHandler = (pageNumber: number) => {
     setCurrentPage(pageNumber)
+    scrollToTop()
   }
   // 정렬
   const arrangeHandler = (arrange: ArrangeChoiceType) => {
@@ -212,9 +239,9 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   if (datas.length === 0) {
     const { message, btnInfo } = generateErrorContent(pathname)
     contents = (
-      <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-3xl font-bold'>
-        <p>{message[0]}</p>
-        <p>{message[1]}</p>
+      <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-xl font-bold sm:text-3xl'>
+        <p className='text-pretty'>{message[0]}</p>
+        <p className='text-pretty text-center'>{message[1]}</p>
         <Link href={btnInfo.route}>
           <Button
             variant='tbPrimary'
@@ -275,7 +302,9 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     <>
       <Filters filter={filter} handleFilters={handleFilters} />
       <div className='relative mb-3 flex h-auto min-h-min w-full items-center justify-between pl-1'>
-        <p className='hidden text-xl font-medium md:block'>총 계획 {filteredData.length}개</p>
+        <p className='hidden text-xl font-medium md:block'>
+          총 {name === 'Plan' ? '계획' : '여행지'} {filteredData.length}개
+        </p>
         <div className='mr-3 flex w-full flex-row-reverse flex-wrap-reverse items-center justify-between gap-4 text-xs text-tbGray md:w-fit md:flex-row md:flex-nowrap md:text-sm'>
           <DropdownMenu>
             <DropdownMenuTrigger className='flex h-full w-fit items-end justify-between gap-1 md:items-center'>
