@@ -5,7 +5,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
-import { CITIES, STATES } from '@/lib/constants/regions'
+import { CITIES, getStateIdx, STATES } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { StateType } from '@/lib/types/Entity/plan'
@@ -27,8 +27,9 @@ export type StateChoicesType = StateType | '전체'
 export const cityChoices = CITIES
 export type CityChoicesType = ['전체'] | string[][]
 
-const arrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
-type ArrangeChoiceType = (typeof arrangeChoices)[number]
+const planArrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
+const placeArrangeChoices = ['최신순', '평점순', '인용순', '리뷰순'] as const
+type ArrangeChoiceType = (typeof planArrangeChoices)[number] | (typeof placeArrangeChoices)[number]
 
 export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
@@ -87,7 +88,31 @@ const applyAllFilters = (
   else {
     data = data as Array<DummyPlaceType>
     // #1. 지역 필터 적용하기
+    if (filter.city !== allElements) {
+      data = data.filter(item => {
+        const stateIdx = getStateIdx(item.state)
+        if (filter.city[stateIdx].includes('전체')) {
+          return true
+        }
+        return filter.city[stateIdx].includes(item.city)
+      })
+    }
     // #2. 정렬하기
+    switch (arrange) {
+      case '평점순':
+        data.sort((a, b) => b.star - a.star)
+        break
+      case '최신순':
+        // Todo: 실제 Date객체를 받아서 해봐야함
+        // data.sort((a, b) => b. a.likes)
+        break
+      case '인용순':
+        data.sort((a, b) => b.usedCnt - a.usedCnt)
+        break
+      case '리뷰순':
+        data.sort((a, b) => b.reviewCnt - a.reviewCnt)
+        break
+    }
   }
   return data
 }
@@ -141,15 +166,16 @@ interface ContentsProps {
 
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const pathname = usePathname()
+  const arrangeChoices = name === 'Plan' ? planArrangeChoices : placeArrangeChoices
 
   const [filter, setFilter] = useState<FilterType>(initFilters)
-  const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
+  const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '평점순')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   // 데이터처리 함수
   const handleFilters = (
-    id: 'isFinished' | 'state' | 'stateCity' | 'all',
+    id: 'isFinished' | 'state' | 'city' | 'all',
     type: 'change' | 'reset',
     filterValues?: FilterType['isFinished' | 'state' | 'city'],
   ) => {
@@ -170,7 +196,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
       if (filterValues) setFilter(prev => ({ ...prev, state: filterValues as FilterType['state'] }))
     }
     // 여행지
-    if (id === 'stateCity') {
+    if (id === 'city') {
       if (type === 'reset') {
         setFilter(prev => ({ ...prev, city: initFilters.city }))
         return
@@ -179,6 +205,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         setFilter(prev => ({ ...prev, city: filterValues as FilterType['city'] }))
       }
     }
+
     // 전체 초기화
     if (id === 'all' && type === 'reset') {
       setFilter(initFilters)
