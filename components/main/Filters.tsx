@@ -12,15 +12,16 @@ import Filter from './Filter'
 interface FiltersProps {
   filter: FilterType
   handleFilters: (
-    id: 'isFinished' | 'state' | 'all',
+    id: 'isFinished' | 'state' | 'stateCity' | 'all',
     type: 'change' | 'reset',
-    filterValues?: Array<IsFinishedChoicesType> | Array<StateChoicesType>,
+    filterValues?: FilterType['isFinished' | 'state' | 'city'],
+    selectedState?: string,
   ) => void
 }
 
 export interface FilterDisplayType {
   id: 'isFinished' | 'state' | 'stateCity'
-  filter: Array<IsFinishedChoicesType> | Array<StateChoicesType>
+  filter: FilterType['isFinished' | 'state' | 'city']
   placeHolder: string // 처음에 보여줄 값
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
 }
@@ -31,7 +32,7 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
   /**
    * URL에 따른 필터 버튼
    */
-  const makeFilterButton = (id: 'isFinished' | 'state' | 'stateCity'): FilterDisplayType => {
+  const makeFilterButton = (id: 'isFinished' | 'state' | 'stateCity'): FilterDisplayType | undefined => {
     if (id === 'isFinished') {
       return {
         id: 'isFinished',
@@ -55,11 +56,12 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
     } else if (id === 'stateCity') {
       return {
         id: 'stateCity',
-        filter: filter.state,
+        filter: filter.city,
         placeHolder: '지역',
         choices: stateChoices,
       }
     }
+    return undefined
   }
   let FILTER_BUTTONS: Array<FilterDisplayType> = []
 

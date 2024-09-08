@@ -1,31 +1,33 @@
 'use client'
 import React, { ReactNode, useState } from 'react'
 
-import { CITIES } from '@/lib/constants/regions'
+import { CITIES, getStateIdx, STATES } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
+import { StateType } from '@/lib/types/Entity/plan'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { IsFinishedChoicesType, StateChoicesType } from './Contents'
+import { CityChoicesType, FilterType, IsFinishedChoicesType, StateChoicesType } from './Contents'
 
 interface FilterProps {
   id: 'isFinished' | 'state' | 'stateCity'
-  filter: Array<IsFinishedChoicesType> | Array<StateChoicesType>
+  filter: FilterType['isFinished' | 'state' | 'city']
   placeHolder: string
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
   handleFilters: (
-    id: 'isFinished' | 'state' | 'all',
+    id: 'isFinished' | 'state' | 'stateCity' | 'all',
     type: 'change' | 'reset',
-    filterValues?: Array<IsFinishedChoicesType> | Array<StateChoicesType>,
+    filterValues?: FilterType['isFinished' | 'state' | 'city'],
+    selectedState?: string,
   ) => void
 }
 
 const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps): ReactNode => {
   const [isOpen, setIsOpen] = useState<boolean>(false) // 드롭다운 열림 상태 관리
   const [isSaved, setIsSaved] = useState<boolean>(false) // 저장 여부 상태 관리
-  const [checkedFilters, setCheckedFilters] = useState<Array<IsFinishedChoicesType> | Array<StateChoicesType>>(filter)
+  const [checkedFilters, setCheckedFilters] = useState<FilterType['isFinished' | 'state' | 'city']>(filter)
 
   const [selectedState, setSelectedState] = useState<StateChoicesType>('전체')
   const handleOpenChange = (open: boolean) => {
@@ -42,6 +44,66 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
     setIsOpen(open)
   }
 
+  const handleCheckBox = (choice: IsFinishedChoicesType | StateChoicesType | CityChoicesType) => {
+    setCheckedFilters(prev => {
+      // "전체"를 선택한 경우, 나머지 선택 해제 후 "전체"만 선택
+      if (choice === '전체') {
+        return ['전체'] as typeof prev
+      }
+
+      // 다른 항목을 선택한 경우 "전체" 선택 해제
+      let withoutAll = prev.filter(item => item !== '전체') as typeof prev
+      if (withoutAll.includes(choice as any)) {
+        withoutAll = withoutAll.filter(item => item !== choice) as typeof prev
+      } else {
+        withoutAll = [...withoutAll, choice] as typeof prev
+      }
+
+      // 나머지 모든 항목이 선택되면 "전체"를 자동으로 선택
+      const allChoicesExceptAll = choices.filter(item => item !== '전체') // "전체"를 제외한 모든 선택지
+      if (withoutAll.length === allChoicesExceptAll.length) {
+        return ['전체'] as typeof prev // 모든 항목이 선택되었으므로 "전체"로 변경
+      }
+
+      return withoutAll
+    })
+  }
+
+  const handlePlaceCheckBox = (state: StateType, city: string) => {
+    setCheckedFilters(prev => {
+      // 초기 상태 (["전체"])
+      if (Array.isArray(prev)) {
+        if (checkedFilters.length === 1) {
+          const newCheckedFilters: string[][] = Array.from({ length: STATES.length }, () => [])
+          newCheckedFilters[getStateIdx(state)].push(city)
+          return newCheckedFilters
+        }
+        // 값이 있던 상태
+        else {
+          const newArray: string[][] = prev.map(arr => [...arr]) // 깊은 복사
+          const stateIdx = getStateIdx(state)
+
+          const cityIndex = newArray[stateIdx].indexOf(city)
+
+          // city가 이미 선택되어 있으면 제거, 없으면 추가
+          if (cityIndex === -1) {
+            newArray[stateIdx].push(city) // city 추가
+          } else {
+            newArray[stateIdx].splice(cityIndex, 1) // city 제거
+          }
+
+          return newArray
+        }
+      }
+      return prev
+    })
+  }
+
+  // useEffect(() => {
+  //   console.log(checkedFilters)
+  // }, [checkedFilters])
+
+  // 선택지 나열
   const getChoices = () => {
     if (id !== 'stateCity') {
       return (
@@ -77,15 +139,7 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
                 onClick={() => setSelectedState(choice)}
                 className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
               >
-                {/* <Checkbox
-                  checked={checkedFilters.includes(choice as any) ? true : false}
-                  id={choice}
-                  className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
-                  onClick={() => handleCheckBox(choice)}
-                /> */}
-                {/* <label htmlFor={choice} className='peer-disabled:cursor-not-allowed peer-disabled:opacity-70'> */}
                 {choice}
-                {/* </label> */}
               </div>
             ))}
           </div>
@@ -97,12 +151,14 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
                   <Checkbox
                     id={`${selectedState} 전체`}
                     className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
+                    onClick={() => handlePlaceCheckBox(selectedState, '전체')}
+                    checked={checkedFilters.length !== 1 && checkedFilters[getStateIdx(selectedState)].includes('전체')}
                   />
                   <label htmlFor={`${selectedState} 전체`}>{`${selectedState.slice(0, 2)} 전체`}</label>
                 </div>
 
                 {/* 해당 지역의 세부 도시 목록 */}
-                {CITIES[selectedState].map(city => (
+                {CITIES[getStateIdx(selectedState)].map(city => (
                   <div
                     key={city}
                     className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
@@ -110,6 +166,8 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
                     <Checkbox
                       id={city}
                       className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
+                      onClick={() => handlePlaceCheckBox(selectedState, city)}
+                      checked={checkedFilters.length !== 1 && checkedFilters[getStateIdx(selectedState)].includes(city)}
                     />
                     <label htmlFor={city}>{city}</label>
                   </div>
@@ -122,30 +180,6 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
         </div>
       )
     }
-  }
-  const handleCheckBox = (choice: IsFinishedChoicesType | StateChoicesType) => {
-    setCheckedFilters(prev => {
-      // "전체"를 선택한 경우, 나머지 선택 해제 후 "전체"만 선택
-      if (choice === '전체') {
-        return ['전체'] as typeof prev
-      }
-
-      // 다른 항목을 선택한 경우 "전체" 선택 해제
-      let withoutAll = prev.filter(item => item !== '전체') as typeof prev
-      if (withoutAll.includes(choice as any)) {
-        withoutAll = withoutAll.filter(item => item !== choice) as typeof prev
-      } else {
-        withoutAll = [...withoutAll, choice] as typeof prev
-      }
-
-      // 나머지 모든 항목이 선택되면 "전체"를 자동으로 선택
-      const allChoicesExceptAll = choices.filter(item => item !== '전체') // "전체"를 제외한 모든 선택지
-      if (withoutAll.length === allChoicesExceptAll.length) {
-        return ['전체'] as typeof prev // 모든 항목이 선택되었으므로 "전체"로 변경
-      }
-
-      return withoutAll
-    })
   }
 
   return (

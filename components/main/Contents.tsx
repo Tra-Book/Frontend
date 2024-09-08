@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
@@ -25,6 +25,7 @@ export const stateChoices = ['전체', ...STATES] as const
 export type StateChoicesType = StateType | '전체'
 
 export const cityChoices = CITIES
+export type CityChoicesType = ['전체'] | string[][]
 
 const arrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
 type ArrangeChoiceType = (typeof arrangeChoices)[number]
@@ -32,14 +33,14 @@ type ArrangeChoiceType = (typeof arrangeChoices)[number]
 export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
   state: Array<StateChoicesType>
-  city: Array<string> // 여행지 필터
+  city: CityChoicesType // 여행지 필터
 }
 
 const allElements = ['전체']
 const initFilters: FilterType = {
   isFinished: allElements as Array<IsFinishedChoicesType>,
   state: allElements as Array<StateChoicesType>,
-  city: allElements,
+  city: allElements as CityChoicesType,
 }
 
 //Filter Apply Function
@@ -141,16 +142,16 @@ interface ContentsProps {
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const pathname = usePathname()
 
-  const [filter, setFilter] = useState(initFilters)
+  const [filter, setFilter] = useState<FilterType>(initFilters)
   const [arrange, setArrange] = useState<ArrangeChoiceType>('최신순')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   // 데이터처리 함수
   const handleFilters = (
-    id: 'isFinished' | 'state' | 'all',
+    id: 'isFinished' | 'state' | 'stateCity' | 'all',
     type: 'change' | 'reset',
-    filterValues?: Array<IsFinishedChoicesType> | Array<StateChoicesType>,
+    filterValues?: FilterType['isFinished' | 'state' | 'city'],
   ) => {
     // 완료 여부
     if (id === 'isFinished') {
@@ -158,7 +159,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         setFilter(prev => ({ ...prev, isFinished: initFilters.isFinished }))
         return
       }
-      if (filterValues) setFilter(prev => ({ ...prev, isFinished: filterValues as Array<IsFinishedChoicesType> }))
+      if (filterValues) setFilter(prev => ({ ...prev, isFinished: filterValues as FilterType['isFinished'] }))
     }
     // 지역
     if (id === 'state') {
@@ -166,7 +167,17 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
         setFilter(prev => ({ ...prev, state: initFilters.state }))
         return
       }
-      if (filterValues) setFilter(prev => ({ ...prev, state: filterValues as Array<StateChoicesType> }))
+      if (filterValues) setFilter(prev => ({ ...prev, state: filterValues as FilterType['state'] }))
+    }
+    // 여행지
+    if (id === 'stateCity') {
+      if (type === 'reset') {
+        setFilter(prev => ({ ...prev, city: initFilters.city }))
+        return
+      }
+      if (filterValues) {
+        setFilter(prev => ({ ...prev, city: filterValues as FilterType['city'] }))
+      }
     }
     // 전체 초기화
     if (id === 'all' && type === 'reset') {
@@ -175,6 +186,10 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     }
     movePageHandler(1)
   }
+
+  useEffect(() => {
+    console.log(filter)
+  }, [filter])
 
   // 페이지네이션
   const movePageHandler = (pageNumber: number) => {
