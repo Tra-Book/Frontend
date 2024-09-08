@@ -68,12 +68,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const status = res.status
           const data = await res.json()
           console.log(data)
+          console.log(res.headers)
 
           switch (status) {
             case 200:
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               user.userId = data.userId
+              user.nickname = data.username
+              user.status_message = data.status_message
+              user.image = data.image
               break
             case 404:
               console.log(data.message)
@@ -116,6 +120,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               user.userId = data.userId
+              user.nickname = data.username
+              user.status_message = data.status_message
+              user.image = data.image
               break
             case 400:
               console.log(data.message)
@@ -156,6 +163,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               user.userId = data.userId
+              user.nickname = data.username
+              user.status_message = data.status_message
+              user.image = data.image
               break
             case 400:
               console.log(data.message)
@@ -200,6 +210,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.userId = user.userId
         token.image = user.image
         token.status_message = user.status_message
+        token.nickname = user.nickname
       }
 
       // console.log('user', user)
@@ -214,6 +225,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.userId = token.userId
       session.image = token.image
       session.status_message = token.status_message
+      session.nickname = token.nickname
 
       delete session.user
 

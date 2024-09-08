@@ -51,6 +51,10 @@ export const ROUTES = {
       name: '내 정보',
       url: '/main/info',
     },
+    CHANGE_PASSWORD: {
+      name: '비밀번호 변경',
+      url: '/main/password',
+    },
   },
   PLAN: {
     name: '여행 계획하기',

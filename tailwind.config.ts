@@ -13,6 +13,10 @@ const config = {
       },
     },
     extend: {
+      flexGrow: {
+        2: '2',
+        3: '3',
+      },
       width: {
         '102': '28rem',
       },
