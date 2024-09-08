@@ -189,7 +189,7 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
         </Button>
       </div>
 
-      <div className='my-3 flex flex-col text-center text-[#817A7A] md:block'>
+      <div className='my-3 flex flex-col text-center text-sm text-[#817A7A] md:block'>
         더 이상 TRABOOK과 함께하고 싶지 않으신가요?
         <Link href={ROUTES.AUTH.SIGNOUT.url} className='mx-5 text-black underline hover:cursor-pointer'>
           회원 탈퇴

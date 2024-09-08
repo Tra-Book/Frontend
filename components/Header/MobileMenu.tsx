@@ -45,13 +45,23 @@ const COMMUNITY_SECTION: NavSection = {
     { name: '동행 모집', url: ROUTES.COMMUNITY.COMPANION.url },
   ],
 }
-const MY_SECTION: NavSection = {
+
+const MY_SECTION_SOCIAL: NavSection = {
   title: 'MY',
-  sections: [{ name: '내 정보', url: ROUTES.MAIN.INFO.url }],
+  sections: [{ name: '프로필 변경', url: ROUTES.MAIN.INFO.url }],
+}
+
+const MY_SECTION_CREDENTIALS: NavSection = {
+  title: 'MY',
+  sections: [
+    { name: '프로필 변경', url: ROUTES.MAIN.INFO.url },
+    { name: '비밀번호 변경', url: ROUTES.MAIN.CHANGE_PASSWORD.url },
+  ],
 }
 
 const MobileMenu = ({ session, className }: MobileMenuProps): ReactNode => {
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
+  const s: any = session
 
   /**
    * 각 Session 상수에 대한 Link를 렌더링합니다
@@ -99,7 +109,7 @@ const MobileMenu = ({ session, className }: MobileMenuProps): ReactNode => {
 
         {renderNavLinks(COMMUNITY_SECTION)}
         <Divider />
-        {renderNavLinks(MY_SECTION)}
+        {s?.provider === 'credentials' ? renderNavLinks(MY_SECTION_CREDENTIALS) : renderNavLinks(MY_SECTION_SOCIAL)}
       </ToggleWrapper>
     </>
   )

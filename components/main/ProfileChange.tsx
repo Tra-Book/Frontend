@@ -37,15 +37,6 @@ function validateProfileMessage(message: string): boolean {
   return true
 }
 
-// placeholder 추가 필요 -> 완
-// auth.ts -> session 내용 추가하기 -> 완
-
-// 모바일 헤더 바꾸기
-// 코드 깔끔하게
-// 변경되지 않았으면 원래 값을 넣어야됨 -> 완
-// 사이드바 에러 -> 완
-// 이미지 삭제 기능 없음
-
 const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
   const [nickname, setNickname] = useState<string>(session.nickname)
   const [message, setMessage] = useState<string>(session.status_message || '')
@@ -86,23 +77,15 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
     }
 
     const formData = new FormData()
-
     if (image) {
       //image change
-      console.log('이미지 전송하기')
-
       formData.append('image', image)
     } else {
       // image not change, original url
       session.image && formData.append('imageUrl', session.image)
     }
-
     formData.append('username', nickname)
     formData.append('statusMessage', message)
-
-    // console.log(image)
-
-    // console.log(formData.get('image'))
 
     try {
       const res = await fetch(`/server/${BACKEND_ROUTES.AUTH.UPDATE_PROFILE.url}`, {
@@ -199,7 +182,7 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
         </div>
       </div>
 
-      <div className='my-3 flex flex-col text-center text-[#817A7A] md:block'>
+      <div className='my-3 flex flex-col text-center text-sm text-[#817A7A] md:block'>
         더 이상 TRABOOK과 함께하고 싶지 않으신가요?
         <Link href={ROUTES.AUTH.SIGNOUT.url} className='mx-5 text-black underline hover:cursor-pointer'>
           회원 탈퇴
