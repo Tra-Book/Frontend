@@ -8,7 +8,6 @@ interface MainInfoPageProps {}
 
 const MainInfoPage = async ({}: MainInfoPageProps): Promise<ReactNode> => {
   const s: any = await auth()
-  console.log(s)
 
   const session: UserInfo = {
     email: s.user.email,

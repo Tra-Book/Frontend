@@ -12,7 +12,12 @@ const MainLayout = async ({ children }: MainLayoutProps): Promise<ReactNode> => 
 
   return (
     <main className='flex min-h-screen w-dvw bg-tbSecondary pt-24'>
-      <SideBar isCredentails={s.user.provider === 'credentials'} />
+      <SideBar
+        isCredentails={s.user.provider === 'credentials'}
+        image={s.user.image}
+        status_message={s.user.status_message}
+        nickname={s.user.nickname}
+      />
       {children}
     </main>
   )

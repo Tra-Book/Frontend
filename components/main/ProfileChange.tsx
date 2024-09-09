@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
@@ -43,9 +44,8 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
   const [image, setImage] = useState<File | string | undefined>()
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const { update } = useSession()
-  console.log(session)
 
-  // console.log(session)
+  const router = useRouter()
 
   const onClickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -100,17 +100,18 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
 
       const status = res.status
       const data = await res.json()
-      console.log(data)
 
       switch (status) {
         case 200:
-          update({ nickname: nickname, status_message: message, image: data.profilePhoto })
+          await update({ nickname: nickname, status_message: message, image: data.profilePhoto })
           alert('변경이 완료되었습니다.')
+          router.refresh()
           return
         case 500:
           alert('다시 시도해주세요.')
           break
         default:
+          alert('다시 시도해주세요.')
           break
       }
     } catch (error) {
@@ -184,7 +185,10 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
 
       <div className='my-3 flex flex-col text-center text-sm text-[#817A7A] md:block'>
         더 이상 TRABOOK과 함께하고 싶지 않으신가요?
-        <Link href={ROUTES.AUTH.SIGNOUT.url} className='mx-5 text-black underline hover:cursor-pointer'>
+        <Link
+          href={ROUTES.AUTH.SIGNOUT.url}
+          className='mx-5 text-black underline hover:cursor-pointer hover:text-tbBlue'
+        >
           회원 탈퇴
         </Link>
       </div>

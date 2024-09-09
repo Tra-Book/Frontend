@@ -4,7 +4,7 @@ import { Mail } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { TextDivider } from '@/components/common/Dividers'
@@ -45,9 +45,6 @@ const LOGIN_BUTTONS: Array<SocialLoginButton> = [
 ]
 
 const LoginPage = (): ReactNode => {
-  const session = useSession()
-  console.log(session)
-
   const router = useRouter()
 
   const onClickLoginBtn = async (provider: string): Promise<void> => {

@@ -67,8 +67,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
-          console.log(data)
-          console.log(res.headers)
+          // console.log(data)
+          // console.log(res.headers)
 
           switch (status) {
             case 200:
@@ -112,7 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
-          console.log(data)
+          // console.log(data)
 
           switch (status) {
             case 200:
@@ -168,7 +168,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               user.image = data.image
               break
             case 400:
-              console.log(data.message)
+              // console.log(data.message)
               return 'error'
               break
             default:

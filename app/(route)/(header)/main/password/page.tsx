@@ -84,8 +84,6 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
       })
 
       const status = res.status
-      const data = await res.json()
-      console.log(data)
 
       switch (status) {
         case 200:
@@ -191,7 +189,10 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
 
       <div className='my-3 flex flex-col text-center text-sm text-[#817A7A] md:block'>
         더 이상 TRABOOK과 함께하고 싶지 않으신가요?
-        <Link href={ROUTES.AUTH.SIGNOUT.url} className='mx-5 text-black underline hover:cursor-pointer'>
+        <Link
+          href={ROUTES.AUTH.SIGNOUT.url}
+          className='mx-5 text-black underline hover:cursor-pointer hover:text-tbBlue'
+        >
           회원 탈퇴
         </Link>
       </div>
