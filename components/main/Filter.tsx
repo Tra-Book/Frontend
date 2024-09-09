@@ -59,11 +59,11 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
         withoutAll = [...withoutAll, choice] as typeof prev
       }
 
-      // 나머지 모든 항목이 선택되면 "전체"를 자동으로 선택
-      const allChoicesExceptAll = choices.filter(item => item !== '전체') // "전체"를 제외한 모든 선택지
-      if (withoutAll.length === allChoicesExceptAll.length) {
-        return ['전체'] as typeof prev // 모든 항목이 선택되었으므로 "전체"로 변경
-      }
+      // // 나머지 모든 항목이 선택되면 "전체"를 자동으로 선택
+      // const allChoicesExceptAll = choices.filter(item => item !== '전체') // "전체"를 제외한 모든 선택지
+      // if (withoutAll.length === allChoicesExceptAll.length) {
+      //   return ['전체'] as typeof prev // 모든 항목이 선택되었으므로 "전체"로 변경
+      // }
 
       return withoutAll
     })

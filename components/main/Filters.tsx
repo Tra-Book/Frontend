@@ -38,7 +38,11 @@ const Filters = ({ filter, handleFilters }: FiltersProps): ReactNode => {
       return {
         id: 'isFinished',
         filter: filter.isFinished,
-        placeHolder: filter.isFinished.includes('전체') ? '완료 여부' : filter.isFinished[0],
+        placeHolder: filter.isFinished.includes('전체')
+          ? '완료 여부'
+          : filter.isFinished.length === 1
+            ? filter.isFinished[0]
+            : `${filter.isFinished[0]} 외 1`,
         choices: isFinishedChoices,
       }
     }

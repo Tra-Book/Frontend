@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
@@ -55,7 +55,7 @@ const applyAllFilters = (
   // Plan 필터
   if ('isFinished' in data[0]) {
     data = data as Array<DummyPlanType>
-    if (filter.isFinished !== allElements) {
+    if (filter.isFinished !== allElements && filter.isFinished.length === 1) {
       // #1. 필터 적용하기
       // #1-1. 완료여부
       data = filter.isFinished.includes('계획 중')
@@ -216,6 +216,9 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     }
     movePageHandler(1)
   }
+  useEffect(() => {
+    console.log(filter)
+  }, [filter])
 
   // 페이지네이션
   const movePageHandler = (pageNumber: number) => {
