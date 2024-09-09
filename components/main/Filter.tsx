@@ -1,9 +1,10 @@
 'use client'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { CITIES, getStateIdx, STATES } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { StateType } from '@/lib/types/Entity/plan'
+import { cn } from '@/lib/utils/cn'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
 import { Button } from '../ui/button'
@@ -59,64 +60,65 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
         withoutAll = [...withoutAll, choice] as typeof prev
       }
 
-      // // 나머지 모든 항목이 선택되면 "전체"를 자동으로 선택
-      // const allChoicesExceptAll = choices.filter(item => item !== '전체') // "전체"를 제외한 모든 선택지
-      // if (withoutAll.length === allChoicesExceptAll.length) {
-      //   return ['전체'] as typeof prev // 모든 항목이 선택되었으므로 "전체"로 변경
-      // }
-
       return withoutAll
     })
   }
+
+  const handleStateClick = (choice: StateChoicesType) => {
+    setSelectedState(choice)
+    // "xx 전체"가 선택되게끔 하기
+    if (choice !== '전체') {
+      setCheckedFilters(prev => {
+        choice = choice as StateType
+        const stateIdx = getStateIdx(choice)
+        if (checkedFilters.length === 1) {
+          const newCheckedFilters: string[][] = Array.from({ length: STATES.length }, () => [])
+          newCheckedFilters[stateIdx].push('전체')
+          return newCheckedFilters
+        } else {
+          const newCheckedFilters = prev.map(arr => [...arr]) // 기존 필터 복사
+          // stateIdx에 해당하는 Filter들에 값이 없는 경우
+          if (newCheckedFilters[stateIdx].length === 0) {
+            newCheckedFilters[stateIdx].push('전체') // 선택한 state에 choice 추가
+          }
+
+          return newCheckedFilters
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    console.log(checkedFilters)
+  }, [checkedFilters])
 
   const handlePlaceCheckBox = (state: StateType, city: string) => {
     setCheckedFilters(prev => {
       // 초기 상태 (["전체"])
       if (Array.isArray(prev)) {
         const stateIdx = getStateIdx(state)
-        if (checkedFilters.length === 1) {
-          const newCheckedFilters: string[][] = Array.from({ length: STATES.length }, () => [])
-          // "전체"가 선택된 경우 해당 state에 속하는 모든 city 추가
-          if (city === '전체') {
-            newCheckedFilters[stateIdx] = ['전체', ...CITIES[stateIdx]]
+        const newArray: string[][] = prev.map(arr => [...arr]) // 깊은 복사
+        if (city === '전체') {
+          if (newArray[stateIdx].includes('전체')) {
+            newArray[stateIdx] = []
           } else {
-            newCheckedFilters[stateIdx].push(city)
+            newArray[stateIdx] = ['전체']
           }
-          return newCheckedFilters
-        }
-        // 값이 있던 상태
-        else {
-          const newArray: string[][] = prev.map(arr => [...arr]) // 깊은 복사
-          // "전체"가 선택된 경우
-          if (city === '전체') {
-            // "전체"가 이미 선택된 경우에는 빈 배열로 설정
-            if (newArray[stateIdx].includes('전체')) {
-              newArray[stateIdx] = [] // 해당 state의 배열을 비운다
-            }
-            // "전체"가 선택되지 않았을 경우 모든 도시를 추가
-            else {
-              newArray[stateIdx] = ['전체', ...CITIES[stateIdx]] // 해당 state의 모든 city 추가
-            }
+        } else {
+          if (newArray[stateIdx].includes('전체')) {
+            newArray[stateIdx] = []
+          }
+          const cityIndex = newArray[stateIdx].indexOf(city)
+
+          if (cityIndex === -1) {
+            newArray[stateIdx].push(city) // city 추가
           } else {
-            const cityIndex = newArray[stateIdx].indexOf(city)
-
-            if (cityIndex === -1) {
-              newArray[stateIdx].push(city) // city 추가
-            } else {
-              newArray[stateIdx].splice(cityIndex, 1) // city 제거
-              if (newArray[stateIdx].includes('전체')) {
-                newArray[stateIdx].splice(0, 1) // 전체 제거
-              }
-            }
-
-            // 모든 city가 선택 해제된 경우 "전체" 추가
-            if (newArray[stateIdx].length === 0) {
-              newArray[stateIdx].push('전체') // 선택이 없으면 다시 "전체"로 변경
-            }
+            newArray[stateIdx].splice(cityIndex, 1) // city 제거
           }
-
-          return newArray
         }
+
+        return newArray
+        // }
       }
       return prev
     })
@@ -155,8 +157,11 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
             {choices.map(choice => (
               <div
                 key={choice}
-                onClick={() => setSelectedState(choice)}
-                className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
+                onClick={() => handleStateClick(choice)}
+                className={cn(
+                  'flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm',
+                  selectedState === choice && 'bg-tbPrimary',
+                )}
               >
                 {choice}
               </div>
@@ -217,6 +222,7 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
             onClick={() => {
               handleFilters(id, 'reset')
               setIsOpen(false)
+              setSelectedState('전체')
             }}
           >
             초기화
