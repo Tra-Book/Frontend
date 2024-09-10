@@ -57,10 +57,13 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
     setIsShow(!isShow)
   }
 
-  const passwordEye = isShow ? (
-    <LucideIcon name='EyeOff' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
-  ) : (
-    <LucideIcon name='Eye' onClick={onClickEye} className='absolute right-2 h-full opacity-40' size={24} />
+  const passwordEye = (
+    <LucideIcon
+      name={!isShow ? 'EyeOff' : 'Eye'}
+      onClick={!isShow ? onClickEye : onClickEye}
+      className='absolute right-2 h-full opacity-40'
+      size={24}
+    />
   )
 
   return (

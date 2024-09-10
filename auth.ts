@@ -44,8 +44,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     signIn: async ({ user, account }: { user: any; account: any }) => {
-      console.log('account', account)
-      console.log('user', user)
+      // console.log('account', account)
+      // console.log('user', user)
 
       user.provider = account.provider
 
@@ -67,13 +67,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
-          console.log(data, data)
+          // console.log(data)
+          // console.log(res.headers)
 
           switch (status) {
             case 200:
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               user.userId = data.userId
+              user.nickname = data.username
+              user.status_message = data.status_message
+              user.image = data.image
               break
             case 404:
               console.log(data.message)
@@ -108,6 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const status = res.status
           const data = await res.json()
+          // console.log(data)
 
           switch (status) {
             case 200:
@@ -115,6 +120,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               user.userId = data.userId
+              user.nickname = data.username
+              user.status_message = data.status_message
+              user.image = data.image
               break
             case 400:
               console.log(data.message)
@@ -155,9 +163,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               // accessToken to session
               user.accessToken = res.headers.get('Authorization')
               user.userId = data.userId
+              user.nickname = data.username
+              user.status_message = data.status_message
+              user.image = data.image
               break
             case 400:
-              console.log(data.message)
+              // console.log(data.message)
               return 'error'
               break
             default:
@@ -185,14 +196,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return `${baseUrl}/`
     },
-    jwt: async ({ token, user }: { token: any; user: any }) => {
+    jwt: async ({ token, user, trigger, session }: { token: any; user: any; trigger?: string; session?: any }) => {
+      if (trigger === 'update' && session !== null) {
+        return {
+          ...token,
+          ...session,
+        }
+      }
+
       if (user) {
         token.accessToken = user.accessToken
         token.provider = user.provider
         token.userId = user.userId
+        token.image = user.image
+        token.status_message = user.status_message
+        token.nickname = user.nickname
       }
 
-      console.log('jwt', token)
+      // console.log('user', user)
+
+      // console.log('jwt', token)
 
       return token
     },
@@ -200,10 +223,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.accessToken = token.accessToken
       session.provider = token.provider
       session.userId = token.userId
+      session.image = token.image
+      session.status_message = token.status_message
+      session.nickname = token.nickname
 
       delete session.user
 
-      console.log('session', session)
+      // console.log('session', session)
 
       return session
     },

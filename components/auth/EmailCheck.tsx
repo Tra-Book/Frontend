@@ -90,8 +90,6 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
     }
 
     try {
-      console.log(email, code)
-
       const res = await fetch(`server/${BACKEND_ROUTES.AUTH.VERIFY_CODE.url}`, {
         method: BACKEND_ROUTES.AUTH.VERIFY_CODE.method,
         headers: {
@@ -105,8 +103,6 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
       })
 
       const status = res.status
-
-      console.log(status)
 
       switch (status) {
         case 200:
