@@ -13,6 +13,9 @@ const config = {
       },
     },
     extend: {
+      screens: {
+        ssm: '400px',
+      },
       flexGrow: {
         2: '2',
         3: '3',
@@ -22,6 +25,9 @@ const config = {
       },
       height: {
         '13': '3.25rem',
+      },
+      minHeight: {
+        'screen-header': 'calc(100dvh - 6rem)',
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -73,6 +79,7 @@ const config = {
         tbPlaceholder: '#EBEBEB',
         tbPlaceHolderHover: '#DEDEDE',
 
+        tbBackdrop: '#00000033',
         tbGray: '#00000080',
         tbRed: '#F45858',
         tbOrange: '#FF8710',

@@ -19,11 +19,11 @@ const variant = {
   tbPrimary: 'bg-tbPrimary text-black hover:bg-tbPrimaryHover',
   tbSecondary: 'bg-tbSecondary hover:bg-tbSecondaryHover',
   tbGreen: 'bg-tbGreen hover:bg-tbGreenHover',
-  tbGray: 'text-tbGray border-tbGray border-solid border-[0.5px] hover:text-black hover:border-black',
+  tbGray: 'text-tbGray border-none bg-tbPlaceholder hover:text-black hover:border-black',
 }
 
 const buttonVariants = cva(
-  'shadow-tb-shadow inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'shadow-tb-shadow inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
   {
     variants: {
       variant: variant,

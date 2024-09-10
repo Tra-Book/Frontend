@@ -10,7 +10,7 @@ interface BackdropProps {
   children?: React.ReactNode
 }
 
-const Backdrop = ({ className, color = 'tbGray', opacity = '0.5', children }: BackdropProps): ReactNode => {
+const Backdrop = ({ className, color = 'tbBackdrop', children }: BackdropProps): ReactNode => {
   const colorValue = colorSet[color]
   return (
     <div
@@ -20,7 +20,6 @@ const Backdrop = ({ className, color = 'tbGray', opacity = '0.5', children }: Ba
       )}
       style={{
         backgroundColor: colorValue,
-        opacity: opacity,
       }}
     >
       {children}

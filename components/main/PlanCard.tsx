@@ -1,21 +1,13 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import LucideIcon from '@/lib/icons/LucideIcon'
 
 import Backdrop from '../common/Backdrop'
 
 interface PlanCardProps {
-  data: {
-    title: string
-    description: string
-    region: string
-    likes: number
-    comments: number
-    scraps: number
-    schedule: string // 변동 예정
-    imageSrc: any
-  }
+  data: DummyPlanType
 }
 
 // Todo: data props type 지정
@@ -29,7 +21,7 @@ const PlanCard = ({ data }: PlanCardProps): ReactNode => {
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>
           <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{data.title}</h2>
-          <span className='text-xs'>{data.region}</span>
+          <span className='text-xs'>{data.state}</span>
         </div>
 
         <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{data.description}</p>

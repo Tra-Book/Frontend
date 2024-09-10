@@ -3,7 +3,7 @@ export interface Geo {
   longitude: number
 }
 /**
- 여행지는 Server로부터 받는 데이터가 Base, Place가 클라이언트에서 추가한 데이터
+ 여행지는 Server로부터 받는 데이터가 "Base" | Place가 클라이언트에서 추가한 데이터
 */
 export interface BasePlace {
   id: number // 백엔드 제공 데이터

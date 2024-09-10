@@ -1,4 +1,6 @@
-import { BaseEntity } from '../../utils/typeUtils'
+import { STATES } from '@/lib/constants/regions'
+
+import { BaseEntity, Mutable } from '../../utils/typeUtils'
 import { Comment } from './comment'
 import { Place } from './place'
 
@@ -10,7 +12,7 @@ export interface DayPlan {
 }
 
 export interface Plan extends BaseEntity {
-  region: string
+  state: StateType
   schedule: {
     startDate: Date
     endDate: Date
@@ -22,3 +24,5 @@ export interface Plan extends BaseEntity {
   comments?: Array<Comment>
   isFinished: boolean
 }
+
+export type StateType = Mutable<(typeof STATES)[number]>

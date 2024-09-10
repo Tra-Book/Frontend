@@ -30,8 +30,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     credentials({
       authorize: async credentials => {
-        // console.log(credentials)
-
         credentials.email = credentials.username
         delete credentials.username
 
@@ -48,10 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // console.log('user', user)
 
       user.provider = account.provider
-
       if (account?.provider === 'credentials') {
-        console.log('Login with credentials')
-
         try {
           const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.EMAIL_LOGIN.url, {
             method: BACKEND_ROUTES.AUTH.EMAIL_LOGIN.method,
@@ -139,9 +134,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       // Google Login API : /auth/google
       else if (account?.provider === 'google') {
+
         console.log('Login with google')
         // console.log(account['id_token'])
-
         try {
           const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.GOOGLE_LOGIN.url, {
             method: BACKEND_ROUTES.AUTH.GOOGLE_LOGIN.method,
@@ -212,11 +207,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.status_message = user.status_message
         token.nickname = user.nickname
       }
-
-      // console.log('user', user)
-
+      // console.log('user', user
       // console.log('jwt', token)
-
       return token
     },
     session: async ({ session, token }: { session: any; token: any }) => {
@@ -228,9 +220,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.nickname = token.nickname
 
       delete session.user
-
       // console.log('session', session)
-
       return session
     },
   },
