@@ -16,6 +16,10 @@ const config = {
       screens: {
         ssm: '400px',
       },
+      flexGrow: {
+        2: '2',
+        3: '3',
+      },
       width: {
         '102': '28rem',
       },
