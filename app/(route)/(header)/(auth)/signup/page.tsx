@@ -8,37 +8,49 @@ import EmailCheck from '@/components/auth/EmailCheck'
 import PolicyCheck from '@/components/auth/PolicyCheck'
 import UserInfoCheck from '@/components/auth/UserInfoCheck'
 import { TextDivider } from '@/components/common/Dividers'
+import { InfoModal, ModalData } from '@/components/common/Modals'
 import { Button } from '@/components/ui/button'
-import { BACKEND_ROUTES } from '@/lib/constants/routes'
+import { ClientModalData } from '@/lib/constants/errors'
+import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import useModal from '@/lib/utils/useModal'
 
 interface SignUpPageProps {}
 
 const SignUpPage = ({}: SignUpPageProps): ReactNode => {
-  const [step, setStep] = useState<number>(2)
+  const router = useRouter()
+
+  const [step, setStep] = useState<number>(0)
   const [isNext, setIsNext] = useState<boolean>(false)
 
   const [email, setEmail] = useState<string>('')
-
   const [nickname, setNickname] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [validPassword, setValidPassword] = useState<string>('')
 
-  const router = useRouter()
-
   const onClickListener = () => {
     setStep(prev => (prev + 1) % 3)
+    setIsNext(false)
   }
 
   const onClickStep = (clickStep: number) => {
     if (clickStep < step) {
       setStep(clickStep)
     } else if (clickStep > step) {
-      alert('현재 회원가입 단계를 완료해주세요')
+      handleModal(ClientModalData.signUpStepError, 'open')
     }
 
     return
+  }
+
+  // Modal Values
+  const { isOpen, setIsOpen } = useModal()
+  const [modalData, setModalData] = useState<ModalData>(ClientModalData.dupEmailError)
+
+  const handleModal = (modalData: ModalData, openBool: 'open' | 'close') => {
+    setModalData(modalData)
+    setIsOpen(openBool === 'open' ? true : false)
   }
 
   const signUp = async (email: string, password: string, username: string) => {
@@ -55,31 +67,48 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
         }),
         credentials: 'include',
       })
-
       const status = res.status
-
+      if (res.ok) {
+        handleModal(ClientModalData.signInSuccess, 'open')
+        return
+      }
+      // Errors
       switch (status) {
-        case 201:
-          // 모달로 변경 예정
-          alert('회원가입에 성공하였습니다!')
-          // signin credentails
-          signIn('credentials', {
-            username: email,
-            password,
-          })
-          break
         case 400:
-          alert('이미 존재하는 이메일입니다.')
-          router.push('/')
+          handleModal(ClientModalData.dupUserError, 'open')
           break
-        default:
-          alert('회원가입이 실패하였습니다. 다시 시도해주세요')
-          router.push('/')
+        case 500: // Internal Server Error
+          handleModal(ClientModalData.serverError, 'open')
           break
       }
     } catch (error) {
-      alert('회원가입이 실패하였습니다. 다시 시도해주세요')
-      router.push('/')
+      console.log('Fetch Error ouccred!')
+    }
+  }
+
+  const handleModalConfirm = () => {
+    switch (modalData) {
+      // #1. 성공
+      case ClientModalData.signInSuccess:
+        signIn('credentials', {
+          username: email,
+          password,
+        })
+        break
+      case ClientModalData.signOutSuccess:
+        // Todo: 회원탈퇴 로직 필요
+        break
+
+      // #2. 실패
+      case ClientModalData.dupEmailError:
+        router.push(ROUTES.AUTH.LOGIN.url)
+        break
+      // 단계 오류: 아무것도 하지 않음
+      case ClientModalData.signUpStepError:
+        break
+      case ClientModalData.signUpNetError:
+        router.push(ROUTES.AUTH.SIGNUP.url)
+        break
     }
   }
 
@@ -90,9 +119,9 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
   //
   const signUpStep =
     step === 0 ? (
-      <PolicyCheck setIsNext={setIsNext} />
+      <PolicyCheck setIsNext={setIsNext} handleModal={handleModal} />
     ) : step === 1 ? (
-      <EmailCheck setIsNext={setIsNext} email={email} setEmail={setEmail} />
+      <EmailCheck isNext={isNext} setIsNext={setIsNext} email={email} setEmail={setEmail} handleModal={handleModal} />
     ) : (
       <UserInfoCheck
         setIsNext={setIsNext}
@@ -102,6 +131,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
         setNickname={setNickname}
         setPassword={setPassword}
         setValidPassword={setValidPassword}
+        handleModal={handleModal}
       />
     )
 
@@ -139,6 +169,9 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           {nextButton}
         </div>
       </div>
+      {isOpen && (
+        <InfoModal isOpen={isOpen} data={modalData} onClose={() => setIsOpen(!isOpen)} onConfirm={handleModalConfirm} />
+      )}
     </div>
   )
 }

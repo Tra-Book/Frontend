@@ -5,8 +5,11 @@ import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 
 import { Checkbox } from '@/components/ui/checkbox'
 import LucideIcon from '@/lib/icons/LucideIcon'
 
+import { ModalData } from '../common/Modals'
+
 interface PolicyCheckProps {
   setIsNext: Dispatch<SetStateAction<boolean>>
+  handleModal: (modalData: ModalData, openBool: 'open' | 'close') => void
 }
 
 type Policy = {

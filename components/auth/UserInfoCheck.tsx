@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
+import { ModalData } from '../common/Modals'
+
 interface UserInfoCheckProps {
   setIsNext: Dispatch<SetStateAction<boolean>>
   email: string
@@ -15,6 +17,7 @@ interface UserInfoCheckProps {
   setNickname: Dispatch<SetStateAction<string>>
   setPassword: Dispatch<SetStateAction<string>>
   setValidPassword: Dispatch<SetStateAction<string>>
+  handleModal: (modalData: ModalData, openBool: 'open' | 'close') => void
 }
 
 function isValidPassword(password: string) {
@@ -76,10 +79,6 @@ const UserInfoCheck = ({
       />
     )
   }
-
-  useEffect(() => {
-    setIsNext(false)
-  }, [])
 
   useEffect(() => {
     if (isValid && isSame && password.length !== 0) setIsNext(true)

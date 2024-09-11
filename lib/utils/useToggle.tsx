@@ -1,5 +1,4 @@
 'use client'
-// hooks/useClickOutside.ts
 import React, { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 
 import { cn } from './cn'
