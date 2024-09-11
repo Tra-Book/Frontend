@@ -5,7 +5,7 @@ import React, { ReactNode } from 'react'
 import { Route, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import ToggleWrapper, { useDropdown } from '@/lib/utils/useToggle'
+import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
 
 interface CommunityMenuProps {
   className?: string

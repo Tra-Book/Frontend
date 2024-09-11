@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { cn } from '@/lib/utils/cn'
+import { useToast } from '@/lib/utils/hooks/useToast'
 
 import { ModalData } from '../common/Modals'
 
@@ -27,6 +28,8 @@ function validateEmail(email: string): boolean {
 }
 
 const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCheckProps): ReactNode => {
+  const { toast } = useToast()
+
   // const [email, setEmail] = useState<string>('')
   const [code, setCode] = useState<string>('')
   const [isSend, setIsSend] = useState<boolean>(false)
@@ -70,8 +73,7 @@ const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCh
       if (res.ok) {
         setIsEmailValid(true)
         setIsSend(true)
-        // Toast로 바꿀 예정
-        alert('이메일로 인증번호 발송 완료')
+        toast({ title: '이메일로 인증번호 발송 완료' })
         return
       }
       switch (status) {
@@ -123,7 +125,7 @@ const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCh
           break
       }
     } catch (error) {
-      alert('이메일 인증이 실패하였습니다. 다시 시도해주세요')
+      console.log('이메일 인증이 실패하였습니다. 다시 시도해주세요')
     }
   }
 
@@ -159,7 +161,6 @@ const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCh
         <br />
         재전송 버튼을 클릭해 주세요
       </div>
-
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='code' className='mb-2 text-base'>
           인증번호 <span className='text-tbRed'>*</span>
@@ -183,7 +184,7 @@ const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCh
         >
           {isNext ? '* 올바른 인증번호입니다' : '* 올바른 인증번호가 아닙니다'}
         </p>
-      </div>
+      </div>{' '}
     </>
   )
 }

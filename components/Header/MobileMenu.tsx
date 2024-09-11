@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Route, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
 import { Nullable } from '@/lib/utils/typeUtils'
-import ToggleWrapper, { useDropdown } from '@/lib/utils/useToggle'
 
 import { Divider } from '../common/Dividers'
 

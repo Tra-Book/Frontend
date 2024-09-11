@@ -2,6 +2,8 @@ import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
 import Slogan from '@/components/common/Slogan'
+import { ToastProvider } from '@/components/ui/toast'
+import { Toaster } from '@/components/ui/toaster'
 import AuthImage from '@/public/images/auth/index.png'
 import LogoImage from '@/public/images/logo.svg'
 interface AuthLayoutProps {
@@ -19,7 +21,10 @@ const AuthLayout = ({ children }: AuthLayoutProps): ReactNode => {
           <Image src={LogoImage} alt='TraBook Logo' width={94} height={69} />
           <Slogan />
         </div>
-        {children}
+        <ToastProvider>
+          {children}
+          <Toaster />
+        </ToastProvider>
       </div>
     </main>
   )

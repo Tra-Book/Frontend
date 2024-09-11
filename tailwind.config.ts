@@ -71,8 +71,8 @@ const config = {
         tbSecondary: '#FFEFCA',
         tbSecondaryHover: '#FEE19E',
 
-        tbGreen: '#CCF39A',
-        tbGreenHover: '#ABF250',
+        tbGreen: '#A3D184',
+        tbGreenHover: '#ABDD8A',
 
         tbBlue: '#0277FF',
         tbBlueHover: '#0051FF',

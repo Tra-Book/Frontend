@@ -14,7 +14,7 @@ import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import useModal from '@/lib/utils/useModal'
+import useModal from '@/lib/utils/hooks/useModal'
 
 interface SignUpPageProps {}
 
