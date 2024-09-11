@@ -25,6 +25,7 @@ const config = {
       },
       height: {
         '13': '3.25rem',
+        'screen-header': 'calc(100dvh - 6rem)',
       },
       minHeight: {
         'screen-header': 'calc(100dvh - 6rem)',
