@@ -1,4 +1,4 @@
-import { StateType } from '../types/Entity/plan'
+import { Mutable } from '../utils/typeUtils'
 
 export const STATES = [
   '서울특별시',
@@ -19,6 +19,8 @@ export const STATES = [
   '경상남도',
   '제주도',
 ] as const
+
+export type StateType = Mutable<(typeof STATES)[number]>
 
 export const getStateIdx = (state: StateType) => {
   const stateIndex = STATES.reduce(

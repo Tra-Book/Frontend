@@ -1,6 +1,5 @@
-import { BaseEntity } from '@/lib/utils/typeUtils'
-
-export interface BaseUser extends BaseEntity {
+export interface BaseUser {
+  id: number
   imageSrc: string
   name: string
   statusMessage: string

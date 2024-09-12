@@ -36,6 +36,7 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
   const [isSame, setIsSame] = useState<boolean>(true)
 
   const session: any = useSession()
+  console.log(session)
 
   const onChangeNewPw: ChangeEventHandler<HTMLInputElement> = e => {
     setNewPw(prev => ({ ...prev, password: e.target.value }))
