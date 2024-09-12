@@ -60,19 +60,19 @@ export const ROUTES = {
   },
   PLAN: {
     PlAN: {
-      name: '여행 계획하기 - 기본 정보',
+      name: '기본 정보',
       url: '/plan',
     },
     INDEX: {
-      name: '여행 계획하기 - 초기 설정',
+      name: '초기 설정',
       url: '/plan/index',
     },
     SCHEDULE: {
-      name: '여행 계획하기 - 기본 정보',
+      name: '여행 일정',
       url: '/plan/schedule',
     },
     STORE: {
-      name: '여행 계획하기 - 기본 정보',
+      name: '보관함',
       url: '/plan/store',
     },
   },
