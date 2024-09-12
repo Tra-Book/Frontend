@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react'
 
 import { auth } from '@/auth'
 import SideBar from '@/components/main/SideBar'
+import { ToastProvider } from '@/components/ui/toast'
+import { Toaster } from '@/components/ui/toaster'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -18,7 +20,10 @@ const MainLayout = async ({ children }: MainLayoutProps): Promise<ReactNode> => 
         status_message={s.user.status_message}
         nickname={s.user.nickname}
       />
-      {children}
+      <ToastProvider>
+        {children}
+        <Toaster />
+      </ToastProvider>
     </main>
   )
 }

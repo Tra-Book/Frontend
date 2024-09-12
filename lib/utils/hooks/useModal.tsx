@@ -7,9 +7,6 @@ function useModal() {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [modalData, setModalData] = useState<ModalData>(ClientModalData.dupEmailError)
 
-  // Modal 여닫기
-  // const handleModal = (val: boolean) => setIsOpen(val)
-
   // Modal 데이터 바꾸기
   const handleModalStates = (modalData: ModalData, openBool: 'open' | 'close') => {
     setModalData(modalData)
@@ -24,9 +21,7 @@ function useModal() {
     return <InfoModal isOpen={isOpen} data={modalData} onClose={() => setIsOpen(false)} onConfirm={onConfirm} />
   }
   return {
-    // isOpen,
     modalData,
-    // handleModal,
     handleModalStates,
     Modal,
   }

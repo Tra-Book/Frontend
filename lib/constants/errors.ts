@@ -10,9 +10,9 @@ export const ClientModalData = {
     description: '더 좋은 서비스를 제공하기 위해 노력하겠습니다',
     isError: false,
   },
-  // Error
+  // 실패
   dupUserError: {
-    title: '회원가입 실패',
+    title: '회원가입',
     description: '이미 가입된 이메일입니다',
     isError: true,
   },
@@ -32,8 +32,13 @@ export const ClientModalData = {
     isError: true,
   },
   signUpNetError: {
-    title: '회원가입 실패',
+    title: '회원가입',
     description: '회원가입이 실패하였습니다. 다시 시도해주세요',
+    isError: true,
+  },
+  saveSkipError: {
+    title: '변경 내용 저장',
+    description: '변경된 내용을 저장하지 않고 이동하시겠습니까?',
     isError: true,
   },
 
