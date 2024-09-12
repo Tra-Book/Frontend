@@ -59,8 +59,22 @@ export const ROUTES = {
     },
   },
   PLAN: {
-    name: '여행 계획하기',
-    url: '/plan',
+    PlAN: {
+      name: '여행 계획하기 - 초기 설정',
+      url: '/plan',
+    },
+    INDEX: {
+      name: '여행 계획하기 - 기본 정보',
+      url: '/plan/index',
+    },
+    SCHEDULE: {
+      name: '여행 계획하기 - 기본 정보',
+      url: '/plan/schedule',
+    },
+    STORE: {
+      name: '여행 계획하기 - 기본 정보',
+      url: '/plan/store',
+    },
   },
   COMMUNITY: {
     PLACE: {
@@ -80,7 +94,6 @@ export const ROUTES = {
 
 // 자동으로 갱신되는 Url 타입
 export type RouteType = ExtractValueByKey<typeof ROUTES, 'url'>
-
 
 export const BACKEND_ROUTES = {
   AUTH: {
@@ -130,4 +143,3 @@ export const BACKEND_ROUTES = {
     },
   },
 }
-
