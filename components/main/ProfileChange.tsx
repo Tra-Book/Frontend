@@ -99,19 +99,16 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
       })
 
       const status = res.status
-      const data = await res.json()
+      if (res.ok) {
+        const data = await res.json()
+        await update({ nickname: nickname, status_message: message, image: data.profilePhoto })
 
+        router.refresh()
+        return
+      }
       switch (status) {
-        case 200:
-          await update({ nickname: nickname, status_message: message, image: data.profilePhoto })
-          alert('변경이 완료되었습니다.')
-          router.refresh()
-          return
-        case 500:
-          alert('다시 시도해주세요.')
-          break
-        default:
-          alert('다시 시도해주세요.')
+        case 500: // Internal Server Error
+          handleModal(ClientModalData.serverError, 'open')
           break
       }
     } catch (error) {

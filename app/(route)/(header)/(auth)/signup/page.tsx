@@ -8,7 +8,6 @@ import EmailCheck from '@/components/auth/EmailCheck'
 import PolicyCheck from '@/components/auth/PolicyCheck'
 import UserInfoCheck from '@/components/auth/UserInfoCheck'
 import { TextDivider } from '@/components/common/Dividers'
-import { InfoModal, ModalData } from '@/components/common/Modals'
 import { Button } from '@/components/ui/button'
 import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
@@ -38,20 +37,14 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
     if (clickStep < step) {
       setStep(clickStep)
     } else if (clickStep > step) {
-      handleModal(ClientModalData.signUpStepError, 'open')
+      handleModalStates(ClientModalData.signUpStepError, 'open')
     }
 
     return
   }
 
   // Modal Values
-  const { isOpen, setIsOpen } = useModal()
-  const [modalData, setModalData] = useState<ModalData>(ClientModalData.dupEmailError)
-
-  const handleModal = (modalData: ModalData, openBool: 'open' | 'close') => {
-    setModalData(modalData)
-    setIsOpen(openBool === 'open' ? true : false)
-  }
+  const { modalData, handleModalStates, Modal } = useModal()
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
@@ -69,16 +62,16 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
       })
       const status = res.status
       if (res.ok) {
-        handleModal(ClientModalData.signInSuccess, 'open')
+        handleModalStates(ClientModalData.signInSuccess, 'open')
         return
       }
       // Errors
       switch (status) {
         case 400:
-          handleModal(ClientModalData.dupUserError, 'open')
+          handleModalStates(ClientModalData.dupUserError, 'open')
           break
         case 500: // Internal Server Error
-          handleModal(ClientModalData.serverError, 'open')
+          handleModalStates(ClientModalData.serverError, 'open')
           break
       }
     } catch (error) {
@@ -116,12 +109,17 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
     signUp(email, password, nickname)
   }
 
-  //
   const signUpStep =
     step === 0 ? (
-      <PolicyCheck setIsNext={setIsNext} handleModal={handleModal} />
+      <PolicyCheck setIsNext={setIsNext} />
     ) : step === 1 ? (
-      <EmailCheck isNext={isNext} setIsNext={setIsNext} email={email} setEmail={setEmail} handleModal={handleModal} />
+      <EmailCheck
+        isNext={isNext}
+        setIsNext={setIsNext}
+        email={email}
+        setEmail={setEmail}
+        handleModalStates={handleModalStates}
+      />
     ) : (
       <UserInfoCheck
         setIsNext={setIsNext}
@@ -131,7 +129,6 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
         setNickname={setNickname}
         setPassword={setPassword}
         setValidPassword={setValidPassword}
-        handleModal={handleModal}
       />
     )
 
@@ -169,9 +166,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           {nextButton}
         </div>
       </div>
-      {isOpen && (
-        <InfoModal isOpen={isOpen} data={modalData} onClose={() => setIsOpen(!isOpen)} onConfirm={handleModalConfirm} />
-      )}
+      <Modal onConfirm={handleModalConfirm} />
     </div>
   )
 }

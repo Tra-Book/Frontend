@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { auth } from '@/auth'
 import ProfileChange from '@/components/main/ProfileChange'
+import { ToastProvider } from '@/components/ui/toast'
 import { UserInfo } from '@/lib/types/Session'
 
 interface MainInfoPageProps {}
@@ -18,7 +19,11 @@ const MainInfoPage = async ({}: MainInfoPageProps): Promise<ReactNode> => {
     nickname: s.user.nickname,
   }
 
-  return <ProfileChange session={session} />
+  return (
+    <ToastProvider>
+      <ProfileChange session={session} />
+    </ToastProvider>
+  )
 }
 
 export default MainInfoPage

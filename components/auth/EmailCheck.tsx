@@ -17,7 +17,7 @@ interface EmailCheckProps {
   setIsNext: Dispatch<SetStateAction<boolean>>
   email: string
   setEmail: Dispatch<SetStateAction<string>>
-  handleModal: (modalData: ModalData, openBool: 'open' | 'close') => void
+  handleModalStates: (modalData: ModalData, openBool: 'open' | 'close') => void
 }
 
 // Eamil Validation Check Function
@@ -27,7 +27,7 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email)
 }
 
-const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCheckProps): ReactNode => {
+const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModalStates }: EmailCheckProps): ReactNode => {
   const { toast } = useToast()
 
   // const [email, setEmail] = useState<string>('')
@@ -78,10 +78,10 @@ const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCh
       }
       switch (status) {
         case 400:
-          handleModal(ClientModalData.dupEmailError, 'open') // 동일 이메일 존재
+          handleModalStates(ClientModalData.dupEmailError, 'open') // 동일 이메일 존재
           break
         case 500:
-          handleModal(ClientModalData.serverError, 'open') // Server Error
+          handleModalStates(ClientModalData.serverError, 'open') // Server Error
           break
       }
     } catch (error) {
@@ -117,11 +117,11 @@ const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModal }: EmailCh
       switch (status) {
         case 400:
           setIsCodeVerify(false)
-          handleModal(ClientModalData.diffCodeError, 'open') // Server Error
+          handleModalStates(ClientModalData.diffCodeError, 'open') // Server Error
 
           break
         case 500:
-          handleModal(ClientModalData.serverError, 'open') // Server Error
+          handleModalStates(ClientModalData.serverError, 'open') // Server Error
           break
       }
     } catch (error) {
