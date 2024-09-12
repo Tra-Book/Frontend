@@ -20,8 +20,9 @@ const PlanSideBar = ({}: PlanSideBarProps): ReactNode => {
       <Link href={ROUTES.HOME.url} className={cn(style, 'font- text-center font-mono text-xl font-bold')}>
         TRABOOK
       </Link>
+
       <Link
-        href={ROUTES.PLAN.INDEX.url}
+        href={ROUTES.PLAN.PlAN.url}
         className={cn(
           style,
           (pathname === ROUTES.PLAN.PlAN.url || pathname === ROUTES.PLAN.INDEX.url) && 'bg-tbPrimary',
@@ -30,6 +31,7 @@ const PlanSideBar = ({}: PlanSideBarProps): ReactNode => {
         <LucideIcon name='Plane' size={36} />
         <div>기본 정보</div>
       </Link>
+
       <Link
         href={ROUTES.PLAN.SCHEDULE.url}
         className={cn(style, pathname.includes(ROUTES.PLAN.SCHEDULE.url) && 'bg-tbPrimary')}
@@ -37,12 +39,16 @@ const PlanSideBar = ({}: PlanSideBarProps): ReactNode => {
         <LucideIcon name='Calendar' size={36} />
         <div>여행 일정</div>
       </Link>
-      <Link href={ROUTES.PLAN.STORE.url} className='grow'>
-        <div className={cn(style, pathname.includes(ROUTES.PLAN.STORE.url) && 'bg-tbPrimary', 'h-full')}>
+
+      <div className='grow'>
+        <Link
+          href={ROUTES.PLAN.STORE.url}
+          className={cn(style, pathname.includes(ROUTES.PLAN.STORE.url) && 'bg-tbPrimary', 'h-full max-h-[120px]')}
+        >
           <LucideIcon name='Bookmark' size={36} />
           <div>보관함</div>
-        </div>
-      </Link>
+        </Link>
+      </div>
 
       <div className={cn(style)}>
         <LucideIcon name='Save' size={36} />
