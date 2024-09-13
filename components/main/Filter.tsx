@@ -1,9 +1,8 @@
 'use client'
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { CITIES, getStateIdx, STATES } from '@/lib/constants/regions'
+import { CITIES, getStateIdx, STATES, StateType } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { StateType } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
@@ -167,11 +166,17 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
               </div>
             ))}
           </div>
-          <div className='grid h-36 min-w-[200px] grid-cols-2 overflow-y-auto px-1 text-sm'>
+
+          <div
+            className={cn(
+              'grid h-36 min-w-[200px] flex-grow grid-cols-2 overflow-y-auto px-1 text-sm',
+              selectedState !== '전체' && 'auto-rows-min',
+            )}
+          >
             {selectedState !== '전체' ? (
               <>
                 {/* 선택한 지역의 전체 버튼 */}
-                <div className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'>
+                <div className='flex h-8 cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'>
                   <Checkbox
                     id={`${selectedState} 전체`}
                     className='border-tbGray data-[state=checked]:bg-white data-[state=checked]:text-tbPrimary'
@@ -185,7 +190,7 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
                 {CITIES[getStateIdx(selectedState)].map(city => (
                   <div
                     key={city}
-                    className='flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
+                    className='flex h-8 cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-tbPlaceHolderHover focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:text-sm'
                   >
                     <Checkbox
                       id={city}

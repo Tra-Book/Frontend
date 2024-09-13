@@ -5,10 +5,9 @@ import React, { ReactNode, useEffect, useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
-import { CITIES, getStateIdx, STATES } from '@/lib/constants/regions'
+import { CITIES, getStateIdx, STATES, StateType } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { StateType } from '@/lib/types/Entity/plan'
 import { scrollToTop } from '@/lib/utils/scroll'
 
 import CustomPagination, { ELEMENTS_PER_PAGE } from '../common/Pagination'
