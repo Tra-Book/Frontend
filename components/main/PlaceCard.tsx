@@ -30,7 +30,7 @@ const PlaceCard = ({ data }: PlaceCardProps): ReactNode => {
         <div className='flex items-center justify-between text-xs lg:text-sm'>
           <div className='flex items-center gap-2'>
             <div className='flex items-center gap-1'>
-              <LucideIcon name='Star' fill='#FFD25E' strokeWidth={0} />
+              <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
               <span>{data.star}</span>
             </div>
             <div className='flex items-center gap-1'>
