@@ -1,9 +1,10 @@
 ---
-name: '⚡️Feature Template'
+name: "⚡️Feature Template"
 about: 만들고자 하는 Feature를 언급해주세요.
-title: '⚡️Feat: '
-labels: enhancement
+title: 'Feat: '
+labels: feature
 assignees: ''
+
 ---
 
 ## 어떤 기능인가요?
