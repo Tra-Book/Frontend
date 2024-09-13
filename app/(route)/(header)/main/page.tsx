@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
-import { StateType } from '@/lib/types/Entity/plan'
+import { StateType } from '@/lib/constants/regions'
 import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 interface MainPageProps {}
 

@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
+import { StateType } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { StateType } from '@/lib/types/Entity/plan'
 import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 
 interface MainStorePlanPageProps {}
