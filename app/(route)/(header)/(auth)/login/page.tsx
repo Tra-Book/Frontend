@@ -2,11 +2,11 @@
 
 import { Mail } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
+import EmailLink from '@/components/auth/EmailLink'
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
@@ -78,13 +78,7 @@ const LoginPage = (): ReactNode => {
           </Button>
         ))}
       </div>
-
-      <div className='mt-12 w-full text-center text-tbGray'>
-        계정이 없으신가요?&nbsp;&nbsp;
-        <Link className='text-black underline hover:text-tbBlue' href={ROUTES.AUTH.SIGNUP.url}>
-          이메일로 회원가입
-        </Link>
-      </div>
+      <EmailLink className='mt-12 w-full text-center' />
     </div>
   )
 }

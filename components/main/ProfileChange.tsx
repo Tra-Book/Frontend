@@ -9,9 +9,12 @@ import React, { ReactNode, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { UserInfo } from '@/lib/types/Session'
+import useModal from '@/lib/utils/hooks/useModal'
+import { useToast } from '@/lib/utils/hooks/useToast'
 import ProfileImage from '@/public/dummy/dummy_profile_image.png'
 
 function validateNickname(nickname: string) {
@@ -39,13 +42,16 @@ function validateProfileMessage(message: string): boolean {
 }
 
 const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
+  const router = useRouter()
+  const { update } = useSession()
+  const { toast } = useToast()
+  const { handleModalStates } = useModal()
+
+  // Todo: 정보를 하나의 객체로 저장하기
   const [nickname, setNickname] = useState<string>(session.nickname)
   const [message, setMessage] = useState<string>(session.status_message || '')
   const [image, setImage] = useState<File | string | undefined>()
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const { update } = useSession()
-
-  const router = useRouter()
 
   const onClickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -61,6 +67,9 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
   }
 
   const onClickButton = async () => {
+    toast({ title: '변경 내용 저장 완료!' })
+    console.log('Clicked!')
+
     // 닉네임 validation
     const username: string = nickname.trim()
     if (username.length < 2) {
@@ -99,19 +108,16 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
       })
 
       const status = res.status
-      const data = await res.json()
+      if (res.ok) {
+        const data = await res.json()
+        await update({ nickname: nickname, status_message: message, image: data.profilePhoto })
 
+        router.refresh()
+        return
+      }
       switch (status) {
-        case 200:
-          await update({ nickname: nickname, status_message: message, image: data.profilePhoto })
-          alert('변경이 완료되었습니다.')
-          router.refresh()
-          return
-        case 500:
-          alert('다시 시도해주세요.')
-          break
-        default:
-          alert('다시 시도해주세요.')
+        case 500: // Internal Server Error
+          handleModalStates(ClientModalData.serverError, 'open')
           break
       }
     } catch (error) {
@@ -192,6 +198,7 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
           회원 탈퇴
         </Link>
       </div>
+      {/* Todo: 저장안하고 나가려고 하면 ConfirmModal 띄우기 */}
     </div>
   )
 }

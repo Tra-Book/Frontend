@@ -134,7 +134,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       // Google Login API : /auth/google
       else if (account?.provider === 'google') {
-
         console.log('Login with google')
         // console.log(account['id_token'])
         try {
@@ -220,7 +219,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.nickname = token.nickname
 
       delete session.user
-      // console.log('session', session)
+      console.log('session', session)
       return session
     },
   },

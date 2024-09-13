@@ -78,10 +78,6 @@ const UserInfoCheck = ({
   }
 
   useEffect(() => {
-    setIsNext(false)
-  }, [])
-
-  useEffect(() => {
     if (isValid && isSame && password.length !== 0) setIsNext(true)
     else setIsNext(false)
   }, [password, validPassword])

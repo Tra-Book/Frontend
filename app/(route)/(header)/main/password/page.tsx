@@ -7,16 +7,17 @@ import React, { ChangeEventHandler, Dispatch, ReactNode, SetStateAction, useStat
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import useModal from '@/lib/utils/hooks/useModal'
+import { useToast } from '@/lib/utils/hooks/useToast'
 
 type PasswordState = {
   password: string
   isShow: boolean
 }
-
-interface ChangePasswordPageProps {}
 
 function isValidPassword(password: string) {
   const hasLetter = /[a-zA-Z]/.test(password)
@@ -27,15 +28,19 @@ function isValidPassword(password: string) {
   return hasLetter && hasNumber && hasSpecialChar && length
 }
 
+interface ChangePasswordPageProps {}
+
 const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
+  const session: any = useSession()
+  const { toast } = useToast()
+  const { modalData, handleModalStates, Modal } = useModal()
+
   const [currentPw, setCurrentPw] = useState<PasswordState>({ password: '', isShow: false })
   const [newPw, setNewPw] = useState<PasswordState>({ password: '', isShow: false })
   const [checkPw, setCheckPw] = useState<PasswordState>({ password: '', isShow: false })
 
   const [isValid, setIsValid] = useState<boolean>(true)
   const [isSame, setIsSame] = useState<boolean>(true)
-
-  const session: any = useSession()
 
   const onChangeNewPw: ChangeEventHandler<HTMLInputElement> = e => {
     setNewPw(prev => ({ ...prev, password: e.target.value }))
@@ -56,6 +61,7 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
   }
 
   const onClickPwChange = async () => {
+    // Todo: Red Error Text로 변경
     if (newPw.password.trim() === '') {
       alert('새 비밀번호를 입력해주세요.')
       return
@@ -84,20 +90,21 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
       })
 
       const status = res.status
-
+      if (res.ok) {
+        toast({ title: '변경 내용 저장 완료!' })
+        return
+      }
       switch (status) {
-        case 200:
-          alert('비밀번호 변경이 완료되었습니다.')
-          return
         case 400:
+          // Todo: 빨간 Error Text로 변경
           alert('현재 비밀번호가 다릅니다.')
           break
-        default:
-          alert('다시 시도해주세요.')
+        case 500: // Internal Server Error
+          handleModalStates(ClientModalData.serverError, 'open')
           break
       }
     } catch (error) {
-      alert('비밀번호 변경이 실패하였습니다.')
+      alert('비밀번호 변경 실패')
     }
   }
 
@@ -127,7 +134,6 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
           <div className='gap relative flex justify-between gap-2'>
             <Input
               onChange={e => setCurrentPw(prev => ({ ...prev, password: e.target.value }))}
-              // onBlur={onBlurPassword}
               type={currentPw.isShow ? 'text' : 'password'}
               id='currentPw'
               placeholder=''

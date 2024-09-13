@@ -5,13 +5,19 @@ import React, { ChangeEventHandler, Dispatch, ReactNode, SetStateAction, useEffe
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { cn } from '@/lib/utils/cn'
+import { useToast } from '@/lib/utils/hooks/useToast'
+
+import { ModalData } from '../common/Modals'
 
 interface EmailCheckProps {
+  isNext: boolean
   setIsNext: Dispatch<SetStateAction<boolean>>
   email: string
   setEmail: Dispatch<SetStateAction<string>>
+  handleModalStates: (modalData: ModalData, openBool: 'open' | 'close') => void
 }
 
 // Eamil Validation Check Function
@@ -21,7 +27,9 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email)
 }
 
-const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode => {
+const EmailCheck = ({ isNext, setIsNext, email, setEmail, handleModalStates }: EmailCheckProps): ReactNode => {
+  const { toast } = useToast()
+
   // const [email, setEmail] = useState<string>('')
   const [code, setCode] = useState<string>('')
   const [isSend, setIsSend] = useState<boolean>(false)
@@ -62,24 +70,22 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
       })
 
       const status = res.status
-
+      if (res.ok) {
+        setIsEmailValid(true)
+        setIsSend(true)
+        toast({ title: '이메일로 인증번호 발송 완료' })
+        return
+      }
       switch (status) {
-        case 200:
-          setIsEmailValid(true)
-          setIsSend(true)
-          // modal로 바꿀 예정
-          alert('이메일로 인증번호 발송 완료')
-          return
         case 400:
-          // modal로 바꿀 예정
-          alert('이미 가입된 이메일입니다.')
+          handleModalStates(ClientModalData.dupEmailError, 'open') // 동일 이메일 존재
           break
-        default:
-          alert('인증 이메일 전송이 실패하였습니다. 다시 시도해주세요')
+        case 500:
+          handleModalStates(ClientModalData.serverError, 'open') // Server Error
           break
       }
     } catch (error) {
-      alert('인증 이메일 전송이 실패하였습니다. 다시 시도해주세요')
+      console.log('Fetch Error ouccred!')
     }
   }
 
@@ -103,27 +109,25 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
       })
 
       const status = res.status
-
+      if (res.ok) {
+        setIsCodeVerify(true)
+        setIsNext(true)
+        return
+      }
       switch (status) {
-        case 200:
-          setIsCodeVerify(true)
-          setIsNext(true)
-          return
         case 400:
           setIsCodeVerify(false)
+          handleModalStates(ClientModalData.diffCodeError, 'open') // Server Error
+
           break
-        default:
-          alert('이메일 인증이 실패하였습니다. 다시 시도해주세요')
+        case 500:
+          handleModalStates(ClientModalData.serverError, 'open') // Server Error
           break
       }
     } catch (error) {
-      alert('이메일 인증이 실패하였습니다. 다시 시도해주세요')
+      console.log('이메일 인증이 실패하였습니다. 다시 시도해주세요')
     }
   }
-
-  useEffect(() => {
-    setIsNext(prev => false)
-  }, [])
 
   useEffect(() => {
     if (isCodeVerify && isSend) setIsNext(true)
@@ -142,7 +146,6 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
             onBlur={onBlurEmail}
             type='text'
             id='email'
-            placeholder=''
             className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isEmailValid && 'ring-2 ring-tbRed')}
           />
           <Button onClick={onClickSendButton} variant='tbSecondary' className='h-13 w-1/5 p-2'>
@@ -153,7 +156,11 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
           * 올바른 이메일 형식이 아닙니다
         </p>
       </div>
-
+      <div className='mt-2 text-center text-slate-500'>
+        혹시 메일을 받지 못하셨다면
+        <br />
+        재전송 버튼을 클릭해 주세요
+      </div>
       <div className='grid w-full items-center gap-1.5'>
         <Label htmlFor='code' className='mb-2 text-base'>
           인증번호 <span className='text-tbRed'>*</span>
@@ -164,21 +171,20 @@ const EmailCheck = ({ setIsNext, email, setEmail }: EmailCheckProps): ReactNode 
             onChange={e => setCode(e.target.value)}
             type='text'
             id='code'
-            placeholder=''
-            className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isCodeVerify && 'ring-2 ring-tbRed')}
+            className={cn('h-13 bg-tbPlaceholder shadow-tb-shadow', !isCodeVerify && 'text-tbRed')}
           />
           <Button onClick={onClickVerifyButton} variant='tbSecondary' className='h-13 w-1/5 p-2'>
             확인
           </Button>
         </div>
-        <p className={cn(isCodeVerify ? 'invisible' : 'pl-3 pt-1 text-sm ring-tbRed')}>* 올바른 인증번호가 아닙니다.</p>
-      </div>
-
-      <div className='mt-2 text-center text-slate-500'>
-        혹시 메일을 받지 못하셨다면
-        <br />
-        재전송 버튼을 클릭해 주세요
-      </div>
+        <p
+          className={cn(
+            !isSend ? 'invisible' : isNext ? 'pl-3 pt-1 text-sm text-tbBlue' : 'pl-3 pt-1 text-sm text-tbRed',
+          )}
+        >
+          {isNext ? '* 올바른 인증번호입니다' : '* 올바른 인증번호가 아닙니다'}
+        </p>
+      </div>{' '}
     </>
   )
 }

@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import ToggleWrapper, { useDropdown } from '@/lib/utils/useToggle'
+import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
 
 import Backdrop from '../common/Backdrop'
 

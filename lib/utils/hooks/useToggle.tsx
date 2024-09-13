@@ -1,8 +1,7 @@
 'use client'
-// hooks/useClickOutside.ts
 import React, { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 
-import { cn } from './cn'
+import { cn } from '../cn'
 
 /**
  *  드롭다운 열고 닫기 제어하는 커스텀 훅

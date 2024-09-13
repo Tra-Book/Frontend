@@ -1,9 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import React, { ChangeEventHandler, FormEvent, ReactNode, useState } from 'react'
 
+import EmailLink from '@/components/auth/EmailLink'
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -112,13 +112,7 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
           <Button type='submit' variant='tbPrimary' className='mt-2 h-13 w-full'>
             로그인
           </Button>
-
-          <div className='mt-2 text-slate-500'>
-            계정이 없으신가요?&nbsp;&nbsp;
-            <Link className='text-black underline hover:text-tbBlue' href='/signup'>
-              이메일로 회원가입
-            </Link>
-          </div>
+          <EmailLink className='mt-2' />
         </div>
       </form>
     </div>
