@@ -129,7 +129,7 @@ const generateErrorContent = (pathname: string) => {
     [ROUTES.MAIN.MY_PLAN.url]: {
       message: ['아직 생성한 여행 계획이 없습니다!', 'TRABOOK과 함께 신나는 여행을 계획하세요'],
       btnInfo: {
-        route: ROUTES.PLAN.url,
+        route: ROUTES.PLAN.INDEX.url,
         placeHolder: '여행 계획하기',
         Icon: <LucideIcon name='Plane' size={26} />,
       },

@@ -9,6 +9,7 @@ interface IncludeHeaderLayoutProps {
 const IncludeHeaderLayout = ({ children }: IncludeHeaderLayoutProps): ReactNode => {
   return (
     <>
+      {/* @ts-expect-error Async Server Component */}
       <Header />
       {children}
     </>

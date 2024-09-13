@@ -97,7 +97,7 @@ const MobileMenu = ({ session, className }: MobileMenuProps): ReactNode => {
       >
         <LucideIcon name='X' className='mr-4 mt-4 self-end' size={20} onClick={toggleDropdown} />
 
-        <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.url} className='mx-2 w-full p-4'>
+        <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.INDEX.url} className='mx-2 w-full p-4'>
           <Button variant='tbPrimary' className='w-full'>
             {!session ? '로그인하기' : '여행 계획하기'}
           </Button>

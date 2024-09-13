@@ -59,7 +59,7 @@ const Home = async (): Promise<ReactNode> => {
           </div>
 
           <Motion animation={fadeIn(0.5, 5)}>
-            <Link href={!session ? ROUTES.PLAN.url : ROUTES.AUTH.LOGIN.url}>
+            <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.INDEX.url}>
               <Button
                 variant='tbPrimary'
                 className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'

@@ -25,7 +25,7 @@ const Header = async (): Promise<ReactNode> => {
         {/* Desktop >= xl */}
         <div className='hidden h-full items-center justify-center gap-9 text-xl font-medium lg:flex'>
           <CommunityMenu className='h-full' />
-          <Link href='/plan/index' className='flex h-full items-center'>
+          <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.INDEX.url} className='flex h-full items-center'>
             여행 계획하기
           </Link>
           <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.MAIN.MY_PLAN.url} className='flex h-full items-center'>
