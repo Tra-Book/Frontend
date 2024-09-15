@@ -1,4 +1,5 @@
 'use client'
+
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
@@ -13,7 +14,7 @@ interface PlaceCardProps {
 }
 
 // Todo: data props type 지정
-const PlaceCard = ({ data }: PlaceCardProps): ReactNode => {
+const MainPlaceCard = ({ data }: PlaceCardProps): ReactNode => {
   return (
     <div className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
       <div className='group relative w-full overflow-hidden rounded-md'>
@@ -52,7 +53,7 @@ const PlaceCard = ({ data }: PlaceCardProps): ReactNode => {
   )
 }
 
-export default PlaceCard
+export default MainPlaceCard
 
 const Menu = () => {
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리

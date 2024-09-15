@@ -24,12 +24,12 @@ const dummy_user = {
   statusMessage: '좋은 사람과 가는 좋은 여행',
 }
 
-const SideBar = ({ isCredentails, image, status_message, nickname }: SideBarProps): ReactNode => {
+const MainSideBar = ({ isCredentails, image, status_message, nickname }: SideBarProps): ReactNode => {
   const pathname = usePathname()
 
   return (
     // md부터 보임
-    <div className='min-h-screen-header relative hidden h-auto w-1/6 min-w-[140px] max-w-[200px] flex-col items-center justify-start md:flex'>
+    <div className='relative hidden h-auto min-h-screen-header w-1/6 min-w-[140px] max-w-[200px] flex-col items-center justify-start md:flex'>
       {/* 프로필 */}
       <div className='flex w-full flex-col items-center justify-start border-b border-solid border-tbGray py-7'>
         <Image
@@ -105,4 +105,4 @@ const SideBar = ({ isCredentails, image, status_message, nickname }: SideBarProp
   )
 }
 
-export default SideBar
+export default MainSideBar

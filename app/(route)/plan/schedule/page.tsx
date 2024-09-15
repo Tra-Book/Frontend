@@ -1,6 +1,7 @@
 'use client'
 import React, { ReactNode } from 'react'
 
+import AddedPlanCards from '@/components/plan/PlanCards'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { DayPlan } from '@/lib/types/Entity/plan'
@@ -48,26 +49,26 @@ const DUMMY_DAYPLAN: DayPlan = {
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   const { day, DayDropdown } = useDayDropdown(10)
   // Todo: DayPlan 정보 받아오기
-
+  const DayPlan: DayPlan = DUMMY_DAYPLAN
   return (
     <div className='flex h-dvh flex-grow justify-start'>
       {/* 사이드바 */}
-      <div className='relative flex w-1/4 flex-col items-center justify-start'>
+      <div className='relative flex h-dvh w-1/4 flex-col items-center justify-start'>
         {/* 지역/일자선택 */}
-        <div className='relative flex h-[10%] w-full items-center'>
+        <div className='relative flex min-h-[10%] w-full items-center'>
           <p className='mx-4'>강원도</p>
           <DayDropdown className='mx-4 h-9 flex-grow' />
         </div>
         {/* 여행일자 정보 */}
-        <div className='flex h-[8%] w-full items-center justify-between border-b border-tbPlaceholder px-3'>
+        <div className='flex min-h-[6%] w-full items-start justify-between border-b border-tbPlaceholder px-3'>
           <div>
-            <div className='text-sm text-tbGray'>일자</div>
+            <div className='text-xs text-tbGray'>일자</div>
             <div className='flex items-center justify-start gap-2'>
               <span>12/29(수)</span>
             </div>
           </div>
           <div>
-            <div className='text-sm text-tbGray'>시작시간</div>
+            <div className='text-xs text-tbGray'>시작시간</div>
             <div className='flex items-center justify-start gap-2'>
               <span>08:00</span>
               <LucideIcon name='Clock' />
@@ -75,21 +76,26 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
           </div>
           <LucideIcon name='MoveRight' size={26} />
           <div>
-            <div className='text-sm text-tbGray'>종료시간</div>
+            <div className='text-xs text-tbGray'>종료시간</div>
             <div className='flex items-center justify-start gap-2'>
               <span>08:00</span>
               <LucideIcon name='Clock' />
             </div>
           </div>
           <div className=''>
-            <div className='text-sm text-tbGray'>계획가능시간</div>
+            <div className='text-xs text-tbGray'>계획가능시간</div>
             <div className='flex items-center justify-start gap-2'>
               <span>08:00</span>
               <LucideIcon name='Clock' />
             </div>
           </div>
         </div>
+        {/* 카드들 */}
+        <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto'>
+          {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} />)}
+        </div>
       </div>
+
       <div className='flex-grow bg-tbGreen'>지도</div>
     </div>
   )

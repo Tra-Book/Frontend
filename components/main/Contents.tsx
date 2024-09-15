@@ -15,8 +15,8 @@ import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Input } from '../ui/input'
 import Filters from './Filters'
-import PlaceCard from './PlaceCard'
-import PlanCard from './PlanCard'
+import MainPlaceCard from './MainPlaceCard'
+import MainPlanCard from './MainPlanCard'
 
 export const isFinishedChoices = ['전체', '계획 중', '계획 완료'] as const
 export type IsFinishedChoicesType = (typeof isFinishedChoices)[number]
@@ -283,9 +283,9 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
           <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
             {displayedData.map((data, index) =>
               name === 'Plan' ? (
-                <PlanCard key={index} data={data as DummyPlanType} />
+                <MainPlanCard key={index} data={data as DummyPlanType} />
               ) : (
-                <PlaceCard key={index} data={data as DummyPlaceType} />
+                <MainPlaceCard key={index} data={data as DummyPlaceType} />
               ),
             )}
           </div>
