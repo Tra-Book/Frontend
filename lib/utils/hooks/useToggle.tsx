@@ -1,5 +1,5 @@
 'use client'
-import React, { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
+import React, { CSSProperties, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 
 import { cn } from '../cn'
 
@@ -39,18 +39,21 @@ interface ToggleWrapperProps {
   ref: React.RefObject<HTMLDivElement>
   isOpen: boolean // 드롭다운이 열렸는지 여부
   children: ReactNode
+  style?: CSSProperties // Optional style prop
   className?: string
 }
 
-const ToggleWrapper = React.forwardRef<HTMLDivElement, ToggleWrapperProps>(({ children, className, isOpen }, ref) => {
-  if (!isOpen) return null
+const ToggleWrapper = React.forwardRef<HTMLDivElement, ToggleWrapperProps>(
+  ({ children, className, isOpen, style }, ref) => {
+    if (!isOpen) return null
 
-  return (
-    <div ref={ref} className={cn('absolute z-10', className)}>
-      {children}
-    </div>
-  )
-})
+    return (
+      <div className={cn('absolute z-10', className)} ref={ref} style={style}>
+        {children}
+      </div>
+    )
+  },
+)
 
 ToggleWrapper.displayName = 'ToggleWrapper' // forwardRef 사용 시 displayName 설정
 

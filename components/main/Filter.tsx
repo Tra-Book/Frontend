@@ -1,5 +1,5 @@
 'use client'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { CITIES, getStateIdx, STATES, StateType } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -86,10 +86,6 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
       })
     }
   }
-
-  useEffect(() => {
-    console.log(checkedFilters)
-  }, [checkedFilters])
 
   const handlePlaceCheckBox = (state: StateType, city: string) => {
     setCheckedFilters(prev => {
