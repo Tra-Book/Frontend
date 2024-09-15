@@ -1,3 +1,5 @@
+import { StaticImageData } from 'next/image'
+
 export interface Geo {
   latitude: number
   longitude: number
@@ -9,17 +11,19 @@ export interface Place {
   id: number
 
   name: string // 여행지명
-  imgSrc: string
+  // imgSrc: string
+  // 임시 Dummy Data를 위해
+  imgSrc: StaticImageData
   address: string // 한글 주소
   geo: Geo // 위치
 
-  tags: string
+  tag: string
   duration: number // Minutes
 
   stars: number // 평점
   visitCnt: number // 실제 계획에 담긴 횟수
 
-  reviews: Array<Comment>
+  reviews?: Array<Comment>
   reviewCnt: number
 
   isAdded: boolean // 계획에 들어갔는지 여부
