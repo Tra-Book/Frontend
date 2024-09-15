@@ -22,6 +22,8 @@ export const colorSet = {
 
   tbRed: config.theme.extend.colors.tbRed,
   tbOrange: config.theme.extend.colors.tbOrange,
+
+  tbWhite: config.theme.extend.colors.tbWhite,
 }
 
 export type ColorType = keyof typeof colorSet

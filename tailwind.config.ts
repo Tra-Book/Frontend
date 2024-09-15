@@ -84,6 +84,8 @@ const config = {
         tbGray: '#00000080',
         tbRed: '#F45858',
         tbOrange: '#FF8710',
+
+        tbWhite: '#FFFFFF',
       },
       borderRadius: {
         lg: 'var(--radius)',

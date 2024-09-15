@@ -1,10 +1,12 @@
 'use client'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 
+import { Motion } from '@/components/common/MotionWrapper'
 import AddedPlanCards from '@/components/plan/PlanCards'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { DayPlan } from '@/lib/types/Entity/plan'
+import { cn } from '@/lib/utils/cn'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
 
@@ -15,7 +17,7 @@ const DUMMY_PLACE: Place = {
   id: 125405,
   name: '토함산자연휴양림',
   imgSrc: DUMMYPLACEIMG,
-  address: '경상북도 경주시 양북면 불국로 1208-45',
+  address: '경상북도 경주시 양북면 불국로',
 
   tag: '관광지',
   duration: 60,
@@ -48,53 +50,73 @@ const DUMMY_DAYPLAN: DayPlan = {
 
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   const { day, DayDropdown } = useDayDropdown(10)
+  const [isReduced, setIsReduced] = useState<boolean>(false)
+
   // Todo: DayPlan 정보 받아오기
   const DayPlan: DayPlan = DUMMY_DAYPLAN
   return (
     <div className='flex h-dvh flex-grow justify-start'>
       {/* 사이드바 */}
-      <div className='relative flex h-dvh w-1/4 flex-col items-center justify-start'>
+      <Motion
+        animation={{
+          animate: { width: isReduced ? '12%' : '25%' },
+          transition: { type: 'spring', duration: 0.5 },
+        }}
+        className={cn('relative flex h-dvh flex-col items-center justify-start', isReduced ? 'w-[12%]' : 'w-1/4')}
+      >
         {/* 지역/일자선택 */}
+
         <div className='relative flex min-h-[10%] w-full items-center'>
-          <p className='mx-4'>강원도</p>
+          {!isReduced && <p className='mx-4'>강원도</p>}
           <DayDropdown className='mx-4 h-9 flex-grow' />
         </div>
+
         {/* 여행일자 정보 */}
         <div className='flex min-h-[6%] w-full items-start justify-between border-b border-tbPlaceholder px-3'>
-          <div>
-            <div className='text-xs text-tbGray'>일자</div>
-            <div className='flex items-center justify-start gap-2'>
-              <span>12/29(수)</span>
+          {!isReduced && (
+            <div>
+              <div className='text-xs text-tbGray'>일자</div>
+              <div className='flex items-center justify-start gap-2'>
+                <span>12/29(수)</span>
+              </div>
             </div>
-          </div>
+          )}
+
           <div>
             <div className='text-xs text-tbGray'>시작시간</div>
             <div className='flex items-center justify-start gap-2'>
               <span>08:00</span>
-              <LucideIcon name='Clock' />
+              {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
-          <LucideIcon name='MoveRight' size={26} />
+          <LucideIcon name='MoveRight' size={26} className='self-center' />
           <div>
             <div className='text-xs text-tbGray'>종료시간</div>
             <div className='flex items-center justify-start gap-2'>
               <span>08:00</span>
-              <LucideIcon name='Clock' />
+              {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
           <div className=''>
             <div className='text-xs text-tbGray'>계획가능시간</div>
             <div className='flex items-center justify-start gap-2'>
               <span>08:00</span>
-              <LucideIcon name='Clock' />
+              {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
         </div>
-        {/* 카드들 */}
-        <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto'>
-          {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} />)}
+        {/* 카드들 (서버 컴포넌트) */}
+        <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
+          {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} isReduced={isReduced} />)}
         </div>
-      </div>
+        {/* 축소 확대 버튼 */}
+        <div
+          onClick={() => setIsReduced(prev => !prev)}
+          className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
+        >
+          <LucideIcon name={isReduced ? 'ChevronsRight' : 'ChevronsLeft'} size={28} />
+        </div>
+      </Motion>
 
       <div className='flex-grow bg-tbGreen'>지도</div>
     </div>
