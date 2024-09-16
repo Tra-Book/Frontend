@@ -5,6 +5,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
 
+import Backdrop from '../common/Backdrop'
 import MapPin from '../common/MapPin'
 
 interface AddedPlanCardsProps {
@@ -16,10 +17,11 @@ const AddedPlanCards = ({ data, isReduced }: AddedPlanCardsProps): ReactNode => 
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration } = data
   return (
     <>
-      <div className='relative flex min-h-min w-full items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'>
+      <div className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'>
         {!isReduced && (
-          <div className='relative aspect-square h-full origin-left'>
+          <div className='group relative aspect-square h-full origin-left'>
             <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
+            <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
           </div>
         )}
 
@@ -30,9 +32,9 @@ const AddedPlanCards = ({ data, isReduced }: AddedPlanCardsProps): ReactNode => 
             !isReduced && 'min-w-[270px]',
           )}
         >
-          <div className='flex min-w-min items-center justify-start gap-2'>
-            <MapPin num={order} size={22} />
-            <span className='text-lg font-semibold'>{name}</span>
+          <div className='group flex min-w-min items-center justify-start gap-2'>
+            <MapPin num={order} size={22} className='group-hover:scale-125' />
+            <span className='text-lg font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
 
           <p className='min-w-min text-sm'>{address}</p>

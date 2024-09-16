@@ -1,5 +1,6 @@
 'use client'
 import React, { ReactNode, useState } from 'react'
+import { Map } from 'react-kakao-maps-sdk'
 
 import { Motion } from '@/components/common/MotionWrapper'
 import AddedPlanCards from '@/components/plan/PlanCards'
@@ -8,6 +9,7 @@ import { Place } from '@/lib/types/Entity/place'
 import { DayPlan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
+import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
 
 interface PlanSchedulePageProps {}
@@ -51,6 +53,8 @@ const DUMMY_DAYPLAN: DayPlan = {
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   const { day, DayDropdown } = useDayDropdown(10)
   const [isReduced, setIsReduced] = useState<boolean>(false)
+
+  useKakaoLoader() // 카카오 지도 로딩
 
   // Todo: DayPlan 정보 받아오기
   const DayPlan: DayPlan = DUMMY_DAYPLAN
@@ -118,7 +122,21 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         </div>
       </Motion>
 
-      <div className='flex-grow bg-tbGreen'>지도</div>
+      {/* 지도 */}
+      <Map // 지도를 표시할 Container
+        id='map'
+        center={{
+          // 지도의 중심좌표
+          lat: 33.450701,
+          lng: 126.570667,
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        level={8} // 지도의 확대 레벨
+      />
+      {/* <div className='flex-grow bg-tbGreen'>지도</div> */}
     </div>
   )
 }
