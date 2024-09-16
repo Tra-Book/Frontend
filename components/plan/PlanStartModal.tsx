@@ -1,6 +1,11 @@
 'use client'
 
+import 'react-day-picker/dist/style.css'
+
+import { format } from 'date-fns'
+import { ko } from 'date-fns/locale'
 import React, { ReactNode, useState } from 'react'
+import { DateRange,DayPicker } from 'react-day-picker'
 
 import { STATES } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -11,23 +16,87 @@ import { Input } from '../ui/input'
 
 interface PlanStartModalProps {}
 
+const formatDate = (date: Date): string => format(date, 'yyyy-MM-dd')
+
 const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const [inputState, setInputState] = useState<string>('')
   const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
+
+  const [selected, setSelected] = useState<DateRange>()
+  const handleSelect = (newSelected?: DateRange) => {
+    // Update the selected dates
+    setSelected(newSelected)
+    console.log(newSelected)
+  }
 
   const onClickButton = () => {
     setStep(prev => (prev === 0 ? 1 : 0))
   }
 
-  // API 호출 : /plan
-  const onClickFinish = () => {}
+  // alert는 toast로 바꾸기
+  // API 호출 : /plan, 두 가지 경우
+  // 1. 계획 생성
+  // 2. 계획 수정 (zustand에 정보 있으면)
+  const onClickFinish = async () => {
+    if (!STATES.some(state => state === inputState)) {
+      alert('도시를 입력해주세요.')
+      return
+    }
+    if (selected?.from === undefined || selected?.to === undefined) {
+      alert('기간을 입력해주세요.')
+      return
+    }
+    const body = {
+      userId: 44,
+      state: inputState,
+      startDate: formatDate(selected.from),
+      endDate: formatDate(selected.to),
+    }
+
+    // try {
+    //   const res = await fetch('/server/plan/create', {
+    //     method: 'POST',
+    //     headers: {
+    //       // Authorization: session.data.accessToken,
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(body),
+    //     credentials: 'include',
+    //   })
+    //   console.log(res)
+
+    //   const status = res.status
+    //   const data = await res.json()
+    //   if (res.ok) {
+    //     console.log(data)
+    //     // toast({ title: '변경 내용 저장 완료!' })
+    //     return
+    //   }
+    //   switch (status) {
+    //     case 400:
+    //       // Todo: 빨간 Error Text로 변경
+    //       console.log(data)
+    //       // alert('현재 비밀번호가 다릅니다.')
+    //       break
+    //     case 500: // Internal Server Error
+    //       // handleModalStates(ClientModalData.serverError, 'open')
+    //       break
+    //     default:
+    //       console.log(data)
+    //   }
+    // } catch (error) {
+    //   console.log(error)
+    // }
+
+    console.log(body)
+  }
 
   const renderState = (state: string): ReactNode | null => {
     if (inputState === '' || state.includes(inputState)) {
       return (
         <div
           key={state + 'start plan'}
-          className='flex h-13 items-center pl-12 text-tbGray hover:text-black'
+          className='flex h-11 items-center pl-12 text-tbGray hover:cursor-pointer hover:text-black'
           onClick={() => setInputState(state)}
         >
           {state}
@@ -37,9 +106,9 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   }
 
   const PlanStartRegion = (
-    <div className='flex h-3/4 w-full flex-col items-center justify-center gap-1 overflow-y-scroll scrollbar-hide'>
-      <p className='flex items-center justify-center text-2xl'>
-        <span className='text-3xl underline'>어디</span>로 떠나시나요?
+    <div className='mt-5 flex h-3/4 w-full flex-col items-center justify-start gap-1 overflow-y-scroll scrollbar-hide'>
+      <p className='flex items-center justify-center text-xl'>
+        <span className='text-2xl underline'>어디</span>로 떠나시나요?
       </p>
       <p className='mb-3 text-tbGray'>* 지역을 이동하는 경우, 첫 방문지로 설정해주세요.</p>
 
@@ -52,22 +121,63 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
           placeholder='여행지를 검색해보세요'
         />
         <LucideIcon name='Search' className='absolute left-3 top-0 h-13' size={24} />
-        <div className='mt-[1px] max-h-[250px] w-full overflow-y-scroll border-[1px] border-tbPlaceholder scrollbar-hide'>
+        <div className='mt-[1px] max-h-[230px] w-full overflow-y-scroll border-[1px] border-tbPlaceholder scrollbar-hide'>
           {STATES.map(state => renderState(state))}
         </div>
       </div>
     </div>
   )
 
-  const PlanStartPeriod = <div>~~~</div>
+  const PlanStartPeriod = (
+    <div className='mt-5 flex h-3/4 w-full flex-col items-center justify-start gap-1 overflow-y-scroll scrollbar-hide'>
+      <p className='flex items-center justify-center text-xl'>
+        <span className='text-2xl underline'>언제</span>&nbsp;떠나시나요?
+      </p>
+      <p className='mb-3 text-tbGray'>* 지역을 이동하는 경우, 첫 방문지로 설정해주세요.</p>
+
+      <DayPicker
+        onSelect={handleSelect}
+        locale={ko}
+        mode='range'
+        endMonth={new Date(2025, 9)}
+        formatters={{
+          formatCaption: (date, options) => format(date, 'yyyy년 M월', { locale: ko }),
+        }}
+        className={'size flex h-3/4 w-full items-start justify-center'}
+        classNames={{
+          months: 'relative flex flex-wrap justify-center gap-8',
+          month_caption: 'flex justify-center items-center font-medium text-xl h-9 px-2 text-gray-800 mb-1 ',
+          nav: 'absolute inset-x-0 flex justify-between items-center h-9 gap-2',
+          button_next: 'relative inline-flex items-center justify-center size-9 hover:bg-gray-100 rounded-[50%]',
+          button_previous: 'relative inline-flex items-center justify-center size-9 hover:bg-gray-100 rounded-[50%]',
+          chevron: 'inline-block size-7 fill-tbPrimary',
+          week: 'grid grid-cols-7',
+          weekdays: 'grid grid-cols-7 ',
+          weekday: 'size-9 w-full flex items-center justify-center text-gray-500',
+          day: 'inline-flex items-center justify-center rounded text-gray-700 hover:bg-tbPrimaryHover hover:rounded-[50%] hover:text-white size-11 2xl:size-14  font-normal cursor-pointer',
+          today: 'font-semibold',
+          selected: 'bg-tbPrimary text-white hover:bg-tbPrimary hover:text-white focus:bg-tbPrimary focus:text-white',
+          // outside: 'opacity-50 ',
+          // day_button: 'bg-tbPrimary',
+          range_start:
+            'bg-tbPrimary text-white hover:bg-tbPrimary hover:text-white focus:bg-tbPrimary focus:text-white',
+          range_end: 'bg-tbPrimary text-white hover:bg-tbPrimary hover:text-white focus:bg-tbPrimary focus:text-white',
+          disabled: 'text-gray-500 opacity-50 cursor-auto',
+          range_middle:
+            'aria-selected:bg-blue-50 aria-selected:text-gray-900 aria-selected:hover:bg-blue-200 rounded-none ',
+          hidden: 'invisible',
+        }}
+      />
+    </div>
+  )
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40'>
-      <div className='relative flex h-2/3 w-2/3 flex-col rounded-[30px] border-2 border-black bg-white'>
-        <div className='flex h-[15%] w-full rounded-t-[30px] border-b-2 border-black'>
+      <div className='relative flex h-2/3 max-h-[650px] w-1/2 max-w-[1000px] flex-col rounded-[30px] border-[1px] border-black bg-white'>
+        <div className='flex h-[13%] w-full rounded-t-[30px] border-black'>
           <div
             className={cn(
-              'flex grow items-center justify-center rounded-tl-[30px] border-r-2 border-black text-[27px] font-semibold',
+              'b flex max-h-16 grow items-center justify-center rounded-tl-[30px] border-b-[1px] border-r-[1px] border-black text-xl font-medium hover:cursor-pointer',
               step === 0 && 'bg-tbPrimaryHover',
             )}
             onClick={() => setStep(0)}
@@ -76,7 +186,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
           </div>
           <div
             className={cn(
-              'flex grow items-center justify-center rounded-tr-[30px] border-black text-[27px] font-semibold',
+              'flex max-h-16 grow items-center justify-center rounded-tr-[30px] border-b-[1px] border-black text-xl font-medium hover:cursor-pointer',
               step === 1 && 'bg-tbPrimaryHover',
             )}
             onClick={() => setStep(1)}
