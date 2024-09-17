@@ -2,23 +2,25 @@
 
 import 'react-day-picker/dist/style.css'
 
-import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
-import { DateRange,DayPicker } from 'react-day-picker'
+import { DateRange, DayPicker } from 'react-day-picker'
 
 import { STATES } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import { formatToHyphenDate, formatToKoreanShortDate } from '@/lib/utils/dateUtils'
 
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 
 interface PlanStartModalProps {}
 
-const formatDate = (date: Date): string => format(date, 'yyyy-MM-dd')
+// const formatDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 
 const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
+  const session: any = useSession()
   const [inputState, setInputState] = useState<string>('')
   const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
 
@@ -49,15 +51,15 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     const body = {
       userId: 44,
       state: inputState,
-      startDate: formatDate(selected.from),
-      endDate: formatDate(selected.to),
+      startDate: formatToHyphenDate(selected.from),
+      endDate: formatToHyphenDate(selected.to),
     }
 
     // try {
     //   const res = await fetch('/server/plan/create', {
     //     method: 'POST',
     //     headers: {
-    //       // Authorization: session.data.accessToken,
+    //       Authorization: session.data.accessToken,
     //       'Content-Type': 'application/json',
     //     },
     //     body: JSON.stringify(body),
@@ -69,17 +71,13 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     //   const data = await res.json()
     //   if (res.ok) {
     //     console.log(data)
-    //     // toast({ title: '변경 내용 저장 완료!' })
     //     return
     //   }
     //   switch (status) {
     //     case 400:
-    //       // Todo: 빨간 Error Text로 변경
     //       console.log(data)
-    //       // alert('현재 비밀번호가 다릅니다.')
     //       break
     //     case 500: // Internal Server Error
-    //       // handleModalStates(ClientModalData.serverError, 'open')
     //       break
     //     default:
     //       console.log(data)
@@ -96,8 +94,14 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
       return (
         <div
           key={state + 'start plan'}
-          className='flex h-11 items-center pl-12 text-tbGray hover:cursor-pointer hover:text-black'
-          onClick={() => setInputState(state)}
+          className={cn(
+            'flex h-11 items-center pl-12 text-tbGray hover:cursor-pointer hover:text-black',
+            state === inputState && 'text-black',
+          )}
+          onClick={() => {
+            setStep(1)
+            setInputState(state)
+          }}
         >
           {state}
         </div>
@@ -108,7 +112,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const PlanStartRegion = (
     <div className='mt-5 flex h-3/4 w-full flex-col items-center justify-start gap-1 overflow-y-scroll scrollbar-hide'>
       <p className='flex items-center justify-center text-xl'>
-        <span className='text-2xl underline'>어디</span>로 떠나시나요?
+        <span className='border-b-2 border-black text-2xl'>어디</span>로 떠나시나요?
       </p>
       <p className='mb-3 text-tbGray'>* 지역을 이동하는 경우, 첫 방문지로 설정해주세요.</p>
 
@@ -119,6 +123,9 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
           type='text'
           className='h-13 w-full justify-self-end rounded-b-none pl-12 text-lg shadow-none focus-visible:ring-0'
           placeholder='여행지를 검색해보세요'
+          onKeyUp={e => {
+            if (e.key === 'Enter' && STATES.some(state => state === inputState)) setStep(1)
+          }}
         />
         <LucideIcon name='Search' className='absolute left-3 top-0 h-13' size={24} />
         <div className='mt-[1px] max-h-[230px] w-full overflow-y-scroll border-[1px] border-tbPlaceholder scrollbar-hide'>
@@ -131,17 +138,17 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const PlanStartPeriod = (
     <div className='mt-5 flex h-3/4 w-full flex-col items-center justify-start gap-1 overflow-y-scroll scrollbar-hide'>
       <p className='flex items-center justify-center text-xl'>
-        <span className='text-2xl underline'>언제</span>&nbsp;떠나시나요?
+        <span className='border-b-2 border-black text-2xl'>언제</span>&nbsp;떠나시나요?
       </p>
-      <p className='mb-3 text-tbGray'>* 지역을 이동하는 경우, 첫 방문지로 설정해주세요.</p>
+      <p className='mb-5 text-tbGray'>* 출발 날짜와 도착 날짜를 차례대로 선택해주세요.</p>
 
       <DayPicker
         onSelect={handleSelect}
         locale={ko}
         mode='range'
-        endMonth={new Date(2025, 9)}
+        endMonth={new Date(2026, 12)}
         formatters={{
-          formatCaption: (date, options) => format(date, 'yyyy년 M월', { locale: ko }),
+          formatCaption: date => formatToKoreanShortDate(date),
         }}
         className={'size flex h-3/4 w-full items-start justify-center'}
         classNames={{
@@ -198,7 +205,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
         {step === 0 ? PlanStartRegion : PlanStartPeriod}
 
         <div className='absolute bottom-6 right-6'>
-          <Button variant='tbSecondary' onClick={onClickButton}>
+          <Button variant='tbSecondary' onClick={onClickButton} className={cn()}>
             {step === 0 ? '다음' : '이전'}
           </Button>
           <Button variant='tbSecondary' className='ml-3' onClick={onClickFinish}>
