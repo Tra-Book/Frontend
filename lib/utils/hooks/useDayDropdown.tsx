@@ -7,6 +7,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 
 import { cn } from '../cn'
 interface DayDropdownProps {
+  isReduced: boolean
   className?: string
 }
 
@@ -15,17 +16,18 @@ const useDayDropdown = (totalDays: number) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   // Dropdown UI
-  const DayDropdown = ({ className }: DayDropdownProps) => {
+  const DayDropdown = ({ isReduced, className }: DayDropdownProps) => {
     return (
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger
           className={cn(
-            'relative flex cursor-pointer items-center justify-center rounded-sm bg-tbPrimary hover:bg-tbPrimaryHover',
+            'relative flex cursor-pointer items-center justify-center gap-1 rounded-sm bg-tbPrimary hover:bg-tbPrimaryHover',
             className,
           )}
         >
           <p>{`${day}일차`}</p>
-          <LucideIcon name='ChevronDown' size={26} className='absolute right-6' />
+          {!isReduced && <p className='text-xs text-tbGray'>12/29(수)</p>}
+          <LucideIcon name='ChevronDown' size={26} className='absolute right-2' />
         </DropdownMenuTrigger>
         {/* 드롭다운 */}
 

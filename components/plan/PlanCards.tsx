@@ -15,6 +15,12 @@ interface AddedPlanCardsProps {
 
 const AddedPlanCards = ({ data, isReduced }: AddedPlanCardsProps): ReactNode => {
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration } = data
+
+  const addressArr = address
+    .split(' ')
+    .filter((val, index) => index === 0 || index === 1)
+    .join(' ')
+
   return (
     <>
       <div className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'>
@@ -29,24 +35,26 @@ const AddedPlanCards = ({ data, isReduced }: AddedPlanCardsProps): ReactNode => 
         <div
           className={cn(
             'flex flex-grow origin-left flex-col items-start justify-start gap-2',
-            !isReduced && 'min-w-[270px]',
+            !isReduced && 'w-fit min-w-[170px]',
           )}
         >
-          <div className='group flex min-w-min items-center justify-start gap-2'>
+          <div className='group flex w-fit items-center justify-start'>
             <MapPin num={order} size={22} className='group-hover:scale-125' />
             <span className='text-lg font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
 
-          <p className='min-w-min text-sm'>{address}</p>
+          <p className='w-fit text-sm'>{address}</p>
 
-          <p className='min-w-min text-sm'># {tag}</p>
-          <div className='flex min-w-min items-center justify-start gap-1 text-sm'>
+          <div className='flex w-full items-center justify-between text-sm'>
+            <p># {tag}</p>
+            <p className='text-tbGray'>{duration}분</p>
+          </div>
+          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
             <span>{stars}</span>
           </div>
-          {!isReduced && <span className='min-w-min text-sm'>방문자 {visitCnt}+</span>}
+          {!isReduced && <span className='w-fit text-sm'>방문자 {visitCnt}+</span>}
         </div>
-        <div className='absolute right-4 top-[55%] min-w-min text-sm text-tbGray'>{duration}분</div>
       </div>
       <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
         <LucideIcon name='CarFront' size={26} />

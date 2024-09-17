@@ -59,58 +59,59 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   // Todo: DayPlan 정보 받아오기
   const DayPlan: DayPlan = DUMMY_DAYPLAN
   return (
-    <div className='flex h-dvh flex-grow justify-start'>
+    <div className='relative flex h-dvh flex-grow justify-start'>
       {/* 사이드바 */}
       <Motion
         animation={{
-          animate: { width: isReduced ? '12%' : '25%' },
+          animate: { width: isReduced ? '15vw' : '25vw' },
           transition: { type: 'spring', duration: 0.5 },
         }}
-        className={cn('relative flex h-dvh flex-col items-center justify-start', isReduced ? 'w-[12%]' : 'w-1/4')}
+        className={cn('relative flex h-dvh flex-col items-center justify-start')}
       >
         {/* 지역/일자선택 */}
 
         <div className='relative flex min-h-[10%] w-full items-center'>
           {!isReduced && <p className='mx-4'>강원도</p>}
-          <DayDropdown className='mx-4 h-9 flex-grow' />
+          <DayDropdown isReduced={isReduced} className='mx-4 h-9 flex-grow' />
         </div>
 
         {/* 여행일자 정보 */}
         <div className='flex min-h-[6%] w-full items-start justify-between border-b border-tbPlaceholder px-3'>
-          {!isReduced && (
+          {/* {!isReduced && (
             <div>
               <div className='text-xs text-tbGray'>일자</div>
-              <div className='flex items-center justify-start gap-2'>
+              <div className='flex items-center justify-start gap-1'>
                 <span>12/29(수)</span>
               </div>
             </div>
-          )}
+          )} */}
 
-          <div>
-            <div className='text-xs text-tbGray'>시작시간</div>
-            <div className='flex items-center justify-start gap-2'>
-              <span>08:00</span>
-              {!isReduced && <LucideIcon name='Clock' />}
+          <div className='flex items-center justify-start gap-2'>
+            <div>
+              <p className='text-xs text-tbGray'>시작시간</p>
+              <div className='flex items-center justify-start gap-1 text-base'>
+                <span>08:00</span>
+                {!isReduced && <LucideIcon name='Clock' />}
+              </div>
             </div>
-          </div>
-          <LucideIcon name='MoveRight' size={26} className='self-center' />
-          <div>
-            <div className='text-xs text-tbGray'>종료시간</div>
-            <div className='flex items-center justify-start gap-2'>
-              <span>08:00</span>
-              {!isReduced && <LucideIcon name='Clock' />}
+            <LucideIcon name='MoveRight' size={isReduced ? 18 : 26} className='self-center' />
+            <div>
+              <p className='text-xs text-tbGray'>종료시간</p>
+              <div className='flex items-center justify-start gap-1 text-base'>
+                <span>08:00</span>
+                {!isReduced && <LucideIcon name='Clock' />}
+              </div>
             </div>
           </div>
           <div className=''>
-            <div className='text-xs text-tbGray'>계획가능시간</div>
-            <div className='flex items-center justify-start gap-2'>
+            <p className='text-xs text-tbGray'>남은시간</p>
+            <div className='flex items-center justify-start gap-1 text-base'>
               <span>08:00</span>
-              {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
         </div>
         {/* 카드들 (서버 컴포넌트) */}
-        <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
+        <div className='flex w-full min-w-min flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
           {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} isReduced={isReduced} />)}
         </div>
         {/* 축소 확대 버튼 */}
@@ -131,7 +132,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
           lng: 126.570667,
         }}
         style={{
-          width: '100%',
+          flexGrow: '1',
           height: '100%',
         }}
         level={8} // 지도의 확대 레벨
