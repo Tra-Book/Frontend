@@ -19,7 +19,7 @@ export const Motion = <Tag extends keyof JSX.IntrinsicElements>({
   animation,
   ...props
 }: CustomMotionProps<Tag>) => {
-  const Component = tag ? (motion as any)[tag] : motion.div
+  const Comp = tag ? (motion as any)[tag] : motion.div
 
   const animationKeys: AnimationKey[] = ['initial', 'animate', 'transition', 'whileInView', 'viewport']
   const animationProps = animationKeys.reduce((acc, key) => {
@@ -29,8 +29,8 @@ export const Motion = <Tag extends keyof JSX.IntrinsicElements>({
     return acc
   }, {} as MotionProps)
   return (
-    <Component className={className} {...props} {...animationProps}>
+    <Comp className={className} {...props} {...animationProps}>
       {children}
-    </Component>
+    </Comp>
   )
 }

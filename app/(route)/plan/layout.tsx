@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import PlanSideBar from '@/components/main/PlanSideBar'
+import PlanSideBar from '@/components/plan/PlanSideBar'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -10,7 +10,7 @@ interface MainLayoutProps {
 const MainLayout = ({ children, modal }: MainLayoutProps): ReactNode => {
   return (
     <main className='flex h-dvh w-dvw'>
-      <PlanSideBar />
+      <PlanSideBar className='flex h-full w-[16vw] max-w-[100px] flex-col' />
       {children}
       {modal}
     </main>

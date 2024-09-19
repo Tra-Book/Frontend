@@ -11,7 +11,7 @@ interface PlanCardProps {
 }
 
 // Todo: data props type 지정
-const PlanCard = ({ data }: PlanCardProps): ReactNode => {
+const MainPlanCard = ({ data }: PlanCardProps): ReactNode => {
   return (
     <div className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
       <div className='group relative w-full overflow-hidden rounded-md'>
@@ -48,4 +48,4 @@ const PlanCard = ({ data }: PlanCardProps): ReactNode => {
   )
 }
 
-export default PlanCard
+export default MainPlanCard

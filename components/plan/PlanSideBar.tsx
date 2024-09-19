@@ -8,16 +8,18 @@ import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
-interface PlanSideBarProps {}
+interface PlanSideBarProps {
+  className?: string
+}
 
 const style = 'flex flex-col h-1/6 max-h-[100px] w-full items-center justify-center text-l font-semibold gap-2'
 const iconSize: number = 24
 
-const PlanSideBar = ({}: PlanSideBarProps): ReactNode => {
+const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const pathname = usePathname()
 
   return (
-    <div className='flex h-full w-1/6 max-w-[100px] flex-col'>
+    <div className={className}>
       <Link href={ROUTES.HOME.url} className={cn(style, 'font- text-center font-mono text-xl font-bold')}>
         TRABOOK
       </Link>

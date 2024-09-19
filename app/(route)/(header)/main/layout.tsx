@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { auth } from '@/auth'
-import SideBar from '@/components/main/SideBar'
+import MainSideBar from '@/components/main/MainSideBar'
 import { ToastProvider } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
 
@@ -14,7 +14,7 @@ const MainLayout = async ({ children }: MainLayoutProps): Promise<ReactNode> => 
 
   return (
     <main className='flex min-h-screen w-dvw bg-tbSecondary pt-24'>
-      <SideBar
+      <MainSideBar
         isCredentails={s.user.provider === 'credentials'}
         image={s.user.image}
         status_message={s.user.status_message}

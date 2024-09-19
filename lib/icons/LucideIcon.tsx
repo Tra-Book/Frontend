@@ -24,7 +24,7 @@ const LucideIcon = ({ name, color, strokeWidth = 2, size = 16, fill, className, 
     <LucideIcon
       color={color && colorSet[color]}
       size={size}
-      fill={fill ? fill : 'transparent'}
+      fill={fill ? colorSet[fill] : 'transparent'}
       strokeWidth={strokeWidth}
       className={cn(pointerStyle, className)}
       {...props}
