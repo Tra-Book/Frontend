@@ -5,6 +5,7 @@ import React, { ReactNode } from 'react'
 import { STATES } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
+import { cn } from '@/lib/utils/cn'
 import {
   FilterType,
   isFinishedChoices,
@@ -16,6 +17,7 @@ import { ReadOnly } from '@/lib/utils/typeUtils'
 
 import Filter from './Filter'
 interface FiltersProps {
+  className?: string
   filter: FilterType
   filterHandler: (
     id: 'isFinished' | 'state' | 'city' | 'all',
@@ -35,7 +37,7 @@ export interface FilterDisplayType {
 }
 
 // 역할: UI 보여주고, onClick 핸들링
-const Filters = ({ filter, filterHandler, movePageHandler, hasReset }: FiltersProps): ReactNode => {
+const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }: FiltersProps): ReactNode => {
   const pathname = usePathname()
   /**
    * URL에 따른 필터 버튼
@@ -128,7 +130,12 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset }: FiltersPr
   }
 
   return (
-    <div className='flex h-[8dvh] min-h-[30px] w-full items-center justify-start gap-4 pl-1 text-xs font-medium md:text-sm'>
+    <div
+      className={cn(
+        'flex h-[8dvh] min-h-[30px] w-full items-center justify-start gap-4 pl-1 text-xs font-medium md:text-sm',
+        className,
+      )}
+    >
       <LucideIcon name='SlidersHorizontal' size={24} />
       {FILTER_BUTTONS.map(FILTER_BUTTON => (
         <Filter

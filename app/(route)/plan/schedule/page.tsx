@@ -3,7 +3,7 @@ import React, { ReactNode, useState } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
 
 import { Motion } from '@/components/common/MotionWrapper'
-import AddedPlanCards from '@/components/plan/PlanCards'
+import { AddedPlaceCards } from '@/components/plan/PlaceCards'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -114,7 +114,9 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         </div>
         {/* 카드들 (서버 컴포넌트) */}
         <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
-          {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} isReduced={isReduced} />)}
+          {DayPlan.places?.map((dayPlan, index) => (
+            <AddedPlaceCards key={index} data={dayPlan} isReduced={isReduced} />
+          ))}
         </div>
         {/* 축소 확대 버튼 */}
         {!isSearching && (
@@ -127,7 +129,9 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         )}
       </Motion>
       {/* 검색창 */}
-      {isSearching && <SearchArea name='Plan' setIsSearching={setIsSearching} className='h-dvh w-[19.2dvw]' />}
+      {isSearching && (
+        <SearchArea name='Plan' setIsSearching={setIsSearching} className='h-dvh w-[24dvw] min-w-[280px]' />
+      )}
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
         <Map // 지도를 표시할 Container

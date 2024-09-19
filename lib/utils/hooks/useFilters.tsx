@@ -160,12 +160,19 @@ const useFilters = (name: 'Plan' | 'Place') => {
   }
 
   interface UseFilterProps {
+    className?: string
     movePageHandler: (pageNumber: number) => void
     hasReset: boolean
   }
-  const UseFilter = ({ movePageHandler, hasReset }: UseFilterProps) => {
+  const UseFilter = ({ movePageHandler, hasReset, className }: UseFilterProps) => {
     return (
-      <Filters filter={filter} filterHandler={filterHandler} movePageHandler={movePageHandler} hasReset={hasReset} />
+      <Filters
+        filter={filter}
+        filterHandler={filterHandler}
+        movePageHandler={movePageHandler}
+        hasReset={hasReset}
+        className={className}
+      />
     )
   }
 
