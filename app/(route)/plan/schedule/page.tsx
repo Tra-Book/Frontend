@@ -4,6 +4,7 @@ import { Map } from 'react-kakao-maps-sdk'
 
 import { Motion } from '@/components/common/MotionWrapper'
 import AddedPlanCards from '@/components/plan/PlanCards'
+import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
@@ -54,9 +55,17 @@ const DUMMY_DAYPLAN: DayPlan = {
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   const { day, DayDropdown } = useDayDropdown(10)
   const [isReduced, setIsReduced] = useState<boolean>(false)
-
+  const [isSearching, setIsSearching] = useState<boolean>(false)
   useKakaoLoader() // 카카오 지도 로딩
 
+  const handleSearchBtn = () => {
+    setIsReduced(true)
+    setIsSearching(true)
+  }
+
+  const handleReducdeBtn = () => {
+    setIsReduced(prev => !prev)
+  }
   // Todo: DayPlan 정보 받아오기
   const DayPlan: DayPlan = DUMMY_DAYPLAN
   return (
@@ -64,10 +73,10 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
       {/* 사이드바 */}
       <Motion
         animation={{
-          animate: { width: isReduced ? '12%' : '25%' },
+          animate: { width: isReduced ? '12dvw' : '25dvw' },
           transition: { type: 'spring', duration: 0.5 },
         }}
-        className={cn('relative flex h-dvh flex-col items-center justify-start', isReduced ? 'w-[12%]' : 'w-1/4')}
+        className={cn('relative flex h-dvh flex-col items-center justify-start')}
       >
         {/* 지역/일자선택 */}
 
@@ -108,15 +117,17 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
           {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} isReduced={isReduced} />)}
         </div>
         {/* 축소 확대 버튼 */}
-        <div
-          onClick={() => setIsReduced(prev => !prev)}
-          className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
-        >
-          <LucideIcon name={isReduced ? 'ChevronsRight' : 'ChevronsLeft'} size={28} />
-        </div>
+        {!isSearching && (
+          <div
+            onClick={handleReducdeBtn}
+            className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
+          >
+            <LucideIcon name={isReduced ? 'ChevronsRight' : 'ChevronsLeft'} size={28} />
+          </div>
+        )}
       </Motion>
       {/* 검색창 */}
-      {/* <SearchArea className='' /> */}
+      {isSearching && <SearchArea setIsSearching={setIsSearching} className='h-dvh w-[19.2dvw]' />}
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
         <Map // 지도를 표시할 Container
@@ -132,9 +143,9 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
           }}
           level={8} // 지도의 확대 레벨
         />
-        {!isReduced && (
+        {!isSearching && (
           <Button
-            onClick={() => setIsReduced(true)}
+            onClick={handleSearchBtn}
             variant='tbPrimary'
             size='lg'
             className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
