@@ -24,6 +24,7 @@ interface FiltersProps {
     selectedState?: string,
   ) => void
   movePageHandler: (pageNumber: number) => void
+  hasReset: boolean
 }
 
 export interface FilterDisplayType {
@@ -34,7 +35,7 @@ export interface FilterDisplayType {
 }
 
 // 역할: UI 보여주고, onClick 핸들링
-const Filters = ({ filter, filterHandler, movePageHandler }: FiltersProps): ReactNode => {
+const Filters = ({ filter, filterHandler, movePageHandler, hasReset }: FiltersProps): ReactNode => {
   const pathname = usePathname()
   /**
    * URL에 따른 필터 버튼
@@ -108,14 +109,22 @@ const Filters = ({ filter, filterHandler, movePageHandler }: FiltersProps): Reac
     }
     return undefined
   }
-  let FILTER_BUTTONS: Array<FilterDisplayType> = []
 
-  if (pathname === ROUTES.MAIN.MY_PLAN.url) {
-    FILTER_BUTTONS = [makeFilterButton('isFinished'), makeFilterButton('state')] as Array<FilterDisplayType>
-  } else if (pathname === ROUTES.MAIN.STORE_PLAN.url) {
-    FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
-  } else if (pathname === ROUTES.MAIN.STORE_PLACE.url) {
-    FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
+  let FILTER_BUTTONS: Array<FilterDisplayType> = []
+  switch (pathname) {
+    // #Main
+    case ROUTES.MAIN.MY_PLAN.url:
+      FILTER_BUTTONS = [makeFilterButton('isFinished'), makeFilterButton('state')] as Array<FilterDisplayType>
+      break
+    case ROUTES.MAIN.STORE_PLAN.url:
+      FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
+      break
+    case ROUTES.MAIN.STORE_PLACE.url:
+      FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
+      break
+    // #Plan
+    case ROUTES.PLAN.SCHEDULE.url:
+      FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
   }
 
   return (
@@ -132,13 +141,15 @@ const Filters = ({ filter, filterHandler, movePageHandler }: FiltersProps): Reac
           movePageHandler={movePageHandler}
         />
       ))}
-      <div
-        onClick={() => filterHandler('all', 'reset')}
-        className='flex cursor-pointer items-center gap-2 text-tbGray hover:text-tbRed'
-      >
-        <LucideIcon name='RotateCw' size={20} />
-        <p>초기화</p>
-      </div>
+      {hasReset && (
+        <div
+          onClick={() => filterHandler('all', 'reset')}
+          className='flex cursor-pointer items-center gap-2 text-tbGray hover:text-tbRed'
+        >
+          <LucideIcon name='RotateCw' size={20} />
+          <p>초기화</p>
+        </div>
+      )}
     </div>
   )
 }

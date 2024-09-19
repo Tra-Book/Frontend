@@ -217,7 +217,7 @@ const Filter = ({ id, filter, placeHolder, choices, filterHandler, movePageHandl
       <DropdownMenuContent>
         {getChoices()}
         <DropdownMenuSeparator />
-        <div className='relative flex items-center justify-end gap-4 p-2'>
+        <div className='relative flex items-center justify-end gap-2 p-2'>
           <Button
             variant='tbGray'
             className='w-1/2'

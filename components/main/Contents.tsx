@@ -152,7 +152,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
 
   return (
     <>
-      <Filters filter={filter} filterHandler={filterHandler} movePageHandler={movePageHandler} />
+      <Filters filter={filter} filterHandler={filterHandler} movePageHandler={movePageHandler} hasReset={true} />
       <div className='relative mb-3 flex h-auto min-h-min w-full items-center justify-between pl-1'>
         <p className='hidden text-xl font-medium md:block'>
           총 {name === 'Plan' ? '계획' : '여행지'} {filteredData.length}개

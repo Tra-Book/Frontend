@@ -127,7 +127,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         )}
       </Motion>
       {/* 검색창 */}
-      {isSearching && <SearchArea setIsSearching={setIsSearching} className='h-dvh w-[19.2dvw]' />}
+      {isSearching && <SearchArea name='Plan' setIsSearching={setIsSearching} className='h-dvh w-[19.2dvw]' />}
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
         <Map // 지도를 표시할 Container
