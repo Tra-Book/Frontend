@@ -21,7 +21,7 @@ const useDayDropdown = (totalDays: number) => {
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger
           className={cn(
-            'relative flex cursor-pointer items-center justify-center rounded-md bg-tbPrimary text-base font-semibold hover:bg-tbPrimaryHover',
+            'relative flex cursor-pointer items-center justify-center gap-2 rounded-md bg-tbPrimary text-base font-semibold hover:bg-tbPrimaryHover',
             className,
           )}
         >

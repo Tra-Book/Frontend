@@ -27,6 +27,8 @@ const SearchArea = ({ setIsSearching, className }: SearchAreaProps): ReactNode =
         />
         <LucideIcon onClick={() => setIsSearching(false)} name='X' size={22} className='my-2 ml-2 self-start' />
       </div>
+      {/* 필터 */}
+      <div></div>
     </div>
   )
 }

@@ -40,7 +40,7 @@ const AddedPlanCards = ({ data, isReduced }: AddedPlanCardsProps): ReactNode => 
         >
           <div className='group flex w-fit items-center justify-start'>
             <MapPin num={order} size={22} className='group-hover:scale-125' />
-            <span className='text-lg font-semibold group-hover:text-tbBlue'>{name}</span>
+            <span className='text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
 
           <p className='w-fit text-sm'>{address}</p>

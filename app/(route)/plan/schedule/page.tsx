@@ -63,7 +63,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
     setIsSearching(true)
   }
 
-  const handleReducdeBtn = () => {
+  const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
   }
   // Todo: DayPlan 정보 받아오기
@@ -87,7 +87,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
 
         {/* 여행일자 정보 */}
         <div className='flex min-h-[6%] w-full items-start justify-between border-b border-tbPlaceholder px-3'>
-          <div className='flex items-center justify-between gap-1'>
+          <div className='flex items-center justify-between gap-3'>
             <div>
               <p className='text-xs text-tbGray'>시작시간</p>
               <div className='flex items-center justify-start gap-1'>
@@ -95,7 +95,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
                 {!isReduced && <LucideIcon name='Clock' />}
               </div>
             </div>
-            <LucideIcon name='MoveRight' size={isReduced ? 16 : 26} className='self-center' />
+            {!isReduced && <LucideIcon name='MoveRight' size={26} className='self-center' />}
             <div>
               <p className='text-xs text-tbGray'>종료시간</p>
               <div className='flex items-center justify-start gap-1'>
@@ -119,7 +119,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         {/* 축소 확대 버튼 */}
         {!isSearching && (
           <div
-            onClick={handleReducdeBtn}
+            onClick={handleReduceBtn}
             className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
           >
             <LucideIcon name={isReduced ? 'ChevronsRight' : 'ChevronsLeft'} size={28} />
