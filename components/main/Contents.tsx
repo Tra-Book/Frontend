@@ -12,9 +12,7 @@ import { scrollToTop } from '@/lib/utils/scroll'
 
 import CustomPagination, { ELEMENTS_PER_PAGE } from '../common/Pagination'
 import { Button } from '../ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Input } from '../ui/input'
-import Filters from './Filters'
 import MainPlaceCard from './MainPlaceCard'
 import MainPlanCard from './MainPlanCard'
 
@@ -67,10 +65,8 @@ interface ContentsProps {
 
 const Contents = ({ name, datas }: ContentsProps): ReactNode => {
   const pathname = usePathname()
-  const { filter, filterHandler, applyAllFilters, arrangeChoices, arrange, arrangeHandler } = useFilters(name)
+  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
 
-  // const [filter, setFilter] = useState<FilterType>(initFilters)
-  // const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '평점순')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
@@ -152,29 +148,13 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
 
   return (
     <>
-      <Filters filter={filter} filterHandler={filterHandler} movePageHandler={movePageHandler} hasReset={true} />
+      <UseFilter movePageHandler={movePageHandler} hasReset={true} />
       <div className='relative mb-3 flex h-auto min-h-min w-full items-center justify-between pl-1'>
         <p className='hidden text-xl font-medium md:block'>
           총 {name === 'Plan' ? '계획' : '여행지'} {filteredData.length}개
         </p>
         <div className='mr-3 flex w-full flex-row-reverse flex-wrap-reverse items-center justify-between gap-4 text-xs text-tbGray md:w-fit md:flex-row md:flex-nowrap md:text-sm'>
-          <DropdownMenu>
-            <DropdownMenuTrigger className='flex h-full w-fit items-end justify-between gap-1 md:items-center'>
-              <span className='w-fit'>{arrange}</span>
-              <LucideIcon name='ChevronDown' />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className='w-fit min-w-0 p-0 text-tbGray'>
-              {arrangeChoices.map(choice => (
-                <DropdownMenuItem
-                  key={choice}
-                  className='flex items-center justify-center px-3 py-2 text-xs hover:!bg-tbPrimary hover:font-medium hover:text-black md:text-sm'
-                  onClick={() => arrangeHandler(choice)}
-                >
-                  {choice}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UseArrange />
 
           <Input
             value={searchInput}

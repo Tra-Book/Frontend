@@ -5,7 +5,6 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import useFilters from '@/lib/utils/hooks/useFilters'
 
-import Filters from '../main/Filters'
 import { Input } from '../ui/input'
 
 interface SearchAreaProps {
@@ -16,7 +15,7 @@ interface SearchAreaProps {
 
 const SearchArea = ({ name, setIsSearching, className }: SearchAreaProps): ReactNode => {
   const [input, setInput] = useState<string>('')
-  const { filter, filterHandler, applyAllFilters, arrange, arrangeChoices, arrangeHandler } = useFilters(name)
+  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
 
   // Todo: 페이지네이션 구현
   const movePageHandler = () => {}
@@ -35,7 +34,12 @@ const SearchArea = ({ name, setIsSearching, className }: SearchAreaProps): React
         <LucideIcon onClick={() => setIsSearching(false)} name='X' size={22} className='my-2 ml-2 self-start' />
       </div>
       {/* 필터 */}
-      <Filters filter={filter} filterHandler={filterHandler} movePageHandler={movePageHandler} hasReset={false} />
+      <div className='flex w-full items-center justify-between'>
+        <UseFilter movePageHandler={movePageHandler} hasReset={false} />
+        <div className='mr-3 flex min-w-fit items-center text-xs text-tbGray md:w-fit md:text-sm'>
+          <UseArrange />
+        </div>
+      </div>
     </div>
   )
 }

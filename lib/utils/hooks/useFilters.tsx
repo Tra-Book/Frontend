@@ -2,7 +2,10 @@ import { useState } from 'react'
 
 import { DummyPlanType } from '@/app/(route)/(header)/main/page'
 import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
+import Filters from '@/components/main/Filters'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { CITIES, getStateIdx, STATES, StateType } from '@/lib/constants/regions'
+import LucideIcon from '@/lib/icons/LucideIcon'
 
 export const isFinishedChoices = ['전체', '계획 중', '계획 완료'] as const
 export type IsFinishedChoicesType = (typeof isFinishedChoices)[number]
@@ -156,7 +159,39 @@ const useFilters = (name: 'Plan' | 'Place') => {
     setArrange(arrange)
   }
 
-  return { filter, filterHandler, applyAllFilters, arrangeChoices, arrange, arrangeHandler }
+  interface UseFilterProps {
+    movePageHandler: (pageNumber: number) => void
+    hasReset: boolean
+  }
+  const UseFilter = ({ movePageHandler, hasReset }: UseFilterProps) => {
+    return (
+      <Filters filter={filter} filterHandler={filterHandler} movePageHandler={movePageHandler} hasReset={hasReset} />
+    )
+  }
+
+  const UseArrange = () => {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger className='flex h-full w-fit items-end justify-between gap-1 md:items-center'>
+          <span className='w-fit'>{arrange}</span>
+          <LucideIcon name='ChevronDown' />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className='w-fit min-w-0 p-0 text-tbGray'>
+          {arrangeChoices.map(choice => (
+            <DropdownMenuItem
+              key={choice}
+              className='flex items-center justify-center px-3 py-2 text-xs hover:!bg-tbPrimary hover:font-medium hover:text-black md:text-sm'
+              onClick={() => arrangeHandler(choice)}
+            >
+              {choice}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
+  return { filter, filterHandler, applyAllFilters, arrange, arrangeHandler, UseArrange, UseFilter }
 }
 
 export default useFilters
