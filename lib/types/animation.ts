@@ -1,6 +1,7 @@
 export type Animation = {
   initial: object
   animate: object
+  exit: object
   transition: object
   whileInView: object
   viewport: object
@@ -19,4 +20,8 @@ export const fadeInRight = (duration: number = 0.5, delay: number = 0): partialA
 
 export const fadeIn = (duration: number = 1, delay: number = 0): partialAnimation => {
   return { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration, delay } }
+}
+
+export const fadeOut = (duration: number = 1, delay: number = 0): partialAnimation => {
+  return { initial: { opacity: 1 }, animate: { opacity: 0 }, transition: { duration, delay } }
 }

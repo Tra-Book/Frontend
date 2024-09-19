@@ -4,6 +4,7 @@ import { Map } from 'react-kakao-maps-sdk'
 
 import { Motion } from '@/components/common/MotionWrapper'
 import AddedPlanCards from '@/components/plan/PlanCards'
+import { Button } from '@/components/ui/button'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { DayPlan } from '@/lib/types/Entity/plan'
@@ -63,10 +64,10 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
       {/* 사이드바 */}
       <Motion
         animation={{
-          animate: { width: isReduced ? '15vw' : '25vw' },
+          animate: { width: isReduced ? '12%' : '25%' },
           transition: { type: 'spring', duration: 0.5 },
         }}
-        className={cn('relative flex h-dvh flex-col items-center justify-start')}
+        className={cn('relative flex h-dvh flex-col items-center justify-start', isReduced ? 'w-[12%]' : 'w-1/4')}
       >
         {/* 지역/일자선택 */}
 
@@ -77,41 +78,33 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
 
         {/* 여행일자 정보 */}
         <div className='flex min-h-[6%] w-full items-start justify-between border-b border-tbPlaceholder px-3'>
-          {/* {!isReduced && (
-            <div>
-              <div className='text-xs text-tbGray'>일자</div>
-              <div className='flex items-center justify-start gap-1'>
-                <span>12/29(수)</span>
-              </div>
-            </div>
-          )} */}
-
-          <div className='flex items-center justify-start gap-2'>
+          <div className='flex items-center justify-between gap-1'>
             <div>
               <p className='text-xs text-tbGray'>시작시간</p>
-              <div className='flex items-center justify-start gap-1 text-base'>
-                <span>08:00</span>
+              <div className='flex items-center justify-start gap-1'>
+                <span className='text-base'>08:00</span>
                 {!isReduced && <LucideIcon name='Clock' />}
               </div>
             </div>
-            <LucideIcon name='MoveRight' size={isReduced ? 18 : 26} className='self-center' />
+            <LucideIcon name='MoveRight' size={isReduced ? 16 : 26} className='self-center' />
             <div>
               <p className='text-xs text-tbGray'>종료시간</p>
-              <div className='flex items-center justify-start gap-1 text-base'>
-                <span>08:00</span>
+              <div className='flex items-center justify-start gap-1'>
+                <span className='text-base'>08:00</span>
                 {!isReduced && <LucideIcon name='Clock' />}
               </div>
             </div>
           </div>
           <div className=''>
-            <p className='text-xs text-tbGray'>남은시간</p>
-            <div className='flex items-center justify-start gap-1 text-base'>
-              <span>08:00</span>
+            <p className='text-xs text-tbGray'>남은 시간</p>
+            <div className='flex items-center justify-start gap-1'>
+              <span className='text-base'>08:00</span>
+              {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
         </div>
         {/* 카드들 (서버 컴포넌트) */}
-        <div className='flex w-full min-w-min flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
+        <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
           {DayPlan.places?.map((dayPlan, index) => <AddedPlanCards key={index} data={dayPlan} isReduced={isReduced} />)}
         </div>
         {/* 축소 확대 버튼 */}
@@ -122,22 +115,34 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
           <LucideIcon name={isReduced ? 'ChevronsRight' : 'ChevronsLeft'} size={28} />
         </div>
       </Motion>
-
+      {/* 검색창 */}
+      {/* <SearchArea className='' /> */}
       {/* 지도 */}
-      <Map // 지도를 표시할 Container
-        id='map'
-        center={{
-          // 지도의 중심좌표
-          lat: 33.450701,
-          lng: 126.570667,
-        }}
-        style={{
-          flexGrow: '1',
-          height: '100%',
-        }}
-        level={8} // 지도의 확대 레벨
-      />
-      {/* <div className='flex-grow bg-tbGreen'>지도</div> */}
+      <div className='relative h-full flex-grow'>
+        <Map // 지도를 표시할 Container
+          id='map'
+          center={{
+            // 지도의 중심좌표
+            lat: 33.450701,
+            lng: 126.570667,
+          }}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+          level={8} // 지도의 확대 레벨
+        />
+        {!isReduced && (
+          <Button
+            onClick={() => setIsReduced(true)}
+            variant='tbPrimary'
+            size='lg'
+            className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
+          >
+            장소 검색하기
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
