@@ -72,8 +72,14 @@ export const ROUTES = {
       url: '/plan/schedule',
     },
     STORE: {
-      name: '보관함',
-      url: '/plan/store',
+      PLAN: {
+        name: '보관함',
+        url: '/plan/store/plan',
+      },
+      PLACE: {
+        name: '보관함',
+        url: '/plan/store/place',
+      },
     },
   },
   COMMUNITY: {

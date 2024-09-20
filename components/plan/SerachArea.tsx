@@ -1,6 +1,7 @@
 'use client'
 import React, { ReactNode, useRef } from 'react'
 
+import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
@@ -14,7 +15,6 @@ import { PlaceCard } from './PlaceCards'
 interface SearchAreaProps {
   className?: string
   name: 'Plan' | 'Place'
-  setIsSearching: React.Dispatch<React.SetStateAction<boolean>>
   focusedPlaceCard: Place | undefined
   setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
@@ -46,11 +46,13 @@ const DUMMY_PLACE: Place = {
 
 const SearchArea = ({
   name,
-  setIsSearching,
+
   focusedPlaceCard,
   setFocusedPlaceCard,
   className,
 }: SearchAreaProps): ReactNode => {
+  const { setIsSearching } = usePlanStore()
+
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
   const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
 
@@ -94,7 +96,7 @@ const SearchArea = ({
   return (
     <div className={cn('relative flex flex-col items-start justify-start', className)}>
       {/* 유저 입력 */}
-      <div className='relative flex min-h-[10dvh] w-full items-center justify-start px-2'>
+      <div className='relative flex min-h-[7dvh] w-full items-end justify-start px-2'>
         <form onSubmit={submitHandler} className='flex-grow'>
           <Input
             id='input'
@@ -108,7 +110,7 @@ const SearchArea = ({
       </div>
       {/* 필터 */}
       <div className='flex w-full items-center justify-between'>
-        <UseFilter movePageHandler={movePageHandler} hasReset={false} className='h-[6dvh]' />
+        <UseFilter movePageHandler={movePageHandler} hasReset={false} className='h-[7dvh]' />
         <div className='mr-3 flex min-w-fit items-center text-xs text-tbGray md:w-fit md:text-sm'>
           <UseArrange />
         </div>

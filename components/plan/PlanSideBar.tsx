@@ -45,8 +45,8 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
 
       <div className='grow'>
         <Link
-          href={ROUTES.PLAN.STORE.url}
-          className={cn(style, pathname.includes(ROUTES.PLAN.STORE.url) && 'bg-tbPrimary', 'h-full max-h-[100px]')}
+          href={ROUTES.PLAN.STORE.PLAN.url}
+          className={cn(style, pathname.includes(ROUTES.PLAN.STORE.PLAN.url) && 'bg-tbPrimary', 'h-full max-h-[100px]')}
         >
           <LucideIcon name='Bookmark' size={iconSize} />
           <div>보관함</div>
