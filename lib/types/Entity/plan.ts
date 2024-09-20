@@ -37,26 +37,3 @@ export interface DayPlan {
   // #2. 여행지 일정
   places?: Array<Place>
 }
-
-export const DUMMY_PLAN: Plan = {
-  id: -1,
-  userId: -1,
-
-  // #1. 기본 정보
-  state: '서울특별시',
-  city: '강남구',
-  startDate: new Date(),
-  endDate: new Date(),
-
-  imgSrc: '',
-  title: '',
-  description: '',
-  memberCnt: 1,
-  budget: 0,
-
-  isDone: false, // 공개 여부 (끝난 여부)
-
-  // #3. 커뮤니티 정보
-  likeCnt: 1,
-  scrapCnt: 1,
-}

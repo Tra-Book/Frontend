@@ -1,13 +1,14 @@
 import { create } from 'zustand' // create로 zustand를 불러옵니다.
 
-import { DUMMY_PLAN, Plan } from '../types/Entity/plan'
+import { Plan } from '../types/Entity/plan'
+import { Nullable } from '../utils/typeUtils'
 
 interface PlanContext {
-  planData: Plan
+  planData: Nullable<Plan>
 }
 
 const usePlanStore = create<PlanContext>(set => ({
-  planData: DUMMY_PLAN,
+  planData: null,
   setPlanData: (updatedPlan: Plan) => {
     set(() => ({ planData: updatedPlan }))
   },
