@@ -142,4 +142,10 @@ export const BACKEND_ROUTES = {
       url: '/auth/renew-token',
     },
   },
+  PLAN: {
+    UPDATE: {
+      method: 'POST',
+      url: '/plan/update',
+    },
+  },
 }

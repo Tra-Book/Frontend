@@ -7,6 +7,7 @@ import { Motion } from '@/components/common/MotionWrapper'
 import { AddedPlaceCards } from '@/components/plan/PlaceCards'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
+import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { DayPlan } from '@/lib/types/Entity/plan'
@@ -43,7 +44,7 @@ const DUMMY_PLACE: Place = {
 }
 
 // Dummy places
-const DUMMY_PLACES: Array<Place> = []
+const DUMMY_PLACES: Array<Place> = new Array(12).fill(DUMMY_PLACE)
 
 // Dummy DayPlan
 const DUMMY_DAYPLAN: DayPlan = {
@@ -69,6 +70,28 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
 
   const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
+  }
+  // Todo: UPDATE fetch 만들기
+  const update = async () => {
+    try {
+      const res = await fetch(`server/${BACKEND_ROUTES.PLAN.UPDATE.url}`, {
+        method: BACKEND_ROUTES.PLAN.UPDATE.method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+        credentials: 'include',
+      })
+
+      if (res.ok) {
+      }
+      const status = res.status
+    } catch (error) {}
+  }
+
+  const handleAddPlace = () => {
+    // update();
+    setFocusedPlaceCard(undefined) // 초기화
   }
   // Todo: DayPlan 정보 받아오기
   const DayPlan: DayPlan = DUMMY_DAYPLAN
@@ -188,6 +211,17 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
             className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
           >
             장소 검색하기
+          </Button>
+        )}
+
+        {focusedPlaceCard && (
+          <Button
+            onClick={handleAddPlace}
+            variant='tbGreen'
+            size='lg'
+            className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
+          >
+            해당 장소 추가하기
           </Button>
         )}
       </div>
