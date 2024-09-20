@@ -1,5 +1,8 @@
+import { StaticImageData } from 'next/image'
+
 import { StateType } from '@/lib/constants/regions'
 
+import { Comment } from './comment'
 import { Place } from './place'
 
 export interface Plan {
@@ -12,7 +15,10 @@ export interface Plan {
   startDate: Date // "yyyy-MM-dd" 형태
   endDate: Date
 
-  imgSrc: string
+  // imgSrc: string
+  // Todo: string으로 바꾸기
+  imgSrc: StaticImageData
+
   title: string
   description: string
   memberCnt: number
@@ -26,6 +32,11 @@ export interface Plan {
   // #3. 커뮤니티 정보
   likeCnt: number
   scrapCnt: number
+  comments?: Array<Comment>
+
+  // #4. 요청 유저관련 정보
+  isScraped: boolean
+  isLiked: boolean
 }
 
 export interface DayPlan {

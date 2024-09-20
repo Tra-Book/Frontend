@@ -49,17 +49,16 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
 
   return (
     <>
-      {/* <AddedPlaceLists DayPlan={DayPlan} /> */}
-
       {/* 검색창 */}
       {isSearching && (
         <SearchArea
-          name='Plan'
-          focusedPlaceCard={focusedPlaceCard}
-          setFocusedPlaceCard={setFocusedPlaceCard}
+          name='Place'
+          focusCard={focusedPlaceCard}
+          handleClickCard={setFocusedPlaceCard}
           className='h-dvh w-[23dvw] min-w-[280px]'
         />
       )}
+
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
         <Map // 지도를 표시할 Container

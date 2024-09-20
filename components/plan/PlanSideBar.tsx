@@ -32,15 +32,15 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
         )}
       >
         <LucideIcon name='Plane' size={iconSize} />
-        <div>기본 정보</div>
+        <div>여행 정보</div>
       </Link>
 
       <Link
         href={ROUTES.PLAN.SCHEDULE.url}
         className={cn(style, pathname.includes(ROUTES.PLAN.SCHEDULE.url) && 'bg-tbPrimary')}
       >
-        <LucideIcon name='Calendar' size={iconSize} />
-        <div>여행 일정</div>
+        <LucideIcon name='MapPin' size={iconSize} />
+        <div>장소 검색</div>
       </Link>
 
       <div className='grow'>

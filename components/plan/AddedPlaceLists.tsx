@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils/cn'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 
 import { Motion } from '../common/MotionWrapper'
-import { AddedPlaceCards } from './PlaceCards'
+import { AddedPlaceCards } from './Cards'
 
 interface AddedPlaceListsProps {
   DayPlan: DayPlan
