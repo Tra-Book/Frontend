@@ -130,7 +130,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
       </Motion>
       {/* 검색창 */}
       {isSearching && (
-        <SearchArea name='Plan' setIsSearching={setIsSearching} className='h-dvh w-[24dvw] min-w-[280px]' />
+        <SearchArea name='Plan' setIsSearching={setIsSearching} className='h-dvh w-[23dvw] min-w-[280px]' />
       )}
       {/* 지도 */}
       <div className='relative h-full flex-grow'>

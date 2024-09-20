@@ -103,7 +103,7 @@ const Contents = ({ name, datas }: ContentsProps): ReactNode => {
     )
   } else {
     // #1. 필터, 검색, 정렬 적용
-    filteredData = applyAllFilters(datas, filter, searchInput, arrange)
+    filteredData = applyAllFilters(datas, filter, searchInput, arrange) as Array<DummyPlanType> | Array<DummyPlaceType>
     // #2. 페이지에 맞는 데이터 (로직 필요)
     const startIndex = (currentPage - 1) * ELEMENTS_PER_PAGE
     const endIndex = startIndex + ELEMENTS_PER_PAGE
