@@ -2,6 +2,7 @@
 import React, { ReactNode, useState } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
 
+import { SpriteMapMarker } from '@/components/common/MapPin'
 import { Motion } from '@/components/common/MotionWrapper'
 import { AddedPlaceCards } from '@/components/plan/PlaceCards'
 import SearchArea from '@/components/plan/SerachArea'
@@ -29,8 +30,8 @@ const DUMMY_PLACE: Place = {
   visitCnt: 100, // 실제 계획에 담긴 횟수
 
   geo: {
-    latitude: 127,
-    longitude: 32,
+    latitude: 33.450701,
+    longitude: 126.570667,
   },
   //reviews: Array<Comment>
   reviewCnt: 10,
@@ -146,7 +147,10 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
             height: '100%',
           }}
           level={8} // 지도의 확대 레벨
-        />
+        >
+          <SpriteMapMarker geo={DUMMY_PLACE.geo} order={0} />
+        </Map>
+
         {!isSearching && (
           <Button
             onClick={handleSearchBtn}

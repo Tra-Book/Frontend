@@ -6,7 +6,7 @@ import { Place } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
 
 import Backdrop from '../common/Backdrop'
-import MapPin from '../common/MapPin'
+import { MapPin } from '../common/MapPin'
 
 interface AddedPlanCardsProps {
   data: Place
@@ -72,7 +72,7 @@ export const PlaceCard = ({ data }: PlaceCardProps) => {
   const { imgSrc, order, name, address, tag, reviews, reviewCnt, stars, visitCnt, duration } = data
 
   return (
-    <div className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4'>
+    <div className='relative flex min-h-min w-[95%] cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4'>
       <div className='group relative aspect-square h-full origin-left'>
         <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
         <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
@@ -83,6 +83,8 @@ export const PlaceCard = ({ data }: PlaceCardProps) => {
         <div className='group flex w-fit items-center justify-start'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
           <span className='text-base font-semibold group-hover:text-tbBlue'>{name}</span>
+          {/* TODO: 유저 북마크 추가하기  */}
+          <LucideIcon name='Bookmark' className='absolute right-0 hover:fill-red-500' />
         </div>
 
         <div className='flex w-full items-center justify-between text-sm'>

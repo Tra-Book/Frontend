@@ -46,6 +46,7 @@ const SearchArea = ({ name, setIsSearching, className }: SearchAreaProps): React
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
   const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
 
+  // Todo: Default 지역 Filter : 여행계획의 필터
   // Todo: search / filter / sort가 적용된 데이터
   const data: Array<Place> = Array(14).fill(DUMMY_PLACE)
 
@@ -98,7 +99,7 @@ const SearchArea = ({ name, setIsSearching, className }: SearchAreaProps): React
         </div>
       </div>
       {/* 데이터 */}
-      <div className='flex w-full flex-grow flex-col overflow-y-auto'>{contents}</div>
+      <div className='flex w-full flex-grow flex-col items-center overflow-y-auto'>{contents}</div>
     </div>
   )
 }
