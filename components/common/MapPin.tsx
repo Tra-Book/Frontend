@@ -23,11 +23,28 @@ export const MapPin = ({ num, size, className }: MapPinProps): ReactNode => {
 interface SpriteMapMarkerProps {
   geo: Geo
   order: number
+  id: 'search' | 'focus' | 'scrap'
 }
 
 const MARKER_SIZE = 44
 const MAX_MARKER_COUNT = 16
-export const SpriteMapMarker = ({ geo, order }: SpriteMapMarkerProps): ReactNode => {
+export const SpriteMapMarker = ({ geo, order, id }: SpriteMapMarkerProps): ReactNode => {
+  let imgSrc: string = ''
+  switch (id) {
+    case 'search':
+      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
+      break
+    case 'focus':
+      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
+
+      break
+    case 'scrap':
+      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
+
+      break
+    default:
+      break
+  }
   return (
     <MapMarker
       position={{
@@ -35,7 +52,7 @@ export const SpriteMapMarker = ({ geo, order }: SpriteMapMarkerProps): ReactNode
         lng: geo.longitude,
       }}
       image={{
-        src: 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png',
+        src: imgSrc,
         size: {
           // 사용할 이미지 크기
           width: MARKER_SIZE,
@@ -51,7 +68,7 @@ export const SpriteMapMarker = ({ geo, order }: SpriteMapMarkerProps): ReactNode
           spriteSize: {
             // 전체 이미지 크기
             width: MARKER_SIZE,
-            height: MARKER_SIZE * MAX_MARKER_COUNT,
+            height: id === 'focus' ? MARKER_SIZE : MARKER_SIZE * MAX_MARKER_COUNT,
           },
         },
       }}

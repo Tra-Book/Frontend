@@ -15,6 +15,8 @@ interface SearchAreaProps {
   className?: string
   name: 'Plan' | 'Place'
   setIsSearching: React.Dispatch<React.SetStateAction<boolean>>
+  focusedPlaceCard: Place | undefined
+  setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
 
 // Dummy Place
@@ -30,8 +32,8 @@ const DUMMY_PLACE: Place = {
   visitCnt: 100, // 실제 계획에 담긴 횟수
 
   geo: {
-    latitude: 127,
-    longitude: 32,
+    latitude: 33.450701,
+    longitude: 126.570667,
   },
   //reviews: Array<Comment>
   reviewCnt: 10,
@@ -42,7 +44,13 @@ const DUMMY_PLACE: Place = {
   order: 1, // 계획세우기에 담긴 순서
 }
 
-const SearchArea = ({ name, setIsSearching, className }: SearchAreaProps): ReactNode => {
+const SearchArea = ({
+  name,
+  setIsSearching,
+  focusedPlaceCard,
+  setFocusedPlaceCard,
+  className,
+}: SearchAreaProps): ReactNode => {
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
   const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
 
@@ -67,7 +75,14 @@ const SearchArea = ({ name, setIsSearching, className }: SearchAreaProps): React
     )
   } else {
     // #2. 무한스크롤 적용
-    contents = data.map((place, index) => <PlaceCard key={index} data={place} />)
+    contents = data.map((place, index) => (
+      <PlaceCard
+        key={index}
+        data={place}
+        focusedPlaceCard={focusedPlaceCard}
+        setFocusedPlaceCard={setFocusedPlaceCard}
+      />
+    ))
   }
 
   const submitHandler = (event: React.FormEvent) => {

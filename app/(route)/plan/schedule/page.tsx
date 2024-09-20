@@ -43,7 +43,7 @@ const DUMMY_PLACE: Place = {
 }
 
 // Dummy places
-const DUMMY_PLACES: Array<Place> = new Array(15).fill(DUMMY_PLACE)
+const DUMMY_PLACES: Array<Place> = []
 
 // Dummy DayPlan
 const DUMMY_DAYPLAN: DayPlan = {
@@ -54,10 +54,13 @@ const DUMMY_DAYPLAN: DayPlan = {
 }
 
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
+  useKakaoLoader() // 카카오 지도 로딩
+
   const { day, DayDropdown } = useDayDropdown(10)
   const [isReduced, setIsReduced] = useState<boolean>(false)
   const [isSearching, setIsSearching] = useState<boolean>(false)
-  useKakaoLoader() // 카카오 지도 로딩
+
+  const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
   const handleSearchBtn = () => {
     setIsReduced(true)
@@ -69,6 +72,25 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   }
   // Todo: DayPlan 정보 받아오기
   const DayPlan: DayPlan = DUMMY_DAYPLAN
+
+  let AddedPlanContents
+  if (DayPlan.places?.length === 0) {
+    AddedPlanContents = (
+      <div
+        className={cn(
+          'relative flex w-full flex-grow items-center justify-center gap-10 text-balance pb-1 text-center font-bold',
+          isReduced ? 'text-lg' : 'text-2xl',
+        )}
+      >
+        여행일정이 없습니다!
+      </div>
+    )
+  } else {
+    AddedPlanContents = DayPlan.places?.map((dayPlan, index) => (
+      <AddedPlaceCards key={index} data={dayPlan} isReduced={isReduced} />
+    ))
+  }
+
   return (
     <div className='relative flex h-dvh flex-grow justify-start'>
       {/* 사이드바 */}
@@ -115,9 +137,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         </div>
         {/* 카드들 (서버 컴포넌트) */}
         <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
-          {DayPlan.places?.map((dayPlan, index) => (
-            <AddedPlaceCards key={index} data={dayPlan} isReduced={isReduced} />
-          ))}
+          {AddedPlanContents}
         </div>
         {/* 축소 확대 버튼 */}
         {!isSearching && (
@@ -131,7 +151,13 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
       </Motion>
       {/* 검색창 */}
       {isSearching && (
-        <SearchArea name='Plan' setIsSearching={setIsSearching} className='h-dvh w-[23dvw] min-w-[280px]' />
+        <SearchArea
+          name='Plan'
+          setIsSearching={setIsSearching}
+          focusedPlaceCard={focusedPlaceCard}
+          setFocusedPlaceCard={setFocusedPlaceCard}
+          className='h-dvh w-[23dvw] min-w-[280px]'
+        />
       )}
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
@@ -148,7 +174,10 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
           }}
           level={8} // 지도의 확대 레벨
         >
-          <SpriteMapMarker geo={DUMMY_PLACE.geo} order={0} />
+          {/* <SpriteMapMarker geo={DUMMY_PLACE.geo} order={0} id='search' /> */}
+
+          {/* 유저가 클릭한 여행지 마커 위치 */}
+          {focusedPlaceCard && <SpriteMapMarker geo={focusedPlaceCard.geo} order={0} id='focus' />}
         </Map>
 
         {!isSearching && (
