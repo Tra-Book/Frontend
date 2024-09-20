@@ -3,14 +3,10 @@ import Link from 'next/link'
 import React, { ReactNode } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
 
-import AddedPlaceLists from '@/components/plan/AddedPlaceLists'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
-import { DayPlan } from '@/lib/types/Entity/plan'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
-
-import { DUMMY_DAYPLAN } from '../../schedule/page'
 
 interface PlanStorePageProps {}
 
@@ -25,11 +21,8 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
   }
 
   // Todo: 전역 변수에서 DayPlan 가져오기
-  const DayPlan: DayPlan = DUMMY_DAYPLAN
   return (
-    <div className='relative flex h-dvh flex-grow justify-start'>
-      <AddedPlaceLists DayPlan={DayPlan} />
-
+    <>
       {/* 선택바 */}
       {isSearching && (
         <div className='relative h-dvh w-[23dvw] min-w-[280px]'>
@@ -79,7 +72,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
           </Button>
         )}
       </div>
-    </div>
+    </>
   )
 }
 
