@@ -72,9 +72,9 @@ export const ROUTES = {
       url: '/plan/schedule',
     },
     STORE: {
-      PLAN: {
+      INDEX: {
         name: '보관함',
-        url: '/plan/store/plan',
+        url: '/plan/store',
       },
       PLACE: {
         name: '보관함',
