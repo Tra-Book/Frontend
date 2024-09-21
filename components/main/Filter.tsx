@@ -4,27 +4,28 @@ import React, { ReactNode, useState } from 'react'
 import { CITIES, getStateIdx, STATES, StateType } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import { CityChoicesType, FilterType, IsFinishedChoicesType, StateChoicesType } from '@/lib/utils/hooks/useFilters'
 import { ReadOnly } from '@/lib/utils/typeUtils'
 
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { CityChoicesType, FilterType, IsFinishedChoicesType, StateChoicesType } from './Contents'
 
 interface FilterProps {
   id: 'isFinished' | 'state' | 'city'
   filter: FilterType['isFinished' | 'state' | 'city']
   placeHolder: string
   choices: ReadOnly<Array<IsFinishedChoicesType>> | ReadOnly<Array<StateChoicesType>>
-  handleFilters: (
+  filterHandler: (
     id: 'isFinished' | 'state' | 'city' | 'all',
     type: 'change' | 'reset',
     filterValues?: FilterType['isFinished' | 'state' | 'city'],
     selectedState?: string,
   ) => void
+  movePageHandler: (pageNumber: number) => void
 }
 
-const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps): ReactNode => {
+const Filter = ({ id, filter, placeHolder, choices, filterHandler, movePageHandler }: FilterProps): ReactNode => {
   const [isOpen, setIsOpen] = useState<boolean>(false) // 드롭다운 열림 상태 관리
   const [isSaved, setIsSaved] = useState<boolean>(false) // 저장 여부 상태 관리
   const [checkedFilters, setCheckedFilters] = useState<FilterType['isFinished' | 'state' | 'city']>(filter)
@@ -216,12 +217,12 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
       <DropdownMenuContent>
         {getChoices()}
         <DropdownMenuSeparator />
-        <div className='relative flex items-center justify-end gap-4 p-2'>
+        <div className='relative flex items-center justify-end gap-2 p-2'>
           <Button
             variant='tbGray'
             className='w-1/2'
             onClick={() => {
-              handleFilters(id, 'reset')
+              filterHandler(id, 'reset')
               setIsOpen(false)
               setSelectedState('전체')
             }}
@@ -232,7 +233,8 @@ const Filter = ({ id, filter, placeHolder, choices, handleFilters }: FilterProps
             variant='tbPrimary'
             className='w-1/2'
             onClick={() => {
-              handleFilters(id, 'change', checkedFilters)
+              filterHandler(id, 'change', checkedFilters)
+              movePageHandler(1)
               setIsSaved(true)
               setIsOpen(false)
             }}

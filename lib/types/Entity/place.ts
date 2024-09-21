@@ -1,5 +1,7 @@
 import { StaticImageData } from 'next/image'
 
+import { Comment } from './comment'
+
 export interface Geo {
   latitude: number
   longitude: number

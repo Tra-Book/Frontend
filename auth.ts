@@ -122,7 +122,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             case 400:
               console.log(data.message)
               return 'error'
-              break
             default:
               console.log('kakao login error')
               return 'error'
