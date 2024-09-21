@@ -1,13 +1,19 @@
-import Link from 'next/link'
 import React, { ReactNode } from 'react'
+
+import UpdateInfo from '@/components/plan/UpdateInfo'
+import UpdatePeriod from '@/components/plan/UpdatePeriod'
 
 interface TravelInfoPageProps {}
 
 const TravelInfoPage = ({}: TravelInfoPageProps): ReactNode => {
   return (
-    <div>
-      <div>초기 설정 페이지</div>
-      <Link href='/plan/index'>여행 정보 수정</Link>
+    <div className='h-full w-full'>
+      <div className='h-1/2 w-full'>
+        <UpdatePeriod />
+      </div>
+      <div className='h-1/2 w-full'>
+        <UpdateInfo />
+      </div>
     </div>
   )
 }
