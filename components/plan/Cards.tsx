@@ -9,12 +9,12 @@ import { cn } from '@/lib/utils/cn'
 import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
 
-interface AddedPlanCardsProps {
+interface SchedulePlaceCardProps {
   data: Place
   isReduced: boolean
 }
 
-export const AddedPlaceCards = ({ data, isReduced }: AddedPlanCardsProps): ReactNode => {
+export const SchedulePlaceCard = ({ data, isReduced }: SchedulePlaceCardProps): ReactNode => {
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration } = data
 
   const addressArr = address
@@ -131,12 +131,13 @@ interface PlanCardProps {
 }
 
 export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
-  const { imgSrc, title, likeCnt, scrapCnt, comments, description } = data
+  const { imgSrc, title, likeCnt, scrapCnt, comments, description, isScraped } = data
   return (
     <div
       className={cn(
         'relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
       )}
+      onClick={() => handleClickCard(data)}
     >
       <div className='group relative aspect-square h-full origin-left'>
         <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
@@ -148,8 +149,6 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
         <div className='group flex w-fit items-center justify-start'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
           <span className='text-base font-semibold group-hover:text-tbBlue'>{title}</span>
-          {/* TODO: 유저 북마크 추가하기  */}
-          <LucideIcon name='Bookmark' className='absolute right-2 hover:fill-tbRed' />
         </div>
 
         <div className='flex w-full items-center justify-between text-sm'>
@@ -163,6 +162,10 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='MessageCircle' strokeWidth={2.5} />
             <span>{comments?.length}</span>
+          </div>
+          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+            <LucideIcon name='Bookmark' strokeWidth={2.5} />
+            <span>{scrapCnt}</span>
           </div>
         </div>
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>

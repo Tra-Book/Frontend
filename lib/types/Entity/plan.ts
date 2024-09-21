@@ -27,7 +27,7 @@ export interface Plan {
   isDone: boolean // 공개 여부 (끝난 여부)
 
   // #2. 여행 일정
-  schedule?: Array<DayPlan>
+  schedule: Array<DayPlan>
 
   // #3. 커뮤니티 정보
   likeCnt: number

@@ -3,18 +3,19 @@ import React, { ReactNode } from 'react'
 
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { DayPlan } from '@/lib/types/Entity/plan'
+import { DayPlan, Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 
 import { Motion } from '../common/MotionWrapper'
-import { AddedPlaceCards } from './Cards'
+import { SchedulePlaceCard } from './Cards'
 
-interface AddedPlaceListsProps {
-  DayPlan: DayPlan
+interface ScheduleProps {
+  id: 'schedule' | 'scrap'
+  plan: Plan // Todo: 일정에서는 전역 변수 + 보관함(여행계획)에서는 클릭한 여행계획
 }
 
-const AddedPlaceLists = ({ DayPlan }: AddedPlaceListsProps): ReactNode => {
+const Schedule = ({ id, plan }: ScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
 
   const { day, DayDropdown } = useDayDropdown(10)
@@ -22,24 +23,43 @@ const AddedPlaceLists = ({ DayPlan }: AddedPlaceListsProps): ReactNode => {
   const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
   }
-  // Contents
-  let AddedPlaceContents
-  if (DayPlan.places?.length === 0) {
-    AddedPlaceContents = (
+
+  // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
+  const schedule: DayPlan | undefined = plan.schedule?.find(item => item.day === day)
+
+  let contents
+  // #2. 해당일자의 DayPlan이 없는 경우 (유저의 조작)
+  if (!schedule) {
+    contents = (
       <div
         className={cn(
           'relative flex w-full flex-grow items-center justify-center gap-10 text-balance pb-1 text-center font-bold',
           isReduced ? 'text-lg' : 'text-2xl',
         )}
       >
-        여행일정이 없습니다!
+        해당 일자는 선택하지 않으셨습니다!
       </div>
     )
-  } else {
-    AddedPlaceContents = DayPlan.places?.map((dayPlan, index) => (
-      <AddedPlaceCards key={index} data={dayPlan} isReduced={isReduced} />
-    ))
   }
+  // #3. 해당일자의 DayPlan이 있는 경우 (places제외, 디폴트로 만들어줘서 항상 있어야 함)
+  else {
+    // #3-1. 유저가 추가한 여행지가 아직 없음
+    if (!schedule.places) {
+      contents = (
+        <div
+          className={cn(
+            'relative flex w-full flex-grow items-center justify-center gap-10 text-balance pb-1 text-center font-bold',
+            isReduced ? 'text-lg' : 'text-2xl',
+          )}
+        >
+          여행일정이 없습니다!
+        </div>
+      )
+    } else {
+      contents = schedule.places.map(place => <SchedulePlaceCard key={place.id} data={place} isReduced={isReduced} />)
+    }
+  }
+
   return (
     <Motion
       animation={{
@@ -50,7 +70,7 @@ const AddedPlaceLists = ({ DayPlan }: AddedPlaceListsProps): ReactNode => {
     >
       {/* 지역/일자선택 */}
 
-      <div className='relative flex min-h-[7%] w-full items-end'>
+      <div className='relative flex min-h-[7%] w-full items-center'>
         {!isReduced && <p className='mx-4'>강원도</p>}
         <DayDropdown isReduced={isReduced} className='mx-4 h-9 flex-grow' />
       </div>
@@ -84,7 +104,7 @@ const AddedPlaceLists = ({ DayPlan }: AddedPlaceListsProps): ReactNode => {
       </div>
       {/* 카드들 (서버 컴포넌트) */}
       <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
-        {AddedPlaceContents}
+        {contents}
       </div>
       {/* 축소 확대 버튼 */}
       {!isSearching && (
@@ -99,4 +119,4 @@ const AddedPlaceLists = ({ DayPlan }: AddedPlaceListsProps): ReactNode => {
   )
 }
 
-export default AddedPlaceLists
+export default Schedule

@@ -12,9 +12,9 @@ import usePlanStore from '@/lib/context/planStore'
 import { Place } from '@/lib/types/Entity/place'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
-interface PlanStorePageProps {}
+interface PlaceStorePageProps {}
 
-const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
+const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
   useKakaoLoader() // 카카오 지도 로딩
 
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
@@ -23,6 +23,11 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
   const openSearchBar = () => {
     setIsReduced(true)
     setIsSearching(true)
+  }
+
+  const handleAddPlace = () => {
+    // update();
+    setFocusedPlaceCard(undefined) // 초기화
   }
 
   // Todo: 전역 변수에서 DayPlan 가져오기
@@ -56,15 +61,6 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
               focusCard={focusedPlaceCard}
               className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
             />
-            {/* 축소 확대 버튼
-            {isReduced && (
-              <div
-                onClick={() => setIsSearching(prev => !prev)}
-                className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
-              >
-                <LucideIcon name={isSearching ? 'ChevronsLeft' : 'ChevronsRight'} size={28} />
-              </div>
-            )} */}
           </Motion>
         )}
       </AnimatePresence>
@@ -74,7 +70,6 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
         <Map
           id='map'
           center={{
-            // 지도의 중심좌표
             lat: 33.450701,
             lng: 126.570667,
           }}
@@ -82,7 +77,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
             width: '100%',
             height: '100%',
           }}
-          level={8} // 지도의 확대 레벨
+          level={8}
         ></Map>
 
         {!isSearching && (
@@ -95,9 +90,19 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
             보관함 열기
           </Button>
         )}
+        {focusedPlaceCard && (
+          <Button
+            onClick={handleAddPlace}
+            variant='tbGreen'
+            size='lg'
+            className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
+          >
+            해당 장소 추가하기
+          </Button>
+        )}
       </div>
     </>
   )
 }
 
-export default PlanStorePage
+export default PlaceStorePage

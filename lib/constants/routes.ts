@@ -78,7 +78,7 @@ export const ROUTES = {
       },
       PLACE: {
         name: '보관함',
-        url: '/plan/store/place',
+        url: '/plan/store/plan',
       },
     },
   },

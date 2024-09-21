@@ -1,14 +1,13 @@
 'use client'
 import React, { ReactNode, useRef } from 'react'
 
+import { DUMMY_PLACES, DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { Comment } from '@/lib/types/Entity/comment'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import useFilters from '@/lib/utils/hooks/useFilters'
-import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
 
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -24,58 +23,6 @@ interface SearchAreaProps {
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
 
-const DUMMY_PLACE: Place = {
-  id: 125405,
-  name: '토함산자연휴양림',
-  imgSrc: DUMMYPLACEIMG,
-  address: '경상북도 경주시 양북면 불국로',
-
-  tag: '관광지',
-  duration: 60,
-  stars: 5,
-  visitCnt: 100, // 실제 계획에 담긴 횟수
-
-  geo: {
-    latitude: 33.450701,
-    longitude: 126.570667,
-  },
-  //reviews: Array<Comment>
-  reviewCnt: 10,
-
-  isAdded: true, // 계획에 들어갔는지 여부
-  isScraped: true,
-
-  order: 1, // 계획세우기에 담긴 순서
-}
-
-const DUMMY_COMMENT: Comment = {
-  id: 10,
-  parentId: 9,
-  content: '댓글',
-  date: new Date(),
-  thumbCnt: 100,
-  userId: 41,
-}
-const DUMMY_PLAN: Plan = {
-  id: 12345,
-  title: '가족 여행',
-  likeCnt: 30,
-  isDone: true,
-  startDate: new Date(),
-  endDate: new Date(),
-  budget: 10000,
-  state: '서울특별시',
-  city: '강서구',
-  description: '전역한 아들들과 떠나는 즐겨운 여행입니다! 전역한 아들들과 떠나는 즐겨운 여행입니다!',
-  imgSrc: DUMMYPLACEIMG,
-  scrapCnt: 200,
-  memberCnt: 10,
-  userId: 41,
-  comments: new Array(12).fill(DUMMY_COMMENT),
-  isScraped: true,
-  isLiked: true,
-}
-
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
 
@@ -84,8 +31,8 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
 
   // Todo: Default 지역 Filter : 여행계획의 필터
   // Todo: search / filter / sort가 적용된 데이터
-  let data: Array<Place> = Array(14).fill(DUMMY_PLACE)
-  let tmpPlaceData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
+  let data: Array<Place> = DUMMY_PLACES
+  let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
   let contents
   if (data.length === 0) {
     contents = (
@@ -113,7 +60,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
         />
       ))
     } else {
-      contents = tmpPlaceData.map((plan, index) => (
+      contents = tmpPlanData.map((plan, index) => (
         <PlanCard
           key={index}
           data={plan}
@@ -132,7 +79,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   return (
     <div className={cn('relative flex flex-col items-start justify-start', className)}>
       {/* 유저 입력 */}
-      <div className='relative flex min-h-[7dvh] w-full items-end justify-start px-2'>
+      <div className='relative flex min-h-[7dvh] w-full items-center justify-start px-2'>
         <form onSubmit={submitHandler} className='flex-grow'>
           <Input
             id='input'
