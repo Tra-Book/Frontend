@@ -74,13 +74,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
 
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
-        <KakaoMap
-          center={{
-            // 지도의 중심좌표
-            latitude: 33.450701,
-            longitude: 126.570667,
-          }}
-        />
+        <KakaoMap />
 
         {!isSearching && (
           <Button

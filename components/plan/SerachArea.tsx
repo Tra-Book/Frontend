@@ -22,10 +22,10 @@ interface SearchAreaProps {
 }
 
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
+  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
 
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
-  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
 
   // Todo: Default 지역 Filter : 여행계획의 필터
   // Todo: search / filter / sort가 적용된 데이터

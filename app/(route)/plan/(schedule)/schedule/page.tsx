@@ -1,11 +1,11 @@
 'use client'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
-import useMapStore from '@/lib/context/focusStore'
+import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -14,7 +14,7 @@ interface PlanSchedulePageProps {}
 
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
-  const { setFocusedPlacePin } = useMapStore()
+  const { setCenter, setFocusedPlacePin } = useMapStore()
 
   const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
@@ -44,12 +44,18 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   const handleAddPlace = () => {
     // update();
     setFocusedPlaceCard(undefined) // 초기화
+    setFocusedPlacePin(null)
   }
 
   const handleClickCard = (card: Place) => {
     setFocusedPlaceCard(card)
     setFocusedPlacePin(card.geo)
+    setCenter(card.geo)
   }
+
+  useEffect(() => {
+    return () => setFocusedPlacePin(null)
+  }, [])
   // Todo: 현재 D
   // Dummy_Pins
 
@@ -67,13 +73,7 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
 
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
-        <KakaoMap
-          center={{
-            // 지도의 중심좌표
-            latitude: 33.450701,
-            longitude: 126.570667,
-          }}
-        />
+        <KakaoMap />
 
         {!isSearching && (
           <Button

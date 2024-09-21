@@ -1,7 +1,7 @@
 'use client'
 import React, { ReactNode, useEffect } from 'react'
 
-import useMapStore from '@/lib/context/focusStore'
+import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Geo } from '@/lib/types/Entity/place'

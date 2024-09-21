@@ -1,20 +1,16 @@
 import React, { ReactNode } from 'react'
 import { Map } from 'react-kakao-maps-sdk'
 
-import useMapStore from '@/lib/context/focusStore'
-import { Geo } from '@/lib/types/Entity/place'
+import useMapStore from '@/lib/context/mapStore'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
 import { SpriteMapMarker } from './MapPin'
 
-interface KakaoMapProps {
-  center: Geo
-}
+interface KakaoMapProps {}
 
-const KakaoMap = ({ center }: KakaoMapProps): ReactNode => {
+const KakaoMap = ({}: KakaoMapProps): ReactNode => {
   useKakaoLoader() // 카카오 지도 로딩
-  const { focusedPlanPins, focusedPlacePin } = useMapStore()
-  console.log(focusedPlanPins)
+  const { center, focusedPlanPins, focusedPlacePin } = useMapStore()
 
   return (
     <Map // 지도를 표시할 Container
