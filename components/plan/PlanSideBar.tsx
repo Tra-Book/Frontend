@@ -45,10 +45,10 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
 
       <div className='grow'>
         <Link
-          href={ROUTES.PLAN.STORE.INDEX.url}
+          href={ROUTES.PLAN.SCRAP.PLACE.url}
           className={cn(
             style,
-            pathname.includes(ROUTES.PLAN.STORE.INDEX.url) && 'bg-tbPrimary',
+            pathname.includes(ROUTES.PLAN.SCRAP.PLACE.url.replace('/place', '')) && 'bg-tbPrimary',
             'h-full max-h-[100px]',
           )}
         >

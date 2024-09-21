@@ -4,17 +4,19 @@ import { MapMarker } from 'react-kakao-maps-sdk'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Geo } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
+import { ColorType } from '@/public/colors/colors'
 
 interface MapPinProps {
   num: number
   size?: number
+  fill?: ColorType
   className?: string
 }
 
-export const MapPin = ({ num, size, className }: MapPinProps): ReactNode => {
+export const MapPin = ({ num, size, fill = 'tbOrange', className }: MapPinProps): ReactNode => {
   return (
     <div className={cn('relative h-fit w-fit', className)}>
-      <LucideIcon size={size} name='MapPin' fill='tbOrange' strokeWidth={0} className='origin-bottom' />
+      <LucideIcon size={size} name='MapPin' fill={fill} strokeWidth={0} className='origin-bottom' />
       <span className='group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs'>{num}</span>
     </div>
   )

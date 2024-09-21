@@ -13,12 +13,14 @@ import { SchedulePlaceCard } from './Cards'
 interface ScheduleProps {
   id: 'schedule' | 'scrap'
   plan: Plan // Todo: 일정에서는 전역 변수 + 보관함(여행계획)에서는 클릭한 여행계획
+  setFocusPlanCard: React.Dispatch<React.SetStateAction<Plan | undefined>>
+  className?: string
 }
 
-const Schedule = ({ id, plan }: ScheduleProps): ReactNode => {
+const Schedule = ({ id, plan, setFocusPlanCard, className }: ScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
 
-  const { day, DayDropdown } = useDayDropdown(10)
+  const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
 
   const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
@@ -56,23 +58,33 @@ const Schedule = ({ id, plan }: ScheduleProps): ReactNode => {
         </div>
       )
     } else {
-      contents = schedule.places.map(place => <SchedulePlaceCard key={place.id} data={place} isReduced={isReduced} />)
+      contents = schedule.places.map(place => (
+        <SchedulePlaceCard id={id} key={place.id} data={place} isReduced={isReduced} />
+      ))
     }
   }
 
+  // style
+  const width = id === 'scrap' ? '100%' : isReduced ? '16dvw' : '21dvw'
   return (
     <Motion
       animation={{
-        animate: { width: isReduced ? '12dvw' : '25dvw' },
+        animate: { width: width },
         transition: { type: 'spring', duration: 0.5 },
       }}
-      className={cn('relative flex h-dvh flex-col items-center justify-start')}
+      className={cn('relative flex h-dvh origin-left flex-col items-center justify-start', className)}
     >
       {/* 지역/일자선택 */}
-
       <div className='relative flex min-h-[7%] w-full items-center'>
+        {id === 'scrap' && (
+          <LucideIcon name='ChevronLeft' onClick={() => setFocusPlanCard(undefined)} className='hover:text-tbRed' />
+        )}
         {!isReduced && <p className='mx-4'>강원도</p>}
-        <DayDropdown isReduced={isReduced} className='mx-4 h-9 flex-grow' />
+        <DayDropdown
+          color={id === 'scrap' ? 'tbGreen' : 'tbPrimary'}
+          isReduced={isReduced}
+          className={cn('mx-4 h-9 flex-grow', id === 'scrap' && 'bg-tbGreen hover:bg-tbGreenHover')}
+        />
       </div>
 
       {/* 여행일자 정보 */}
@@ -95,7 +107,7 @@ const Schedule = ({ id, plan }: ScheduleProps): ReactNode => {
           </div>
         </div>
         <div className=''>
-          <p className='text-xs text-tbGray'>남은 시간</p>
+          <p className='text-xs text-tbGray'>여유 시간</p>
           <div className='flex items-center justify-start gap-1'>
             <span className='text-base'>08:00</span>
             {!isReduced && <LucideIcon name='Clock' />}

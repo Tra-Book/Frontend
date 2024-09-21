@@ -127,10 +127,10 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }
     case ROUTES.PLAN.SCHEDULE.url:
       FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
       break
-    case ROUTES.PLAN.STORE.INDEX.url:
+    case ROUTES.PLAN.SCRAP.PLAN.url:
       FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
       break
-    case ROUTES.PLAN.STORE.PLACE.url:
+    case ROUTES.PLAN.SCRAP.PLACE.url:
       FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
       break
   }

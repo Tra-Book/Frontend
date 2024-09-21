@@ -10,11 +10,12 @@ import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
 
 interface SchedulePlaceCardProps {
+  id: 'schedule' | 'scrap'
   data: Place
   isReduced: boolean
 }
 
-export const SchedulePlaceCard = ({ data, isReduced }: SchedulePlaceCardProps): ReactNode => {
+export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProps): ReactNode => {
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration } = data
 
   const addressArr = address
@@ -40,7 +41,12 @@ export const SchedulePlaceCard = ({ data, isReduced }: SchedulePlaceCardProps): 
           )}
         >
           <div className='group flex w-fit items-center justify-start'>
-            <MapPin num={order} size={22} className='group-hover:scale-125' />
+            <MapPin
+              num={order}
+              size={22}
+              fill={id === 'schedule' ? 'tbOrange' : 'tbGreen'}
+              className='group-hover:scale-125'
+            />
             <span className='text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
 

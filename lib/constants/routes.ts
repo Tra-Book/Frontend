@@ -71,14 +71,14 @@ export const ROUTES = {
       name: '여행 일정',
       url: '/plan/schedule',
     },
-    STORE: {
-      INDEX: {
-        name: '보관함',
-        url: '/plan/store',
+    SCRAP: {
+      PLAN: {
+        name: '보관함 여행계획',
+        url: '/plan/scrap/plan',
       },
       PLACE: {
-        name: '보관함',
-        url: '/plan/store/plan',
+        name: '보관함 여행계획',
+        url: '/plan/scrap/place',
       },
     },
   },
