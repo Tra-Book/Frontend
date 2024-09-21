@@ -2,7 +2,7 @@ import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
 
 import { Comment } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
-import { DayPlan, Plan } from '../types/Entity/plan'
+import { Plan, Schedule } from '../types/Entity/plan'
 
 const get_dummy_place = (idx: number): Place => {
   return {
@@ -40,7 +40,7 @@ export const DUMMY_COMMENT: Comment = {
   userId: 41,
 }
 
-const get_dummy_dayplan = (idx: number): DayPlan => {
+const get_dummy_dayplan = (idx: number): Schedule => {
   return {
     day: idx + 1,
     startTime: '08:00',

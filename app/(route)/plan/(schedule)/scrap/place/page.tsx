@@ -2,14 +2,16 @@
 import { AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import React, { ReactNode, useState } from 'react'
-import { Map } from 'react-kakao-maps-sdk'
 
+import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
+import useMapStore from '@/lib/context/focusStore'
 import usePlanStore from '@/lib/context/planStore'
 import { Place } from '@/lib/types/Entity/place'
+import { Plan } from '@/lib/types/Entity/plan'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
 interface PlaceStorePageProps {}
@@ -18,6 +20,8 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
   useKakaoLoader() // 카카오 지도 로딩
 
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { setFocusedPlacePin } = useMapStore()
+
   const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
   const openSearchBar = () => {
@@ -30,7 +34,12 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
     setFocusedPlaceCard(undefined) // 초기화
   }
 
-  // Todo: 전역 변수에서 DayPlan 가져오기
+  const handleClickCard = (card: Place) => {
+    setFocusedPlaceCard(card)
+    setFocusedPlacePin(card.geo)
+  }
+
+  // Todo: 전역 변수에서 Schedule 가져오기
   return (
     <>
       {/* 선택바 */}
@@ -57,7 +66,7 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
             </div>
             <SearchArea
               name='Place'
-              handleClickCard={setFocusedPlaceCard}
+              handleClickCard={handleClickCard as (card: Place | Plan) => void}
               focusCard={focusedPlaceCard}
               className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
             />
@@ -67,18 +76,13 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
 
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
-        <Map
-          id='map'
+        <KakaoMap
           center={{
-            lat: 33.450701,
-            lng: 126.570667,
+            // 지도의 중심좌표
+            latitude: 33.450701,
+            longitude: 126.570667,
           }}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          level={8}
-        ></Map>
+        />
 
         {!isSearching && (
           <Button

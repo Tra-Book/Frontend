@@ -16,9 +16,7 @@ import { PlaceCard, PlanCard } from './Cards'
 interface SearchAreaProps {
   className?: string
   name: 'Plan' | 'Place'
-  handleClickCard:
-    | React.Dispatch<React.SetStateAction<Place | undefined>>
-    | React.Dispatch<React.SetStateAction<Plan | undefined>>
+  handleClickCard: (card: Place | Plan) => void
   focusCard: Place | Plan | undefined
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
@@ -56,16 +54,12 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
           key={index}
           data={place}
           focusedPlaceCard={focusCard as Place | undefined}
-          handleClickCard={handleClickCard as React.Dispatch<React.SetStateAction<Place | undefined>>}
+          handleClickCard={handleClickCard as (card: Place) => void}
         />
       ))
     } else {
       contents = tmpPlanData.map((plan, index) => (
-        <PlanCard
-          key={index}
-          data={plan}
-          handleClickCard={handleClickCard as React.Dispatch<React.SetStateAction<Plan | undefined>>}
-        />
+        <PlanCard key={index} data={plan} handleClickCard={handleClickCard as (card: Plan) => void} />
       ))
     }
   }

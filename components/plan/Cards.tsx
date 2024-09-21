@@ -74,7 +74,7 @@ export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProp
 interface PlaceCardProps {
   data: Place
   focusedPlaceCard: Place | undefined
-  handleClickCard: React.Dispatch<React.SetStateAction<Place | undefined>>
+  handleClickCard: (card: Place) => void
 }
 
 export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCardProps) => {
@@ -133,7 +133,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
 
 interface PlanCardProps {
   data: Plan
-  handleClickCard: React.Dispatch<React.SetStateAction<Plan | undefined>>
+  handleClickCard: (card: Plan) => void
 }
 
 export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {

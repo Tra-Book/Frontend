@@ -27,7 +27,7 @@ export interface Plan {
   isDone: boolean // 공개 여부 (끝난 여부)
 
   // #2. 여행 일정
-  schedule: Array<DayPlan>
+  schedule: Array<Schedule>
 
   // #3. 커뮤니티 정보
   likeCnt: number
@@ -39,7 +39,7 @@ export interface Plan {
   isLiked: boolean
 }
 
-export interface DayPlan {
+export interface Schedule {
   // #1. 기본 정보
   day: number // 몇일차
   startTime: string // "HH:MM" 형식

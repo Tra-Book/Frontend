@@ -25,26 +25,26 @@ export const MapPin = ({ num, size, fill = 'tbOrange', className }: MapPinProps)
 interface SpriteMapMarkerProps {
   geo: Geo
   order: number
-  id: 'search' | 'focus' | 'scrap'
+  id: 'schedule' | 'focus' | 'scrap'
 }
 
 const MARKER_SIZE = 44
 const MAX_MARKER_COUNT = 16
 export const SpriteMapMarker = ({ geo, order, id }: SpriteMapMarkerProps): ReactNode => {
   let imgSrc: string = ''
+  let zIndex: number
   switch (id) {
-    case 'search':
+    case 'schedule': // 주황색
       imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
-      break
+      zIndex = 20
+      break // T 모양
     case 'focus':
       imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
-
+      zIndex = 30
       break
-    case 'scrap':
-      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
-
-      break
-    default:
+    case 'scrap': // 초록색
+      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers_tbGreen.png'
+      zIndex = 10
       break
   }
   return (
@@ -74,6 +74,7 @@ export const SpriteMapMarker = ({ geo, order, id }: SpriteMapMarkerProps): React
           },
         },
       }}
+      zIndex={zIndex}
     />
   )
 }

@@ -2,14 +2,15 @@
 import { AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import React, { ReactNode, useState } from 'react'
-import { Map } from 'react-kakao-maps-sdk'
 
+import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
-import Schedule from '@/components/plan/Schedule'
+import PlanSchedule from '@/components/plan/PlanSchedule'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
+import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
@@ -19,11 +20,16 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
   useKakaoLoader() // 카카오 지도 로딩
 
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+
   const [focusedPlanCard, setFocusPlanCard] = useState<Plan>()
 
   const openSearchBar = () => {
     setIsReduced(true)
     setIsSearching(true)
+  }
+
+  const handleClickCard = (card: Plan) => {
+    setFocusPlanCard(card)
   }
 
   return (
@@ -54,13 +60,13 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                 </div>
                 <SearchArea
                   name='Plan'
-                  handleClickCard={setFocusPlanCard}
+                  handleClickCard={handleClickCard as (card: Place | Plan) => void}
                   focusCard={focusedPlanCard}
                   className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
                 />
               </>
             ) : (
-              <Schedule id='scrap' plan={focusedPlanCard} setFocusPlanCard={setFocusPlanCard} />
+              <PlanSchedule id='scrap' plan={focusedPlanCard} setFocusPlanCard={setFocusPlanCard} />
             )}
           </Motion>
         )}
@@ -68,19 +74,13 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
 
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
-        <Map
-          id='map'
+        <KakaoMap
           center={{
             // 지도의 중심좌표
-            lat: 33.450701,
-            lng: 126.570667,
+            latitude: 33.450701,
+            longitude: 126.570667,
           }}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          level={8} // 지도의 확대 레벨
-        ></Map>
+        />
 
         {!isSearching && (
           <Button

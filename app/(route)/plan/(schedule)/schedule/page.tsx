@@ -1,21 +1,20 @@
 'use client'
 import React, { ReactNode, useState } from 'react'
-import { Map } from 'react-kakao-maps-sdk'
 
-import { SpriteMapMarker } from '@/components/common/MapPin'
+import KakaoMap from '@/components/common/KakaoMap'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
+import useMapStore from '@/lib/context/focusStore'
 import usePlanStore from '@/lib/context/planStore'
 import { Place } from '@/lib/types/Entity/place'
-import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
+import { Plan } from '@/lib/types/Entity/plan'
 
 interface PlanSchedulePageProps {}
 
 const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
-  useKakaoLoader() // 카카오 지도 로딩
-
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { setFocusedPlacePin } = useMapStore()
 
   const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
@@ -47,6 +46,13 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
     setFocusedPlaceCard(undefined) // 초기화
   }
 
+  const handleClickCard = (card: Place) => {
+    setFocusedPlaceCard(card)
+    setFocusedPlacePin(card.geo)
+  }
+  // Todo: 현재 D
+  // Dummy_Pins
+
   return (
     <>
       {/* 검색창 */}
@@ -54,31 +60,20 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
         <SearchArea
           name='Place'
           focusCard={focusedPlaceCard}
-          handleClickCard={setFocusedPlaceCard}
+          handleClickCard={handleClickCard as (card: Place | Plan) => void}
           className='h-dvh w-[23dvw] min-w-[280px]'
         />
       )}
 
       {/* 지도 */}
       <div className='relative h-full flex-grow'>
-        <Map // 지도를 표시할 Container
-          id='map'
+        <KakaoMap
           center={{
             // 지도의 중심좌표
-            lat: 33.450701,
-            lng: 126.570667,
+            latitude: 33.450701,
+            longitude: 126.570667,
           }}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          level={8} // 지도의 확대 레벨
-        >
-          {/* <SpriteMapMarker geo={DUMMY_PLACE.geo} order={0} id='search' /> */}
-
-          {/* 유저가 클릭한 여행지 마커 위치 */}
-          {focusedPlaceCard && <SpriteMapMarker geo={focusedPlaceCard.geo} order={0} id='focus' />}
-        </Map>
+        />
 
         {!isSearching && (
           <Button

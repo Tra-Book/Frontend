@@ -1,33 +1,53 @@
 'use client'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
+import useMapStore from '@/lib/context/focusStore'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { DayPlan, Plan } from '@/lib/types/Entity/plan'
+import { Geo } from '@/lib/types/Entity/place'
+import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 
 import { Motion } from '../common/MotionWrapper'
 import { SchedulePlaceCard } from './Cards'
 
-interface ScheduleProps {
+interface PlanScheduleProps {
   id: 'schedule' | 'scrap'
   plan: Plan // Todo: 일정에서는 전역 변수 + 보관함(여행계획)에서는 클릭한 여행계획
-  setFocusPlanCard: React.Dispatch<React.SetStateAction<Plan | undefined>>
+  setFocusPlanCard?: React.Dispatch<React.SetStateAction<Plan | undefined>>
   className?: string
 }
 
-const Schedule = ({ id, plan, setFocusPlanCard, className }: ScheduleProps): ReactNode => {
+const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { setPins, setFocusedPlanPins } = useMapStore()
 
   const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
 
   const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
   }
+  const moveBack = () => {
+    if (setFocusPlanCard) {
+      setFocusPlanCard(undefined)
+    }
+  }
 
   // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
-  const schedule: DayPlan | undefined = plan.schedule?.find(item => item.day === day)
+  const schedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
+
+  // #2. Pin 업데이트
+  useEffect(() => {
+    if (schedule?.places) {
+      const newPins: Array<Geo> = schedule.places.map(place => place.geo)
+      if (id === 'schedule') setPins(newPins)
+      else {
+        setFocusedPlanPins(newPins)
+      }
+    }
+    return () => setFocusedPlanPins(null)
+  }, [schedule, setPins, setFocusedPlanPins]) // schedule 또는 setPins가 변경될 때만 호출
 
   let contents
   // #2. 해당일자의 DayPlan이 없는 경우 (유저의 조작)
@@ -76,9 +96,7 @@ const Schedule = ({ id, plan, setFocusPlanCard, className }: ScheduleProps): Rea
     >
       {/* 지역/일자선택 */}
       <div className='relative flex min-h-[7%] w-full items-center'>
-        {id === 'scrap' && (
-          <LucideIcon name='ChevronLeft' onClick={() => setFocusPlanCard(undefined)} className='hover:text-tbRed' />
-        )}
+        {id === 'scrap' && <LucideIcon name='ChevronLeft' onClick={moveBack} className='hover:text-tbRed' />}
         {!isReduced && <p className='mx-4'>강원도</p>}
         <DayDropdown
           color={id === 'scrap' ? 'tbGreen' : 'tbPrimary'}
@@ -131,4 +149,4 @@ const Schedule = ({ id, plan, setFocusPlanCard, className }: ScheduleProps): Rea
   )
 }
 
-export default Schedule
+export default PlanSchedule
