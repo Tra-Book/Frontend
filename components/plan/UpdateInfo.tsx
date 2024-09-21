@@ -19,8 +19,8 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
       </div>
 
       <div className='flex h-3/4 w-full gap-10'>
-        <div className='h-full w-1/3'>
-          <Label htmlFor='image' className='h-full w-full hover:cursor-pointer'>
+        <div className='flex h-[90%] flex-col items-center'>
+          <Label htmlFor='image' className='h-full w-full justify-center hover:cursor-pointer'>
             <p className='text-base'>썸네일</p>
             <Image
               alt='썸네일 이미지'
@@ -63,9 +63,11 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
           </div>
         </div>
       </div>
-      <Button variant='tbPrimary' className='bottom-[-52px] mt-2 w-40 self-center'>
-        글쓰기
-      </Button>
+      <div className='flex w-[90%] justify-center'>
+        <Button variant='tbPrimary' className='mt-2 w-40 self-center'>
+          글쓰기
+        </Button>
+      </div>
     </section>
   )
 }
