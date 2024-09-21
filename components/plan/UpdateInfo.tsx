@@ -12,7 +12,7 @@ interface UpdateInfoProps {}
 
 const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
   return (
-    <section className='flex h-full w-full flex-col gap-5 p-10'>
+    <section className='mt-2 flex h-full w-full flex-col gap-5 border-t-[1px] border-tbPlaceholder p-10'>
       <div className='flex items-end gap-5'>
         <h2 className='inline-block border-b-[2px] border-tbPrimary text-2xl font-semibold'>계획 정보</h2>
         <LucideIcon name='SquarePen' size={20} />
@@ -25,10 +25,9 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             <Image
               alt='썸네일 이미지'
               src={Dummy_thumbnail}
-              className='mt-2 w-full rounded-lg'
-              width={100}
-              height={100}
+              className='mt-2 h-full w-auto rounded-lg'
               quality={70}
+              // layout='fill'
             />
           </Label>
           <Input id='image' type='file' className='hidden' />
@@ -62,11 +61,11 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             </Label>
             <Input className='h-13' id='' type='text' />
           </div>
-          <Button variant='tbPrimary' className='w-20 self-end'>
-            글쓰기
-          </Button>
         </div>
       </div>
+      <Button variant='tbPrimary' className='bottom-[-52px] mt-2 w-40 self-center'>
+        글쓰기
+      </Button>
     </section>
   )
 }
