@@ -60,12 +60,13 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
         }),
         credentials: 'include',
       })
-      const status = res.status
+
       if (res.ok) {
         handleModalStates(ClientModalData.signInSuccess, 'open')
         return
       }
       // Errors
+      const status = res.status
       switch (status) {
         case 400:
           handleModalStates(ClientModalData.dupUserError, 'open')

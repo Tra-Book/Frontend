@@ -143,6 +143,7 @@ export const BACKEND_ROUTES = {
     },
   },
   PLAN: {
+
     CREATE: {
       method: 'POST',
       url: '/plan/create',
