@@ -4,9 +4,11 @@ import { useState } from 'react'
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import LucideIcon from '@/lib/icons/LucideIcon'
+import { ColorType } from '@/public/colors/colors'
 
 import { cn } from '../cn'
 interface DayDropdownProps {
+  color?: ColorType
   isReduced: boolean
   className?: string
 }
@@ -16,12 +18,19 @@ const useDayDropdown = (totalDays: number) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   // Dropdown UI
-  const DayDropdown = ({ isReduced, className }: DayDropdownProps) => {
+  const DayDropdown = ({ color = 'tbPrimary', isReduced, className }: DayDropdownProps) => {
+    // style
+
+    let [bgStyle, bgStyleHover]: Array<string> = ['bg-tbPrimary', 'hover:bg-tbPrimaryHover']
+    if (color === 'tbGreen') [bgStyle, bgStyleHover] = ['bg-tbGreen', 'hover:bg-tbGreenHover']
+
     return (
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger
           className={cn(
-            'relative flex cursor-pointer items-center justify-center gap-2 rounded-md bg-tbPrimary text-base font-semibold hover:bg-tbPrimaryHover',
+            'relative flex cursor-pointer items-center justify-center gap-2 rounded-md text-base font-semibold',
+            bgStyle,
+            bgStyleHover,
             className,
           )}
         >
@@ -42,10 +51,7 @@ const useDayDropdown = (totalDays: number) => {
             <DropdownMenuItem
               key={dayOpt}
               onClick={() => setDay(dayOpt)}
-              className={cn(
-                'mb-1 flex w-full items-center justify-center hover:bg-tbPrimary',
-                dayOpt === day && 'bg-tbPrimary hover:bg-tbPrimaryHover',
-              )}
+              className={cn('mb-1 flex w-full items-center justify-center', bgStyleHover, dayOpt === day && bgStyle)}
             >
               <p>{`${dayOpt}일차`}</p>
             </DropdownMenuItem>

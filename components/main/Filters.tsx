@@ -42,7 +42,7 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }
   /**
    * URL에 따른 필터 버튼
    */
-  const makeFilterButton = (id: 'isFinished' | 'state' | 'city'): FilterDisplayType | undefined => {
+  const makeFilterButton = (id: 'isFinished' | 'state' | 'city' | 'tag'): FilterDisplayType | undefined => {
     if (id === 'isFinished') {
       return {
         id: 'isFinished',
@@ -54,9 +54,7 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }
             : `${filter.isFinished[0]} 외 1`,
         choices: isFinishedChoices,
       }
-    }
-    //
-    else if (id === 'state') {
+    } else if (id === 'state') {
       return {
         id: 'state',
         filter: filter.state,
@@ -108,6 +106,7 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }
         placeHolder: placeHolder,
         choices: stateChoices,
       }
+    } else if (id === 'tag') {
     }
     return undefined
   }
@@ -127,6 +126,13 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }
     // #Plan
     case ROUTES.PLAN.SCHEDULE.url:
       FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
+      break
+    case ROUTES.PLAN.SCRAP.PLAN.url:
+      FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
+      break
+    case ROUTES.PLAN.SCRAP.PLACE.url:
+      FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
+      break
   }
 
   return (
