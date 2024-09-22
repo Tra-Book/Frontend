@@ -71,9 +71,15 @@ export const ROUTES = {
       name: '여행 일정',
       url: '/plan/schedule',
     },
-    STORE: {
-      name: '보관함',
-      url: '/plan/store',
+    SCRAP: {
+      PLAN: {
+        name: '보관함 여행계획',
+        url: '/plan/scrap/plan',
+      },
+      PLACE: {
+        name: '보관함 여행계획',
+        url: '/plan/scrap/place',
+      },
     },
   },
   COMMUNITY: {
@@ -143,7 +149,6 @@ export const BACKEND_ROUTES = {
     },
   },
   PLAN: {
-
     CREATE: {
       method: 'POST',
       url: '/plan/create',

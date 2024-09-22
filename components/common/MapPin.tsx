@@ -4,17 +4,19 @@ import { MapMarker } from 'react-kakao-maps-sdk'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Geo } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
+import { ColorType } from '@/public/colors/colors'
 
 interface MapPinProps {
   num: number
   size?: number
+  fill?: ColorType
   className?: string
 }
 
-export const MapPin = ({ num, size, className }: MapPinProps): ReactNode => {
+export const MapPin = ({ num, size, fill = 'tbOrange', className }: MapPinProps): ReactNode => {
   return (
     <div className={cn('relative h-fit w-fit', className)}>
-      <LucideIcon size={size} name='MapPin' fill='tbOrange' strokeWidth={0} className='origin-bottom' />
+      <LucideIcon size={size} name='MapPin' fill={fill} strokeWidth={0} className='origin-bottom' />
       <span className='group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs'>{num}</span>
     </div>
   )
@@ -23,26 +25,26 @@ export const MapPin = ({ num, size, className }: MapPinProps): ReactNode => {
 interface SpriteMapMarkerProps {
   geo: Geo
   order: number
-  id: 'search' | 'focus' | 'scrap'
+  id: 'schedule' | 'focus' | 'scrap'
 }
 
 const MARKER_SIZE = 44
 const MAX_MARKER_COUNT = 16
 export const SpriteMapMarker = ({ geo, order, id }: SpriteMapMarkerProps): ReactNode => {
   let imgSrc: string = ''
+  let zIndex: number
   switch (id) {
-    case 'search':
+    case 'schedule': // 주황색
       imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
-      break
+      zIndex = 20
+      break // T 모양
     case 'focus':
       imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
-
+      zIndex = 30
       break
-    case 'scrap':
-      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
-
-      break
-    default:
+    case 'scrap': // 초록색
+      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers_tbGreen.png'
+      zIndex = 10
       break
   }
   return (
@@ -72,6 +74,7 @@ export const SpriteMapMarker = ({ geo, order, id }: SpriteMapMarkerProps): React
           },
         },
       }}
+      zIndex={zIndex}
     />
   )
 }
