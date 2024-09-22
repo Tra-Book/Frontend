@@ -33,10 +33,16 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
           <Input id='image' type='file' className='hidden' />
         </div>
 
-        <div className='flex h-full w-1/4 flex-col gap-10'>
+        <div className='grid w-1/2 grid-cols-2 grid-rows-3 justify-items-center gap-10'>
           <div className='w-full'>
             <Label htmlFor='' className='mb-2 flex text-base'>
               제목
+            </Label>
+            <Input className='h-13' id='' type='text' />
+          </div>
+          <div className='w-full'>
+            <Label htmlFor='' className='mb-2 flex text-base'>
+              설명
             </Label>
             <Input className='h-13' id='' type='text' />
           </div>
@@ -46,27 +52,16 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             </Label>
             <Input className='h-13' id='' type='text' />
           </div>
-        </div>
-
-        <div className='flex h-full w-1/4 flex-col gap-10'>
-          <div className='w-full'>
-            <Label htmlFor='' className='mb-2 flex text-base'>
-              설명
-            </Label>
-            <Input className='h-13' id='' type='text' />
-          </div>
           <div className='w-full'>
             <Label htmlFor='' className='mb-2 flex text-base'>
               예산
             </Label>
             <Input className='h-13' id='' type='text' />
           </div>
+          <Button variant='tbPrimary' className='col-span-2 mt-2 w-40'>
+            글쓰기
+          </Button>
         </div>
-      </div>
-      <div className='flex w-[90%] justify-center'>
-        <Button variant='tbPrimary' className='mt-2 w-40 self-center'>
-          글쓰기
-        </Button>
       </div>
     </section>
   )

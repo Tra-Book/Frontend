@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
-import { INITIAL_PLAN, Plan } from '../types/Entity/plan'
+import { INITIAL_PLAN } from '../constants/dummy_data'
+import { Plan } from '../types/Entity/plan'
 
 interface PlanContext {
   planData: Plan

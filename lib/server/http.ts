@@ -1,4 +1,11 @@
-export type HttpMethod = 'CREATE' | 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+export enum HttpMethod {
+  CREATE = 'CREATE',
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+}
 
 /**
  * Whenever someone needs to reference new status code,
@@ -20,4 +27,19 @@ export enum HttpStatusCode {
   IamAteapot = 418,
   InternalServerError = 500,
   NotImplemented,
+}
+
+type Query = {
+  key: string
+  value: any
+}
+
+export type Queries = Array<Query>
+
+export const attachQuery = (API: string, query: Queries): string => {
+  if (!query || query.length === 0) return API
+
+  const queryString = query.map(({ key, value }) => `${key}=${value}`).join('&')
+
+  return `${API}?${queryString}`
 }

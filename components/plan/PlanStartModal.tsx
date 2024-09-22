@@ -8,12 +8,18 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
+import { generate_initial_schedule } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import { formatToHyphenDate, formatToKoreanShortDate, parseHypenDateToDate } from '@/lib/utils/dateUtils'
+import {
+  formatToHyphenDate,
+  formatToKoreanShortDate,
+  getTripDuration,
+  parseHypenDateToDate,
+} from '@/lib/utils/dateUtils'
 import { useToast } from '@/lib/utils/hooks/useToast'
 
 import { Button } from '../ui/button'
@@ -80,6 +86,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
           startDate: parseHypenDateToDate(body.startDate),
           endDate: parseHypenDateToDate(body.endDate),
           state: body.state,
+          schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
         })
         backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
         return

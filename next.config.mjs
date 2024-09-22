@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
       },
+      {
+        protocol: 'http',
+        hostname: 'tong.visitkorea.or.kr/**',
+      },
     ],
   },
   async rewrites() {
