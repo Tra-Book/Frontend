@@ -149,8 +149,13 @@ export const BACKEND_ROUTES = {
     },
   },
   PLAN: {
-    UPDATE: {
+
+    CREATE: {
       method: 'POST',
+      url: '/plan/create',
+    },
+    UPDATE: {
+      method: 'PATCH',
       url: '/plan/update',
     },
   },

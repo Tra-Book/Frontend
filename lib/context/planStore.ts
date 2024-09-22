@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { Plan } from '../types/Entity/plan'
 import { Nullable } from '../utils/typeUtils'
 
+
 interface PlanContext {
   planData: Nullable<Plan>
   isReduced: boolean

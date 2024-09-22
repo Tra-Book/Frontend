@@ -3,14 +3,18 @@
 import 'react-day-picker/dist/style.css'
 
 import { ko } from 'date-fns/locale'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
-import { STATES } from '@/lib/constants/regions'
+import { STATES, StateType } from '@/lib/constants/regions'
+import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
+import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import { formatToHyphenDate, formatToKoreanShortDate } from '@/lib/utils/dateUtils'
+import { formatToHyphenDate, formatToKoreanShortDate, parseHypenDateToDate } from '@/lib/utils/dateUtils'
+import { useToast } from '@/lib/utils/hooks/useToast'
 
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -20,25 +24,25 @@ interface PlanStartModalProps {}
 // const formatDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 
 const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
+  const router = useRouter()
   const session: any = useSession()
   const [inputState, setInputState] = useState<string>('')
   const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
+  const { toast } = useToast()
+  const state = usePlanStore()
+
+  console.log(state)
 
   const [selected, setSelected] = useState<DateRange>()
   const handleSelect = (newSelected?: DateRange) => {
     // Update the selected dates
     setSelected(newSelected)
-    console.log(newSelected)
   }
 
   const onClickButton = () => {
     setStep(prev => (prev === 0 ? 1 : 0))
   }
 
-  // alert는 toast로 바꾸기
-  // API 호출 : /plan, 두 가지 경우
-  // 1. 계획 생성
-  // 2. 계획 수정 (zustand에 정보 있으면)
   const onClickFinish = async () => {
     if (!STATES.some(state => state === inputState)) {
       alert('도시를 입력해주세요.')
@@ -49,44 +53,49 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
       return
     }
     const body = {
-      userId: 44,
       state: inputState,
       startDate: formatToHyphenDate(selected.from),
       endDate: formatToHyphenDate(selected.to),
     }
 
-    // try {
-    //   const res = await fetch('/server/plan/create', {
-    //     method: 'POST',
-    //     headers: {
-    //       Authorization: session.data.accessToken,
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(body),
-    //     credentials: 'include',
-    //   })
-    //   console.log(res)
+    // let backendRoute
+    // state.planData.id ? (backendRoute = BACKEND_ROUTES.PLAN.UPDATE) : (backendRoute = BACKEND_ROUTES.PLAN.CREATE)
+    let backendRoute = BACKEND_ROUTES.PLAN.CREATE
 
-    //   const status = res.status
-    //   const data = await res.json()
-    //   if (res.ok) {
-    //     console.log(data)
-    //     return
-    //   }
-    //   switch (status) {
-    //     case 400:
-    //       console.log(data)
-    //       break
-    //     case 500: // Internal Server Error
-    //       break
-    //     default:
-    //       console.log(data)
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    try {
+      const res = await fetch('/server' + backendRoute.url, {
+        method: backendRoute.method,
+        headers: {
+          Authorization: session.data.accessToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+        credentials: 'include',
+      })
 
-    console.log(body)
+      const status = res.status
+      const data = await res.json()
+      if (res.ok) {
+        state.setPlanData({
+          id: data.planId,
+          userId: session.data.userId,
+          startDate: parseHypenDateToDate(body.startDate),
+          endDate: parseHypenDateToDate(body.endDate),
+          state: inputState as StateType,
+        })
+        backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
+        return
+      }
+      switch (status) {
+        // status에 따라 추가 필요
+        default:
+          toast({ title: '다시 시도해주세요.' })
+          return
+      }
+    } catch (error) {
+      toast({ title: '다시 시도해주세요.' })
+      return
+    }
   }
 
   const renderState = (state: string): ReactNode | null => {
@@ -179,7 +188,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   )
 
   return (
-    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40'>
+    <div className='fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-40'>
       <div className='relative flex h-2/3 max-h-[650px] w-1/2 max-w-[1000px] flex-col rounded-[30px] border-[1px] border-black bg-white'>
         <div className='flex h-[13%] w-full rounded-t-[30px] border-black'>
           <div
