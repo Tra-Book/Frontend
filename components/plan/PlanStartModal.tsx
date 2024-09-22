@@ -29,9 +29,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const [inputState, setInputState] = useState<string>('')
   const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
   const { toast } = useToast()
-  const state = usePlanStore()
-
-  console.log(state)
+  const { setPlanData } = usePlanStore()
 
   const [selected, setSelected] = useState<DateRange>()
   const handleSelect = (newSelected?: DateRange) => {
@@ -53,7 +51,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
       return
     }
     const body = {
-      state: inputState,
+      state: inputState as StateType,
       startDate: formatToHyphenDate(selected.from),
       endDate: formatToHyphenDate(selected.to),
     }
@@ -76,12 +74,12 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
       const status = res.status
       const data = await res.json()
       if (res.ok) {
-        state.setPlanData({
+        setPlanData({
           id: data.planId,
           userId: session.data.userId,
           startDate: parseHypenDateToDate(body.startDate),
           endDate: parseHypenDateToDate(body.endDate),
-          state: inputState as StateType,
+          state: body.state,
         })
         backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
         return
