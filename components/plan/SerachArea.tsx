@@ -69,8 +69,8 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     }
   }
 
-  const { data, fetchNextPage, isLoading, hasNextPage } = useInfiniteQuery({
-    queryKey: ['places'],
+  const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
+    queryKey: ['places', searchInputRef.current?.value || '', filter.state, arrange],
     queryFn: ({ pageParam = 0 }) => fetchData(pageParam),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
@@ -85,14 +85,24 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     if (inView && hasNextPage) fetchNextPage()
   }, [inView])
 
-  console.log(data)
+  // 새로운 데이터 받아오기
+  useEffect(() => {
+    console.log('Refetching')
+    refetch()
+  }, [filter, arrange])
+  const submitHandler = (event: React.FormEvent) => {
+    event.preventDefault()
+    console.log('Refetching')
+
+    refetch()
+  }
 
   // let data: Array<Place> = DUMMY_PLACES
   let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
   let contents
-  if (isLoading) {
+  if (isPending) {
     contents = (
-      <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-xl font-bold'>
+      <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
         <p>여행지 로딩중입니다!</p>
       </div>
     )
@@ -123,14 +133,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
           />
         )),
       )
-      // contents = data.pages[0].datas?.map((place, index) => (
-      //   <PlaceCard
-      //     key={index}
-      //     data={place}
-      //     focusedPlaceCard={focusCard as Place | undefined}
-      //     handleClickCard={handleClickCard as (card: Place) => void}
-      //   />
-      // ))
     } else {
       contents = tmpPlanData.map((plan, index) => (
         <PlanCard key={index} data={plan} handleClickCard={handleClickCard as (card: Plan) => void} />
@@ -138,11 +140,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     }
   }
 
-  const submitHandler = (event: React.FormEvent) => {
-    event.preventDefault()
-    const input = searchInputRef.current?.value || ''
-    // TODO: 백엔드 새로운 데이터 받아오기
-  }
   const movePageHandler = () => {}
   return (
     <div className={cn('relative flex flex-col items-start justify-start', className)}>
@@ -156,13 +153,15 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
             className='h-9 bg-tbWhite'
             type='text'
           />
-        </form>
-        {/* <LucideIcon
+          <button type='submit' className='hidden' />
+
+          {/* <LucideIcon
           onClick={() => setIsSearching(false)}
           name='X'
           size={22}
           className='my-2 ml-2 self-start hover:text-tbRed'
         /> */}
+        </form>
       </div>
       {/* 필터 */}
       <div className='flex w-full items-center justify-between'>

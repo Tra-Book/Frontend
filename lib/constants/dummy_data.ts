@@ -6,7 +6,7 @@ import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
 
 const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumnail.png'
-
+export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumnail2.png'
 const get_dummy_place = (idx: number): Place => {
   return {
     id: idx,

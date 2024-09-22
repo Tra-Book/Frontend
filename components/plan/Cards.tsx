@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -93,15 +94,14 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
       )}
     >
       <div className='group relative aspect-square h-full origin-left'>
-        {imgSrc && (
-          <Image
-            src={imgSrc}
-            alt='Place Image'
-            width={124}
-            height={124}
-            className='h-full w-full origin-center rounded-md'
-          />
-        )}
+        <Image
+          src={imgSrc ? imgSrc : PLACE_DEFAULT_IMAGE}
+          alt='Place Image'
+          width={124}
+          height={124}
+          className='h-full w-full origin-center rounded-md'
+        />
+
         <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
 
@@ -109,7 +109,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
       <div className={cn('flex h-fit w-fit min-w-32 flex-grow origin-left flex-col items-start justify-start gap-2')}>
         <div className='group flex w-fit items-center justify-start'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
-          <span className='w-full truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
+          <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           {/* TODO: 유저 북마크 추가하기  */}
           <LucideIcon
             name='Bookmark'
