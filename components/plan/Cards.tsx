@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -42,7 +43,7 @@ export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProp
         >
           <div className='group flex w-fit items-center justify-start'>
             <MapPin
-              num={order}
+              num={order as number}
               size={22}
               fill={id === 'schedule' ? 'tbOrange' : 'tbGreen'}
               className='group-hover:scale-125'
@@ -63,10 +64,6 @@ export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProp
           {!isReduced && <span className='w-fit text-sm'>방문자 {visitCnt}+</span>}
         </div>
       </div>
-      <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
-        <LucideIcon name='CarFront' size={26} />
-        <div className='absolute right-4 text-sm text-tbGray'>30분</div>
-      </div>
     </>
   )
 }
@@ -83,6 +80,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
   const focusHandler = () => {
     handleClickCard(data)
   }
+
   return (
     <div
       onClick={focusHandler}
@@ -92,7 +90,14 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
       )}
     >
       <div className='group relative aspect-square h-full origin-left'>
-        <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
+        <Image
+          src={imgSrc ? imgSrc : PLACE_DEFAULT_IMAGE}
+          alt='Place Image'
+          width={124}
+          height={124}
+          className='h-full w-full origin-center rounded-md'
+        />
+
         <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
 
@@ -100,7 +105,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
       <div className={cn('flex h-fit w-fit min-w-32 flex-grow origin-left flex-col items-start justify-start gap-2')}>
         <div className='group flex w-fit items-center justify-start'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
-          <span className='text-base font-semibold group-hover:text-tbBlue'>{name}</span>
+          <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           {/* TODO: 유저 북마크 추가하기  */}
           <LucideIcon
             name='Bookmark'
@@ -123,7 +128,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
         </div>
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
           <div className='line-clamp-2 w-full break-words text-sm'>
-            {reviews ? reviews[0].content : '리뷰를 작성해주세요! 리뷰를 작성해주세요! 리뷰를 작성해주세요!'}
+            {reviews ? reviews[0].content : '리뷰를 작성해주세요!'}
           </div>
         </div>
       </div>

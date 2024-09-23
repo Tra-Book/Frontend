@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 
 import { Plan } from '../types/Entity/plan'
+import { Nullable } from '../utils/typeUtils'
 
 interface PlanContext {
-  planData: Plan | Partial<Plan>
-  setPlanData: (updatedPlan: Plan | Partial<Plan>) => void
-
+  planData: Nullable<Plan>
   isReduced: boolean
   setIsReduced: (val: boolean | ((prev: boolean) => boolean)) => void
 
@@ -14,9 +13,10 @@ interface PlanContext {
 }
 
 const usePlanStore = create<PlanContext>(set => ({
-  planData: {},
-  setPlanData: (updatedPlan: Plan | Partial<Plan>) => {
-    set(state => ({ planData: { ...state.planData, ...updatedPlan } }))
+  planData: null,
+
+  setPlanData: (updatedPlan: Plan) => {
+    set(() => ({ planData: updatedPlan }))
   },
 
   isReduced: false,
