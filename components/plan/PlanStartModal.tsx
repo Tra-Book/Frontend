@@ -15,7 +15,7 @@ import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import {
-  formatToHyphenDate,
+  formatDateToHyphenDate,
   formatToKoreanShortDate,
   getTripDuration,
   parseHypenDateToDate,
@@ -58,8 +58,8 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     }
     const body = {
       state: inputState as StateType,
-      startDate: formatToHyphenDate(selected.from),
-      endDate: formatToHyphenDate(selected.to),
+      startDate: formatDateToHyphenDate(selected.from),
+      endDate: formatDateToHyphenDate(selected.to),
     }
 
     // let backendRoute

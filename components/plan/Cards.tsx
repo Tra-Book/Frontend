@@ -116,7 +116,6 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
 
         <div className='flex w-full items-center justify-between text-sm'>
           <p># {tag}</p>
-          <p className='text-tbGray'>{duration}분</p>
         </div>
         <div className='flex items-center justify-start gap-2'>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>

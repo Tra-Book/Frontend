@@ -69,8 +69,6 @@ const PlanSchedulePage = (): ReactNode => {
   useEffect(() => {
     return () => setFocusedPlacePin(null)
   }, [])
-  // Todo: 현재 D
-  // Dummy_Pins
 
   return (
     <>

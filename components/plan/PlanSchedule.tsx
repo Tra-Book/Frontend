@@ -7,6 +7,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { Geo } from '@/lib/types/Entity/place'
 import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
+import { calculateLeftTIme } from '@/lib/utils/dateUtils'
 import { fetchDuration } from '@/lib/utils/duration'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 
@@ -50,26 +51,22 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
   const schedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
 
-  // #2. 거리계산 함수
+  // #2.1 거리계산 함수
   const calculateDurations = async () => {
     if (schedule?.places) {
       const durationPromises = schedule.places.map(async (place, index) => {
         if (schedule.places && index + 1 !== schedule.places.length) {
-          console.log('Place.geo', place.geo)
-          console.log('place+1.geo', schedule.places[index + 1].geo)
-
           return await fetchDuration(place.geo, schedule.places[index + 1].geo)
         }
         return null
       })
       const results = await Promise.all(durationPromises)
-      console.log(results)
 
       setDurations(results as Array<number>)
     }
   }
 
-  // #2. Pin 업데이트
+  // #2.2 Pin 업데이트
   useEffect(() => {
     if (schedule?.places) {
       const newPins: Array<Geo> = schedule.places.map(place => place.geo)
@@ -83,8 +80,9 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     return () => setFocusedPlanPins(null)
   }, [schedule, setPins, setFocusedPlanPins]) // schedule 변경될 때만 호출
 
+  // #3. 계획한 일정들
   let contents
-  // #2. 해당일자의 DayPlan이 없는 경우 (유저의 조작)
+  // #3.1 해당일자의 DayPlan이 없는 경우 (유저의 조작)
   if (!schedule) {
     contents = (
       <div
@@ -97,9 +95,9 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
       </div>
     )
   }
-  // #3. 해당일자의 DayPlan이 있는 경우 (places제외, 디폴트로 만들어줘서 항상 있어야 함)
+  // #3.2 해당일자의 DayPlan이 있는 경우 (places제외, 디폴트로 만들어줘서 항상 있어야 함)
   else {
-    // #3-1. 유저가 추가한 여행지가 아직 없음
+    // #유저가 추가한 여행지가 아직 없음
     if (!schedule.places) {
       contents = (
         <div
@@ -120,9 +118,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
             <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
               <LucideIcon name='CarFront' size={26} />
               <div className='absolute right-4 text-sm text-tbGray'>
-                30분
-                {/* 임시로 막아두기 */}
-                {/* {durations[index] !== null ? `${durations[index]}분` : 'Loading...'} */}
+                {durations[index] !== null ? `${durations[index]}분` : 'Loading...'}
               </div>
             </div>
           )}
@@ -130,6 +126,11 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
       ))
     }
   }
+  // #4. 남는 시간 계산
+  let totalPlaceDurations = 0
+  schedule?.places?.forEach(place => (totalPlaceDurations += place.duration as number))
+  const leftTime =
+    schedule && calculateLeftTIme(schedule?.startTime, schedule?.endTime, [...durations, totalPlaceDurations])
 
   // style
   const width = id === 'scrap' ? '100%' : isReduced ? '16dvw' : '21dvw'
@@ -159,7 +160,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
           <div>
             <p className='text-xs text-tbGray'>시작시간</p>
             <div className='flex items-center justify-start gap-1'>
-              <span className='text-base'>08:00</span>
+              <span className='text-base'>{schedule?.startTime}</span>
               {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
@@ -167,7 +168,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
           <div>
             <p className='text-xs text-tbGray'>종료시간</p>
             <div className='flex items-center justify-start gap-1'>
-              <span className='text-base'>08:00</span>
+              <span className='text-base'>{schedule?.endTime}</span>
               {!isReduced && <LucideIcon name='Clock' />}
             </div>
           </div>
@@ -175,7 +176,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         <div className=''>
           <p className='text-xs text-tbGray'>여유 시간</p>
           <div className='flex items-center justify-start gap-1'>
-            <span className='text-base'>08:00</span>
+            <span className='text-base'>{leftTime}</span>
             {!isReduced && <LucideIcon name='Clock' />}
           </div>
         </div>

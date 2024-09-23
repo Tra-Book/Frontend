@@ -105,7 +105,6 @@ export const fetchPlans = async (params: fetchPlansParams): Promise<FetchPlansRe
 
     if (res.ok) {
       const data = await res.json()
-      console.log(data)
 
       return data
     }

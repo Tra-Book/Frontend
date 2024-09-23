@@ -2,7 +2,7 @@ import { differenceInDays, parse } from 'date-fns'
 import { format } from 'date-fns/format'
 import { ko } from 'date-fns/locale'
 
-export const formatToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
+export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 
 export const formatToKoreanShortDate = (date: Date) => format(date, 'yyyy년 M월', { locale: ko })
 
@@ -27,4 +27,28 @@ export const calculateTripDuration = (startDate: Date, endDate: Date): string =>
   const nights = totalDays - 1
 
   return `${nights}박 ${totalDays}일`
+}
+
+/**
+ * 남은 시간을 "HH:MM" 형태로 반환하는 함수
+ * @param startTime 시작시간 ("HH:MM")
+ * @param endTime 종료시간 ("HH:MM")
+ * @param durations duration 배열 (minutes)
+ */
+export const calculateLeftTIme = (startTime: string, endTime: string, durations: Array<number>) => {
+  // #1. 중간 시간
+  const [endHour, endMin] = endTime.split(':').map(Number)
+  const [startHour, startMin] = startTime.split(':').map(Number)
+  console.log('Endhour,endmin', endHour, endMin)
+  console.log('startHour,startMin', startHour, startMin)
+
+  let totalMinutes = endHour * 60 - endMin - startHour * 60 - startMin
+  console.log(totalMinutes)
+
+  // #2. durations 뺴기
+  durations.forEach(duration => (totalMinutes -= duration))
+  console.log(totalMinutes)
+
+  const [hour, min] = [Math.floor(totalMinutes / 60), totalMinutes % 60]
+  return `${hour}:${min}`
 }
