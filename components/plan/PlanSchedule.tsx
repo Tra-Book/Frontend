@@ -1,5 +1,5 @@
 'use client'
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
@@ -7,6 +7,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { Geo } from '@/lib/types/Entity/place'
 import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
+import { fetchDuration } from '@/lib/utils/duration'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 
 import { Motion } from '../common/MotionWrapper'
@@ -23,6 +24,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { setPins, setFocusedPlanPins } = useMapStore()
   const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
+  const [durations, setDurations] = useState<Array<number>>([])
 
   const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
@@ -44,20 +46,42 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
       setPins(null)
     }
   }
+
   // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
   const schedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
+
+  // #2. 거리계산 함수
+  const calculateDurations = async () => {
+    if (schedule?.places) {
+      const durationPromises = schedule.places.map(async (place, index) => {
+        if (schedule.places && index + 1 !== schedule.places.length) {
+          console.log('Place.geo', place.geo)
+          console.log('place+1.geo', schedule.places[index + 1].geo)
+
+          return await fetchDuration(place.geo, schedule.places[index + 1].geo)
+        }
+        return null
+      })
+      const results = await Promise.all(durationPromises)
+      console.log(results)
+
+      setDurations(results as Array<number>)
+    }
+  }
 
   // #2. Pin 업데이트
   useEffect(() => {
     if (schedule?.places) {
       const newPins: Array<Geo> = schedule.places.map(place => place.geo)
-      if (id === 'schedule') setPins(newPins)
-      else {
+      if (id === 'schedule') {
+        setPins(newPins)
+        calculateDurations()
+      } else {
         setFocusedPlanPins(newPins)
       }
     }
     return () => setFocusedPlanPins(null)
-  }, [schedule, setPins, setFocusedPlanPins]) // schedule 또는 setPins가 변경될 때만 호출
+  }, [schedule, setPins, setFocusedPlanPins]) // schedule 변경될 때만 호출
 
   let contents
   // #2. 해당일자의 DayPlan이 없는 경우 (유저의 조작)
@@ -88,8 +112,21 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         </div>
       )
     } else {
-      contents = schedule.places.map(place => (
-        <SchedulePlaceCard id={id} key={place.id} data={place} isReduced={isReduced} />
+      const len = schedule.places.length
+      contents = schedule.places.map((place, index) => (
+        <React.Fragment key={place.order}>
+          <SchedulePlaceCard id={id} data={place} isReduced={isReduced} />
+          {index + 1 !== schedule.places?.length && (
+            <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
+              <LucideIcon name='CarFront' size={26} />
+              <div className='absolute right-4 text-sm text-tbGray'>
+                30분
+                {/* 임시로 막아두기 */}
+                {/* {durations[index] !== null ? `${durations[index]}분` : 'Loading...'} */}
+              </div>
+            </div>
+          )}
+        </React.Fragment>
       ))
     }
   }
@@ -143,7 +180,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
           </div>
         </div>
       </div>
-      {/* 카드들 (서버 컴포넌트) */}
+      {/* 카드들*/}
       <div className='flex w-full flex-grow flex-col items-center justify-start overflow-y-auto overflow-x-hidden'>
         {contents}
       </div>

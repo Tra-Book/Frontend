@@ -3,8 +3,8 @@ import { create } from 'zustand'
 import { Geo } from '../types/Entity/place'
 import { Nullable } from '../utils/typeUtils'
 
-type NullableGeo = Nullable<Geo>
-type NullableGeoArray = Nullable<Array<Geo>>
+export type NullableGeo = Nullable<Geo>
+export type NullableGeoArray = Nullable<Array<Geo>>
 
 interface MapContext {
   center: Geo // 중심좌표
@@ -22,8 +22,8 @@ interface MapContext {
 
 const useMapStore = create<MapContext>(set => ({
   center: {
-    latitude: 33.450701,
-    longitude: 126.570667,
+    latitude: 37.294068,
+    longitude: 126.976654,
   },
   setCenter: (newCenter: Geo) => {
     set(() => ({ center: newCenter }))

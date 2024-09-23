@@ -96,7 +96,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     refetch()
   }
 
-  // let data: Array<Place> = DUMMY_PLACES
   let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
   let contents
   if (isPending) {
