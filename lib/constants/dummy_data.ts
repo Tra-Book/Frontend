@@ -1,14 +1,17 @@
 import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
+import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 
 import { Comment } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
 
+const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumnail.png'
+export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumbnail.png'
 const get_dummy_place = (idx: number): Place => {
   return {
     id: idx,
     name: `토함산자연휴양림${idx}`,
-    imgSrc: DUMMYPLACEIMG,
+    imgSrc: PLAN_DEFAULT_IMAGE,
     address: `경상북도 경주시 양북면 불국로${idx}`,
 
     tag: `관광지`,
@@ -23,7 +26,6 @@ const get_dummy_place = (idx: number): Place => {
     //reviews: Array<Comment>
     reviewCnt: 10 + idx,
 
-    isAdded: Math.random() < 0.5, // 계획에 이미 포함여부 여부 (무작위값)
     isScraped: Math.random() < 0.5, // 스크랩 여부
 
     order: 1 + idx, // 계획세우기에 담긴 순서}
@@ -58,7 +60,6 @@ export const DUMMY_PLAN: Plan = {
   endDate: new Date(),
   budget: 10000,
   state: '서울특별시',
-  city: '강서구',
   description: '전역한 아들들과 떠나는 즐겨운 여행입니다! 전역한 아들들과 떠나는 즐겨운 여행입니다!',
   imgSrc: DUMMYPLACEIMG,
   scrapCnt: 200,
@@ -68,4 +69,45 @@ export const DUMMY_PLAN: Plan = {
   isScraped: true,
   isLiked: true,
   schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_dayplan(idx)),
+}
+
+const random_Date = new Date()
+
+export const INITIAL_PLAN: Plan = {
+  id: -1, // 백엔드 값으로 대체
+  userId: -1, //세션 값
+
+  state: '서울특별시', // 초기 값으로 대체됨
+  startDate: random_Date,
+  endDate: random_Date,
+
+  // imgSrc: string
+  imgSrc: DummyThumbNail, // Default : 아무 여행 이미지
+
+  title: null, // Default: null
+  description: null, // Default: null
+  memberCnt: null, // Default: null
+  budget: null, // Default: null
+
+  // #2. 여행 일정
+  schedule: [],
+
+  // #3. 커뮤니티 정보
+  isDone: false,
+  likeCnt: 0, // default: 0
+  scrapCnt: 0, // default: 0
+  comments: null, // default: 0
+
+  // #4. 요청 유저관련 정보
+  isScraped: false,
+  isLiked: false,
+}
+
+export const generate_initial_schedule = (day: number): Array<Schedule> => {
+  return Array.from({ length: day }, (_, idx) => ({
+    day: idx + 1,
+    startTime: '08:00',
+    endTime: '22:00',
+    places: null,
+  }))
 }

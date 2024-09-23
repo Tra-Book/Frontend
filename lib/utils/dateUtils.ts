@@ -17,6 +17,10 @@ export const formatKoreanDate = (date: Date): string => {
   return `${formattedDate}(${dayOfWeek})`
 }
 
+export const getTripDuration = (startDate: Date, endDate: Date): number => {
+  return differenceInDays(endDate, startDate) + 1
+}
+
 // 1박 2일 형태
 export const calculateTripDuration = (startDate: Date, endDate: Date): string => {
   const totalDays = differenceInDays(endDate, startDate) + 1
