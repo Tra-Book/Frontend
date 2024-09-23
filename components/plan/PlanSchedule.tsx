@@ -33,6 +33,17 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     }
   }
 
+  const handleDayChange = (day: number) => {
+    // #1. day에 해당하는 schedule 찾기
+    const targetSchedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
+    // #2. Schedule의 핀 가져오기
+    if (targetSchedule?.places) {
+      const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
+      setPins(newPins)
+    } else {
+      setPins(null)
+    }
+  }
   // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
   const schedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
 
@@ -100,6 +111,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         <DayDropdown
           color={id === 'scrap' ? 'tbGreen' : 'tbPrimary'}
           isReduced={isReduced}
+          handleDayChange={handleDayChange}
           className={cn('mx-4 h-9 flex-grow', id === 'scrap' && 'bg-tbGreen hover:bg-tbGreenHover')}
         />
       </div>

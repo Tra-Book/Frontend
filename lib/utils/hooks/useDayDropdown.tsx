@@ -11,6 +11,7 @@ import { cn } from '../cn'
 export interface DayDropdownProps {
   color?: ColorType
   isReduced: boolean
+  handleDayChange: (day: number) => void
   className?: string
 }
 
@@ -20,9 +21,13 @@ const useDayDropdown = (totalDays: number) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   // Dropdown UI
-  const DayDropdown = ({ color = 'tbPrimary', isReduced, className }: DayDropdownProps) => {
-    // style
+  const DayDropdown = ({ color = 'tbPrimary', isReduced, handleDayChange, className }: DayDropdownProps) => {
+    const dropdownItemHandler = (day: number) => {
+      handleDayChange(day)
+      setDay(day)
+    }
 
+    // style
     let [bgStyle, bgStyleHover]: Array<string> = ['bg-tbPrimary', 'hover:bg-tbPrimaryHover']
     if (color === 'tbGreen') [bgStyle, bgStyleHover] = ['bg-tbGreen', 'hover:bg-tbGreenHover']
 
@@ -52,7 +57,7 @@ const useDayDropdown = (totalDays: number) => {
           {Array.from({ length: totalDays }, (_, index) => index + 1).map(dayOpt => (
             <DropdownMenuItem
               key={dayOpt}
-              onClick={() => setDay(dayOpt)}
+              onClick={() => dropdownItemHandler(dayOpt)}
               className={cn('mb-1 flex w-full items-center justify-center', bgStyleHover, dayOpt === day && bgStyle)}
             >
               <p>{`${dayOpt}일차`}</p>

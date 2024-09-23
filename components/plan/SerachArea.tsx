@@ -7,11 +7,13 @@ import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { fetchPlans, ResponsePlace } from '@/lib/server/plan/API'
+import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import useFilters, { StateChoicesType } from '@/lib/utils/hooks/useFilters'
 
+import { Motion } from '../common/MotionWrapper'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { PlaceCard, PlanCard } from './Cards'
@@ -100,7 +102,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   if (isPending) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
-        <p>여행지 로딩중입니다!</p>
+        <Motion animation={bounce()}>여행지 로딩중입니다!</Motion>
       </div>
     )
   } else if (!data) {
