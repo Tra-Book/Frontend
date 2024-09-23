@@ -22,7 +22,6 @@ interface PlanScheduleProps {
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { setPins, setFocusedPlanPins } = useMapStore()
-
   const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
 
   const handleReduceBtn = () => {

@@ -20,6 +20,7 @@ const KakaoMap = ({}: KakaoMapProps): ReactNode => {
         lat: center.latitude,
         lng: center.longitude,
       }}
+      isPanto={true}
       style={{
         width: '100%',
         height: '100%',

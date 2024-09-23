@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer'
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { fetchPlans, ResponsePlace } from '@/lib/server/API'
+import { fetchPlans, ResponsePlace } from '@/lib/server/plan/API'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
@@ -87,13 +87,10 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
 
   // 새로운 데이터 받아오기
   useEffect(() => {
-    console.log('Refetching')
     refetch()
   }, [filter, arrange])
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault()
-    console.log('Refetching')
-
     refetch()
   }
 
@@ -154,13 +151,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
             type='text'
           />
           <button type='submit' className='hidden' />
-
-          {/* <LucideIcon
-          onClick={() => setIsSearching(false)}
-          name='X'
-          size={22}
-          className='my-2 ml-2 self-start hover:text-tbRed'
-        /> */}
         </form>
       </div>
       {/* 필터 */}
@@ -173,6 +163,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
       {/* 데이터 */}
       <div className='flex w-full flex-grow flex-col items-center overflow-y-auto'>
         {contents}
+        {/* 무한스크롤 경계 */}
         <div ref={ref} />
       </div>
       {/* 축소 확대 버튼 */}

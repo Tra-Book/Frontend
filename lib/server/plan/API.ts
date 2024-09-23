@@ -1,6 +1,9 @@
-import { BACKEND_ROUTES } from '../constants/routes'
-import { ArrangeChoiceType, StateChoicesType } from '../utils/hooks/useFilters'
-import { attachQuery, Queries } from './http'
+import { Place } from '@/lib/types/Entity/place'
+import { Plan } from '@/lib/types/Entity/plan'
+
+import { BACKEND_ROUTES } from '../../constants/routes'
+import { ArrangeChoiceType, StateChoicesType } from '../../utils/hooks/useFilters'
+import { attachQuery, Queries } from '../http'
 
 //Plans
 
@@ -119,5 +122,31 @@ export const fetchPlans = async (params: fetchPlansParams): Promise<FetchPlansRe
   return {
     places: [],
     totalPages: 0,
+  }
+}
+
+export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: number): Plan => {
+  // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
+  const updatedSchedule = originPlan.schedule.map(schedule => {
+    if (schedule.day === currentDay) {
+      // #2. Order (순서), Duration (머무는 시간) 필드 추가하기
+
+      const newPlace: Place = {
+        ...place,
+        order: schedule.places ? schedule.places.length + 1 : 1,
+        duration: 60,
+      }
+      const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
+      return {
+        ...schedule,
+        places: updatedPlaces,
+      }
+    }
+    return schedule // 변경되지 않은 일정은 그대로 반환
+  })
+
+  return {
+    ...originPlan,
+    schedule: updatedSchedule, // 업데이트된 스케줄 반영
   }
 }

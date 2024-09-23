@@ -3,18 +3,20 @@
 import { useState } from 'react'
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import useDropdownStore from '@/lib/context/dropdownStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { ColorType } from '@/public/colors/colors'
 
 import { cn } from '../cn'
-interface DayDropdownProps {
+export interface DayDropdownProps {
   color?: ColorType
   isReduced: boolean
   className?: string
 }
 
 const useDayDropdown = (totalDays: number) => {
-  const [day, setDay] = useState<number>(1)
+  // const [day, setDay] = useState<number>(1)
+  const { day, setDay } = useDropdownStore()
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   // Dropdown UI
