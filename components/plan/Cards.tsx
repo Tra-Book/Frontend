@@ -1,16 +1,16 @@
 'use client'
-import { revalidateTag } from 'next/cache'
+import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
-import { BACKEND_ROUTES } from '@/lib/constants/routes'
+import { queryClient } from '@/lib/HTTP/http'
+import { scrapPlace } from '@/lib/HTTP/place/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
-import { toast } from '@/lib/utils/hooks/useToast'
 
 import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
@@ -83,54 +83,25 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
   const { id, imgSrc, order, name, address, tag, reviews, reviewCnt, stars, visitCnt, duration, isScraped } = data
   const session: any = useSession()
 
+  const [tmpIsScrap, setTmpIsScrap] = useState<boolean>(isScraped)
   const focusHandler = () => {
     handleClickCard(data)
-    console.log(data)
+  }
+  // scrap
+  const scrapHandler = () => {
+    mutate({ placeId: data.id, accessToken: session.data.accessToken })
+    setTmpIsScrap(prev => !prev)
   }
 
-  /**
-   * 유저의 스크랩하기 행동
-   */
-  const scrapHandler = async () => {
-    try {
-      const Route = BACKEND_ROUTES.PLACE.SCRAP
-
-      const res = await fetch(`/server/${Route.url}`, {
-        method: Route.method,
-        headers: {
-          Authorization: session.data.accessToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          placeId: data.id,
-        }),
-        credentials: 'include',
-      })
-      if (res.ok) {
-        toast({ title: '보관함에 추가되었습니다!' })
-        // 낙관적 업데이트 (UI 먼저 반영)
-        // Todo: 보관함 > 여행지 Revalidate Tag하기
-        revalidateTag('places')
-        return
-      }
-      // 400 에러 처리
-      const status = res.status
-      const errorData = await res.json() // 에러 메시지 확인
-
-      switch (status) {
-        case 400:
-          console.log('Wrong Request')
-          break
-        default:
-          console.log('Unhandled error')
-          break
-      }
-    } catch (error) {
-      console.log(error)
-
-      console.log('Internal Server error')
-    }
-  }
+  const { mutate } = useMutation({
+    mutationKey: ['place', 'scrap', { planId: data.id }],
+    mutationFn: scrapPlace,
+    onSuccess: () => {},
+    // 실패하든 성공하든 실행되는 것
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['places', 'search'] })
+    },
+  })
 
   return (
     <div
@@ -160,7 +131,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
           <LucideIcon
             name='Bookmark'
             className='absolute right-2 hover:fill-tbRed'
-            fill={isScraped ? 'tbRed' : undefined}
+            fill={tmpIsScrap ? 'tbRed' : undefined}
             onClick={scrapHandler}
           />
         </div>

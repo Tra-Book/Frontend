@@ -34,7 +34,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
 
   // #0. Data Fetching
   const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['places', searchInputRef.current?.value || '', filter.state, arrange],
+    queryKey: ['places', 'search'],
     queryFn: ({ pageParam = 0 }) =>
       fetchPlans({
         searchInput: searchInputRef.current?.value || '',
@@ -52,6 +52,9 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
       return nextPage <= maxPage ? nextPage : undefined // 다음 데이터가 있는지 없는지 판단
     },
   })
+
+  console.log(data?.pages)
+
   // #0-1. Scroll Event Data Fetching
   useEffect(() => {
     if (inView && hasNextPage) fetchNextPage()

@@ -1,11 +1,12 @@
 'use client'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import React, { ReactNode, useState } from 'react'
+import { QueryClientProvider } from '@tanstack/react-query'
+import React, { ReactNode } from 'react'
 
 import PlanSideBar from '@/components/plan/PlanSideBar'
 import { ToastProvider } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
+import { queryClient } from '@/lib/HTTP/http'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -13,16 +14,6 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children, modal }: MainLayoutProps): ReactNode => {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: Infinity,
-          },
-        },
-      }),
-  )
   return (
     <main className='flex h-dvh w-dvw'>
       <ToastProvider>

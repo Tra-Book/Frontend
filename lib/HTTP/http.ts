@@ -1,3 +1,5 @@
+import { QueryClient } from '@tanstack/react-query'
+
 export enum HttpMethod {
   CREATE = 'CREATE',
   GET = 'GET',
@@ -43,3 +45,11 @@ export const attachQuery = (API: string, query: Queries): string => {
 
   return `${API}?${queryString}`
 }
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+})
