@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
 import { scrapPlace } from '@/lib/HTTP/place/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -22,7 +23,8 @@ interface SchedulePlaceCardProps {
 }
 
 export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProps): ReactNode => {
-  const { imgSrc, order, name, address, tag, stars, visitCnt, duration } = data
+  const { imgSrc, order, name, address, tag, stars, visitCnt, duration, geo } = data
+  const { setCenter } = useMapStore()
 
   const addressArr = address
     .split(' ')
@@ -31,7 +33,10 @@ export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProp
 
   return (
     <>
-      <div className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'>
+      <div
+        onClick={() => setCenter(geo)}
+        className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'
+      >
         {!isReduced && (
           <div className='group relative aspect-square h-full origin-left'>
             <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />

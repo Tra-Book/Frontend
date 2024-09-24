@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
-import { fetchPlans } from '@/lib/HTTP/plan/API'
+import { fetchPlans, SCROLL_SIZE } from '@/lib/HTTP/place/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
@@ -29,7 +29,7 @@ interface SearchAreaProps {
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
   const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
-  const { ref, inView } = useInView({ threshold: 0 })
+  const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
 
   // #0. Data Fetching
@@ -53,11 +53,12 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     },
   })
 
-  console.log(data?.pages)
-
   // #0-1. Scroll Event Data Fetching
   useEffect(() => {
-    if (inView && hasNextPage) fetchNextPage()
+    if (inView && hasNextPage) {
+      fetchNextPage()
+      console.log('Fetch new places')
+    }
   }, [inView])
 
   // #0-2. New Data Fetching
@@ -69,7 +70,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     refetch()
   }
 
-  let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
   let contents
   if (isPending) {
     contents = (
@@ -94,17 +94,26 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   } else {
     // #2. 무한스크롤 적용
     if (name === 'Place') {
-      contents = data.pages.map(page =>
-        page.datas.map(place => (
-          <PlaceCard
-            key={place.id}
-            data={place}
-            focusedPlaceCard={focusCard as Place | undefined}
-            handleClickCard={handleClickCard as (card: Place) => void}
-          />
-        )),
+      contents = data.pages.map((page, scrollIndex) =>
+        page.datas.map((place, index) => {
+          // Fetch boundary를 8번째 카드 이후에 배치
+          const isBoundary = scrollIndex === data.pages.length - 1 && index === SCROLL_SIZE / 2
+          return (
+            <React.Fragment key={place.id}>
+              <PlaceCard
+                data={place}
+                focusedPlaceCard={focusCard as Place | undefined}
+                handleClickCard={handleClickCard as (card: Place) => void}
+              />
+              {/* 무한스크롤 경계(중간에 위치) */}
+              {isBoundary && <div ref={ref} />}
+            </React.Fragment>
+          )
+        }),
       )
     } else {
+      // TODO: 보관함 > 여행계획 페칭한걸로 대체
+      let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
       contents = tmpPlanData.map((plan, index) => (
         <PlanCard key={index} data={plan} handleClickCard={handleClickCard as (card: Plan) => void} />
       ))
@@ -135,11 +144,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
         </div>
       </div>
       {/* 데이터 */}
-      <div className='flex w-full flex-grow flex-col items-center overflow-y-auto'>
-        {contents}
-        {/* 무한스크롤 경계 */}
-        <div ref={ref} />
-      </div>
+      <div className='flex w-full flex-grow flex-col items-center overflow-y-auto'>{contents}</div>
       {/* 축소 확대 버튼 */}
       {isSearching && (
         <div
