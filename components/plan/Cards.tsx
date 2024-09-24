@@ -1,11 +1,16 @@
+'use client'
+import { revalidateTag } from 'next/cache'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
+import { toast } from '@/lib/utils/hooks/useToast'
 
 import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
@@ -76,9 +81,55 @@ interface PlaceCardProps {
 
 export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCardProps) => {
   const { id, imgSrc, order, name, address, tag, reviews, reviewCnt, stars, visitCnt, duration, isScraped } = data
+  const session: any = useSession()
 
   const focusHandler = () => {
     handleClickCard(data)
+    console.log(data)
+  }
+
+  /**
+   * 유저의 스크랩하기 행동
+   */
+  const scrapHandler = async () => {
+    try {
+      const Route = BACKEND_ROUTES.PLACE.SCRAP
+
+      const res = await fetch(`/server/${Route.url}`, {
+        method: Route.method,
+        headers: {
+          Authorization: session.data.accessToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          placeId: data.id,
+        }),
+        credentials: 'include',
+      })
+      if (res.ok) {
+        toast({ title: '보관함에 추가되었습니다!' })
+        // 낙관적 업데이트 (UI 먼저 반영)
+        // Todo: 보관함 > 여행지 Revalidate Tag하기
+        revalidateTag('places')
+        return
+      }
+      // 400 에러 처리
+      const status = res.status
+      const errorData = await res.json() // 에러 메시지 확인
+
+      switch (status) {
+        case 400:
+          console.log('Wrong Request')
+          break
+        default:
+          console.log('Unhandled error')
+          break
+      }
+    } catch (error) {
+      console.log(error)
+
+      console.log('Internal Server error')
+    }
   }
 
   return (
@@ -106,11 +157,11 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
         <div className='group flex w-fit items-center justify-start'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
           <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
-          {/* TODO: 유저 북마크 추가하기  */}
           <LucideIcon
             name='Bookmark'
             className='absolute right-2 hover:fill-tbRed'
             fill={isScraped ? 'tbRed' : undefined}
+            onClick={scrapHandler}
           />
         </div>
 

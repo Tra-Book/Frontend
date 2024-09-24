@@ -1,4 +1,4 @@
-import { HttpMethod } from '../server/http'
+import { HttpMethod } from '../HTTP/http'
 import { ExtractValueByKey } from '../utils/typeUtils'
 
 /**
@@ -163,6 +163,12 @@ export const BACKEND_ROUTES = {
     GENERAL: {
       method: HttpMethod.GET,
       url: '/places/general',
+    },
+  },
+  PLACE: {
+    SCRAP: {
+      method: HttpMethod.POST,
+      url: '/place/scrap',
     },
   },
 }

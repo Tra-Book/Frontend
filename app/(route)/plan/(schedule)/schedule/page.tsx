@@ -8,7 +8,7 @@ import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
-import { addPlaceToPlan } from '@/lib/server/plan/API'
+import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 

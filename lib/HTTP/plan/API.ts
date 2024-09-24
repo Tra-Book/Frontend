@@ -1,5 +1,6 @@
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
+import { toast } from '@/lib/utils/hooks/useToast'
 
 import { BACKEND_ROUTES } from '../../constants/routes'
 import { ArrangeChoiceType, StateChoicesType } from '../../utils/hooks/useFilters'
@@ -36,7 +37,7 @@ const get_arrange = (arrange: ArrangeChoiceType): string => {
   }
 }
 
-export type ResponsePlace = {
+export type PlaceResponse = {
   placeId: number
   cityId: number
   address: string
@@ -57,7 +58,7 @@ export type ResponsePlace = {
 }
 
 export type FetchPlansResponse = {
-  places: Array<ResponsePlace>
+  datas: Array<Place>
   totalPages: number
 }
 
@@ -101,25 +102,39 @@ export const fetchPlans = async (params: fetchPlansParams): Promise<FetchPlansRe
         'Content-Type': 'application/json',
       },
       credentials: 'include',
+      next: { tags: ['places'] },
     })
-
-    if (res.ok) {
-      const data = await res.json()
-
-      return data
+    if (!res.ok) {
+      const error = new Error('An error occurred while fetching places')
+      error.message = await res.json()
+      throw error
     }
-    // 단순 GET 이므로, 에러 헨들링 없음
-    // const status = res.status
-
-    // switch (status) {
-    //   default:
-    //     break
-    // }
+    const { places, totalPages } = await res.json()
+    const datas: Place[] = places.map((place: PlaceResponse) => ({
+      id: place.placeId,
+      name: place.placeName,
+      imgSrc: place.imageSrc,
+      address: place.address,
+      geo: {
+        latitude: place.latitude,
+        longitude: place.longitude,
+      },
+      tag: place.category,
+      // duration 없음
+      stars: place.star,
+      visitCnt: place.numOfAdded,
+      // reviews 아직 없음
+      // reviewCnt 아직 없음
+      reviewCnt: 0,
+      isScraped: false, // Todo: 실제 데이터 받아오기
+      // order 없음
+    }))
+    return { datas, totalPages }
   } catch (error) {
-    console.log('Internal Server Error Occured!')
+    toast({ title: 'Internal Server Error Occured!' })
   }
   return {
-    places: [],
+    datas: [],
     totalPages: 0,
   }
 }

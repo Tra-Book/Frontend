@@ -5,8 +5,8 @@ import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
+import { fetchPlans } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { fetchPlans, ResponsePlace } from '@/lib/server/plan/API'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -32,48 +32,17 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   const { ref, inView } = useInView({ threshold: 0 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
 
-  const fetchData = async (scrollNum: number) => {
-    const params = {
-      searchInput: searchInputRef.current?.value || '',
-      states: ['서울특별시'] as Array<StateChoicesType>,
-      // states: filter.state,
-      arrange: arrange,
-      scrollNum: scrollNum,
-    }
-    try {
-      const { places, totalPages } = await fetchPlans(params)
-      const datas: Place[] = places.map((place: ResponsePlace) => ({
-        id: place.placeId,
-        name: place.placeName,
-        imgSrc: place.imageSrc,
-        address: place.address,
-        geo: {
-          latitude: place.latitude,
-          longitude: place.longitude,
-        },
-        tag: place.category,
-        // duration 없음
-        stars: place.star,
-        visitCnt: place.numOfAdded,
-        // reviews 아직 없음
-        // reviewCnt 아직 없음
-        reviewCnt: 0,
-        isScraped: false, // Todo: 실제 데이터 받아오기
-        // order 없음
-      }))
-      return { datas, totalPages }
-    } catch (error) {
-      console.log('Failed to fetch plans')
-    }
-    return {
-      datas: [],
-      totalPages: 0,
-    }
-  }
-
+  // #0. Data Fetching
   const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
     queryKey: ['places', searchInputRef.current?.value || '', filter.state, arrange],
-    queryFn: ({ pageParam = 0 }) => fetchData(pageParam),
+    queryFn: ({ pageParam = 0 }) =>
+      fetchPlans({
+        searchInput: searchInputRef.current?.value || '',
+        states: ['서울특별시'] as Array<StateChoicesType>,
+        // states: filter.state,
+        arrange: arrange,
+        scrollNum: pageParam,
+      }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       // lastPage에는 fetch callback의 리턴값이 전달됨
@@ -83,11 +52,12 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
       return nextPage <= maxPage ? nextPage : undefined // 다음 데이터가 있는지 없는지 판단
     },
   })
+  // #0-1. Scroll Event Data Fetching
   useEffect(() => {
     if (inView && hasNextPage) fetchNextPage()
   }, [inView])
 
-  // 새로운 데이터 받아오기
+  // #0-2. New Data Fetching
   useEffect(() => {
     refetch()
   }, [filter, arrange])
