@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { Geo } from '../types/Entity/place'
 import { Nullable } from '../utils/typeUtils'
@@ -20,31 +21,39 @@ interface MapContext {
   setFocusedPlacePin: (updatedPin: NullableGeo) => void
 }
 
-const useMapStore = create<MapContext>(set => ({
-  center: {
-    latitude: 37.294068,
-    longitude: 126.976654,
-  },
-  setCenter: (newCenter: Geo) => {
-    set(() => ({ center: newCenter }))
-  },
+const useMapStore = create(
+  persist<MapContext>(
+    (set, get) => ({
+      center: {
+        latitude: 37.294068,
+        longitude: 126.976654,
+      },
+      setCenter: (newCenter: Geo) => {
+        set(() => ({ center: newCenter }))
+      },
 
-  pins: null,
-  setPins: (updatedPins: NullableGeoArray) => {
-    set(() => ({ pins: updatedPins }))
-  },
+      pins: null,
+      setPins: (updatedPins: NullableGeoArray) => {
+        set(() => ({ pins: updatedPins }))
+      },
 
-  // 여행계획 클릭시
-  focusedPlanPins: null,
-  setFocusedPlanPins: (updatedPins: NullableGeoArray) => {
-    set(() => ({ focusedPlanPins: updatedPins }))
-  },
+      // 여행계획 클릭시
+      focusedPlanPins: null,
+      setFocusedPlanPins: (updatedPins: NullableGeoArray) => {
+        set(() => ({ focusedPlanPins: updatedPins }))
+      },
 
-  // 여행지 하나 클릭시
-  focusedPlacePin: null,
-  setFocusedPlacePin: (updatedPin: NullableGeo) => {
-    set(() => ({ focusedPlacePin: updatedPin }))
-  },
-}))
+      // 여행지 하나 클릭시
+      focusedPlacePin: null,
+      setFocusedPlacePin: (updatedPin: NullableGeo) => {
+        set(() => ({ focusedPlacePin: updatedPin }))
+      },
+    }),
+    {
+      name: 'map-context',
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+)
 
 export default useMapStore
