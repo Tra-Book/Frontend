@@ -8,12 +8,18 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
+import { generate_initial_schedule } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import { formatToHyphenDate, formatToKoreanShortDate, parseHypenDateToDate } from '@/lib/utils/dateUtils'
+import {
+  formatDateToHyphenDate,
+  formatToKoreanShortDate,
+  getTripDuration,
+  parseHypenDateToDate,
+} from '@/lib/utils/dateUtils'
 import { useToast } from '@/lib/utils/hooks/useToast'
 
 import { Button } from '../ui/button'
@@ -29,9 +35,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const [inputState, setInputState] = useState<string>('')
   const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
   const { toast } = useToast()
-  const state = usePlanStore()
-
-  console.log(state)
+  const { setPlanData } = usePlanStore()
 
   const [selected, setSelected] = useState<DateRange>()
   const handleSelect = (newSelected?: DateRange) => {
@@ -53,9 +57,9 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
       return
     }
     const body = {
-      state: inputState,
-      startDate: formatToHyphenDate(selected.from),
-      endDate: formatToHyphenDate(selected.to),
+      state: inputState as StateType,
+      startDate: formatDateToHyphenDate(selected.from),
+      endDate: formatDateToHyphenDate(selected.to),
     }
 
     // let backendRoute
@@ -76,12 +80,13 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
       const status = res.status
       const data = await res.json()
       if (res.ok) {
-        state.setPlanData({
+        setPlanData({
           id: data.planId,
           userId: session.data.userId,
           startDate: parseHypenDateToDate(body.startDate),
           endDate: parseHypenDateToDate(body.endDate),
-          state: inputState as StateType,
+          state: body.state,
+          schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
         })
         backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
         return

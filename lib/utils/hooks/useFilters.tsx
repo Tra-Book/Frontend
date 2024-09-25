@@ -17,7 +17,7 @@ export const cityChoices = CITIES
 export type CityChoicesType = ['전체'] | string[][]
 
 export const planArrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
-export const placeArrangeChoices = ['최신순', '평점순', '인용순', '리뷰순'] as const
+export const placeArrangeChoices = ['평점순', '방문자순', '리뷰순'] as const
 export type ArrangeChoiceType = (typeof planArrangeChoices)[number] | (typeof placeArrangeChoices)[number]
 
 export const allElements = ['전체']
@@ -139,11 +139,7 @@ const useFilters = (name: 'Plan' | 'Place') => {
         case '평점순':
           data.sort((a, b) => b.star - a.star)
           break
-        case '최신순':
-          // Todo: 실제 Date객체를 받아서 해봐야함
-          // data.sort((a, b) => b. a.likes)
-          break
-        case '인용순':
+        case '방문자순':
           data.sort((a, b) => b.usedCnt - a.usedCnt)
           break
         case '리뷰순':

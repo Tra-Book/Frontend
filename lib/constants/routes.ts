@@ -1,3 +1,4 @@
+import { HttpMethod } from '../HTTP/http'
 import { ExtractValueByKey } from '../utils/typeUtils'
 
 /**
@@ -104,59 +105,70 @@ export type RouteType = ExtractValueByKey<typeof ROUTES, 'url'>
 export const BACKEND_ROUTES = {
   AUTH: {
     EMAIL_LOGIN: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/login',
     },
     GOOGLE_LOGIN: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/google-login',
     },
     KAKAO_LOGIN: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/kakao-login',
     },
     NAVER_LOGIN: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/naver-login',
     },
     SIGNUP: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/signup',
     },
     VERIFY_EMAIL: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/send-verify-email',
     },
     VERIFY_CODE: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/verify-code',
     },
     SIGNOUT: {
-      method: 'DELETE',
+      method: HttpMethod.DELETE,
       url: '/auth/signout',
     },
     UPDATE_PROFILE: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/update-profile',
     },
     UPDATE_PASSWORD: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/auth/update-password',
     },
     RENEW_TOKEN: {
-      method: 'GET',
+      method: HttpMethod.GET,
       url: '/auth/renew-token',
     },
   },
   PLAN: {
-
     CREATE: {
-      method: 'POST',
+      method: HttpMethod.POST,
       url: '/plan/create',
     },
     UPDATE: {
-      method: 'PATCH',
+      method: HttpMethod.PATCH,
       url: '/plan/update',
+    },
+  },
+  PLACES: {
+    GENERAL: {
+      method: HttpMethod.GET,
+      url: '/places/general',
+    },
+  },
+  PLACE: {
+    SCRAP: {
+      method: HttpMethod.POST,
+      url: '/place/scrap',
     },
   },
 }

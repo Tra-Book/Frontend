@@ -1,5 +1,3 @@
-import { StaticImageData } from 'next/image'
-
 import { Comment } from './comment'
 
 export interface Geo {
@@ -15,12 +13,12 @@ export interface Place {
   name: string // 여행지명
   // imgSrc: string
   // 임시 Dummy Data를 위해
-  imgSrc: StaticImageData
+  imgSrc: string
   address: string // 한글 주소
   geo: Geo // 위치
 
   tag: string
-  duration: number // Minutes
+  duration?: number // Minutes
 
   stars: number // 평점
   visitCnt: number // 실제 계획에 담긴 횟수
@@ -28,8 +26,7 @@ export interface Place {
   reviews?: Array<Comment>
   reviewCnt: number
 
-  isAdded: boolean // 계획에 들어갔는지 여부
   isScraped: boolean
 
-  order: number // 계획세우기에 담긴 순서
+  order?: number // 계획세우기에 담긴 순서
 }

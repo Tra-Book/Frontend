@@ -5,17 +5,19 @@ import KakaoMap from '@/components/common/KakaoMap'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
+import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 
 interface PlanSchedulePageProps {}
 
-const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
-  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+const PlanSchedulePage = (): ReactNode => {
+  const { planData, setPlanData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { setCenter, setFocusedPlacePin } = useMapStore()
-
+  const { day } = useDropdownStore()
   const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
   const handleSearchBtn = () => {
@@ -43,7 +45,18 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
 
   const handleAddPlace = () => {
     // update();
-    setFocusedPlaceCard(undefined) // 초기화
+    console.log(focusedPlaceCard)
+
+    if (focusedPlaceCard) {
+      const newPlan: Plan = addPlaceToPlan(planData, focusedPlaceCard, day)
+      console.log('newPlan')
+
+      console.log(newPlan.schedule)
+
+      setPlanData(newPlan)
+    }
+    // 초기화
+    setFocusedPlaceCard(undefined)
     setFocusedPlacePin(null)
   }
 
@@ -56,8 +69,6 @@ const PlanSchedulePage = ({}: PlanSchedulePageProps): ReactNode => {
   useEffect(() => {
     return () => setFocusedPlacePin(null)
   }, [])
-  // Todo: 현재 D
-  // Dummy_Pins
 
   return (
     <>

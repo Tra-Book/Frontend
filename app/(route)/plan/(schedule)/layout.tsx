@@ -1,17 +1,22 @@
-import React, { ReactNode } from 'react'
+'use client'
+import React, { ReactElement, ReactNode } from 'react'
 
 import PlanSchedule from '@/components/plan/PlanSchedule'
-import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
+import usePlanStore from '@/lib/context/planStore'
 
 interface AddPlaceLayoutProps {
-  children: React.ReactNode
+  children: ReactElement
 }
 
 const AddPlaceLayout = ({ children }: AddPlaceLayoutProps): ReactNode => {
-  // Todo: DUMMY_PLAN > 전역변수 plan
+  const { planData } = usePlanStore()
+
+  console.log(planData)
+
+  // children에 day 값을 prop으로 전달
   return (
     <div className='relative flex h-dvh flex-grow justify-start'>
-      <PlanSchedule id='schedule' plan={DUMMY_PLAN} />
+      <PlanSchedule id='schedule' plan={planData} />
       {children}
     </div>
   )
