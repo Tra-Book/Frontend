@@ -20,9 +20,10 @@ interface SchedulePlaceCardProps {
   id: 'schedule' | 'scrap'
   data: Place
   isReduced: boolean
+  className?: string
 }
 
-export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProps): ReactNode => {
+export const SchedulePlaceCard = ({ id, data, isReduced, className }: SchedulePlaceCardProps): ReactNode => {
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration, geo } = data
   const { setCenter } = useMapStore()
 
@@ -35,11 +36,20 @@ export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProp
     <>
       <div
         onClick={() => setCenter(geo)}
-        className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'
+        className={cn(
+          'relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4',
+          className,
+        )}
       >
         {!isReduced && (
           <div className='group relative aspect-square h-full origin-left'>
-            <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
+            <Image
+              width={124}
+              height={124}
+              src={imgSrc}
+              alt='Place Image'
+              className='h-full w-full origin-center rounded-md'
+            />
             <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
           </div>
         )}

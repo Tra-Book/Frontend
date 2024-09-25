@@ -72,6 +72,10 @@ export const ROUTES = {
       name: '여행 일정',
       url: '/plan/schedule',
     },
+    DETAIL: {
+      name: '여행 디테일',
+      url: '/plan/detail',
+    },
     SCRAP: {
       PLAN: {
         name: '보관함 여행계획',

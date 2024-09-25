@@ -40,7 +40,7 @@ export const DUMMY_COMMENT: Comment = {
   userId: 41,
 }
 
-const get_dummy_dayplan = (idx: number): Schedule => {
+const get_dummy_schedule = (idx: number): Schedule => {
   return {
     day: idx + 1,
     startTime: '08:00',
@@ -67,7 +67,7 @@ export const DUMMY_PLAN: Plan = {
   comments: new Array(12).fill(DUMMY_COMMENT),
   isScraped: true,
   isLiked: true,
-  schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_dayplan(idx)),
+  schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_schedule(idx)),
 }
 
 const random_Date: Date = new Date()
