@@ -12,7 +12,6 @@ export const parseHypenDateToDate = (dateString: string): Date => parse(dateStri
 export const formatKoreanDate = (date: Date): string => {
   const dayOfWeekMap = ['일', '월', '화', '수', '목', '금', '토']
   const formattedDate = format(date, 'yyyy.MM.dd', { locale: ko })
-
   const dayOfWeek = dayOfWeekMap[date.getDay()]
 
   return `${formattedDate}(${dayOfWeek})`

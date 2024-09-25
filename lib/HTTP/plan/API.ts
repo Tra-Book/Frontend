@@ -7,7 +7,11 @@ import { toast } from '@/lib/utils/hooks/useToast'
 /**
  * Plan Update (DB 반영하기) 함수입니다.
  */
-export const updatePlan = async ({ plan, userId }: { plan: Plan; userId: number }) => {
+interface UpdatePlanProps {
+  plan: Plan
+  userId: number
+}
+export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
   const {
     id,
     state,
@@ -15,7 +19,7 @@ export const updatePlan = async ({ plan, userId }: { plan: Plan; userId: number 
     scrapCnt,
     memberCnt,
     budget,
-    imgSrc,
+    imgSrc, // typeof imgSrc === "object" > 바뀜 > Body에 보냄 //  tyepof imgSrc === "string" > 바뀌지 않음 > Body null
     startDate,
     endDate,
     title,
@@ -41,7 +45,7 @@ export const updatePlan = async ({ plan, userId }: { plan: Plan; userId: number 
     })),
   }))
 
-  const body = {
+  const bodyPlan = {
     planId: id,
     userId: userId,
     state: state,
@@ -57,25 +61,37 @@ export const updatePlan = async ({ plan, userId }: { plan: Plan; userId: number 
     isPublic: isPublic,
     isFinished: isDone,
   }
+  const body = {
+    plan: bodyPlan,
+    image:
+      typeof imgSrc === 'object'
+        ? (() => {
+            const formData = new FormData()
+            formData.append('image', imgSrc)
+            return formData
+          })()
+        : null,
+  }
 
   const Route = BACKEND_ROUTES.PLAN.UPDATE
+  console.log('url:', `/server/${Route.url}`)
 
   try {
-    const res = await fetch(Route.url, {
+    const res = await fetch(`/server/${Route.url}`, {
       method: Route.method,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        body,
-        // image:new FormData().append('image',imgSrc)
-      }),
+      body: JSON.stringify(body),
     })
     if (!res.ok) {
       const error = new Error('다시 시도해주세요')
       error.message = await res.json()
       throw error
     }
+    const data = await res.json()
+    return data
+
     toast({ title: '저장되었습니다' }) // 성공 메세지
   } catch (error) {
     toast({ title: 'Internal Server Error Occured!' })

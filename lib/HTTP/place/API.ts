@@ -69,7 +69,7 @@ export type FetchPlacesResponse = {
 }
 
 export const SCROLL_SIZE = 12
-export const fetchPlans = async (params: fetchPlacesParams): Promise<FetchPlacesResponse> => {
+export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlacesResponse> => {
   const { searchInput, states, arrange, scrollNum } = params
   const queries: Queries = [
     {

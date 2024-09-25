@@ -43,5 +43,5 @@ export interface Schedule {
   endTime: string
 
   // #2. 여행지 일정
-  places: Nullable<Array<Place>>
+  places: Array<Place>
 }

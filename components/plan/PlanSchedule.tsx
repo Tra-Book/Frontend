@@ -97,7 +97,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   // #3.2 해당일자의 DayPlan이 있는 경우 (places제외, 디폴트로 만들어줘서 항상 있어야 함)
   else {
     // #유저가 추가한 여행지가 아직 없음
-    if (!schedule.places) {
+    if (schedule.places.length === 0) {
       contents = (
         <div
           className={cn(

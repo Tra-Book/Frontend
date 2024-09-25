@@ -107,6 +107,6 @@ export const generate_initial_schedule = (day: number): Array<Schedule> => {
     day: idx + 1,
     startTime: '08:00',
     endTime: '22:00',
-    places: null,
+    places: [],
   }))
 }

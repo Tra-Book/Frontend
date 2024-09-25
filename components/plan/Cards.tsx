@@ -177,7 +177,13 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       onClick={() => handleClickCard(data)}
     >
       <div className='group relative aspect-square h-full origin-left'>
-        <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
+        <Image
+          src={imgSrc as string}
+          alt='Place Image'
+          width={124}
+          height={124}
+          className='h-full w-full origin-center rounded-md'
+        />
         <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
 

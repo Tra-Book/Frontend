@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
-import { fetchPlans, SCROLL_SIZE } from '@/lib/HTTP/place/API'
+import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/place/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
@@ -36,7 +36,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
     queryKey: ['places', 'search'],
     queryFn: ({ pageParam = 0 }) =>
-      fetchPlans({
+      fetchPlaces({
         searchInput: searchInputRef.current?.value || '',
         states: ['서울특별시'] as Array<StateChoicesType>,
         // states: filter.state,
@@ -57,7 +57,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage()
-      console.log('Fetch new places')
     }
   }, [inView])
 
@@ -74,7 +73,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   if (isPending) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
-        <Motion animation={bounce()}>여행지 로딩중입니다!</Motion>
+        <Motion animation={bounce()}>{name === 'Place' ? '여행지 로딩중입니다!' : '여행계획 로딩중입니다'}</Motion>
       </div>
     )
   } else if (!data) {
