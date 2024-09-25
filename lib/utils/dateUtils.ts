@@ -4,14 +4,15 @@ import { ko } from 'date-fns/locale'
 
 export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 
-export const formatToKoreanShortDate = (date: Date) => format(date, 'MM/dd(E)', { locale: ko })
+export const formatToKoreanShortDate = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
 
-export const parseHypenDateToDate = (dateString: string) => parse(dateString, 'yyyy-MM-dd', new Date())
+export const parseHypenDateToDate = (dateString: string): Date => parse(dateString, 'yyyy-MM-dd', new Date())
 
 //"yyyy.MM.dd(요일)" 형태로 반환
 export const formatKoreanDate = (date: Date): string => {
   const dayOfWeekMap = ['일', '월', '화', '수', '목', '금', '토']
   const formattedDate = format(date, 'yyyy.MM.dd', { locale: ko })
+
   const dayOfWeek = dayOfWeekMap[date.getDay()]
 
   return `${formattedDate}(${dayOfWeek})`

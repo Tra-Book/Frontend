@@ -8,18 +8,13 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
-import { generate_initial_schedule } from '@/lib/constants/dummy_data'
+import { generate_initial_schedule, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import {
-  formatDateToHyphenDate,
-  formatToKoreanShortDate,
-  getTripDuration,
-  parseHypenDateToDate,
-} from '@/lib/utils/dateUtils'
+import { formatDateToHyphenDate, formatToKoreanShortDate, getTripDuration } from '@/lib/utils/dateUtils'
 import { useToast } from '@/lib/utils/hooks/useToast'
 
 import { Button } from '../ui/button'
@@ -49,11 +44,11 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
 
   const onClickFinish = async () => {
     if (!STATES.some(state => state === inputState)) {
-      alert('도시를 입력해주세요.')
+      toast({ title: '도시를 입력해주세요.' })
       return
     }
     if (selected?.from === undefined || selected?.to === undefined) {
-      alert('기간을 입력해주세요.')
+      toast({ title: '기간을 입력해주세요.' })
       return
     }
     const body = {
@@ -83,10 +78,11 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
         setPlanData({
           id: data.planId,
           userId: session.data.userId,
-          startDate: parseHypenDateToDate(body.startDate),
-          endDate: parseHypenDateToDate(body.endDate),
+          startDate: selected.from,
+          endDate: selected.to,
           state: body.state,
           schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
+          imgSrc: PLAN_DEFAULT_IMAGE,
         })
         backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
         return

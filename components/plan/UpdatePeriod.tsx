@@ -16,7 +16,6 @@ const UpdatePeriod = ({}: UpdatePeriodProps): ReactNode => {
   useKakaoLoader()
   const router = useRouter()
   const { planData } = usePlanStore()
-  console.log(planData)
 
   const onClickIcon = () => {
     router.push(ROUTES.PLAN.INDEX.url)

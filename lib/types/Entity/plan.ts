@@ -13,10 +13,7 @@ export interface Plan {
   startDate: Date
   endDate: Date
 
-  // imgSrc: string
-  // Todo: string으로 바꾸기
-  // imgSrc: StaticImageData // Default : 아무 여행 이미지
-  imgSrc: string
+  imgSrc: File | string // Default: Storage의 디폴트 이미지  ,File: 변경되었을때
 
   title: Nullable<string> // Default: null
   description: Nullable<string> // Default: null

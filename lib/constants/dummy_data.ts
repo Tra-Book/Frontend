@@ -2,13 +2,14 @@ import { Comment } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
 
-export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumnail.png'
+export const USER_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/profilePhoto/default.png'
+export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumbnail.png'
 export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumbnail.png'
 const get_dummy_place = (idx: number): Place => {
   return {
     id: idx,
     name: `토함산자연휴양림${idx}`,
-    imgSrc: PLAN_DEFAULT_IMAGE,
+    imgSrc: PLACE_DEFAULT_IMAGE,
     address: `경상북도 경주시 양북면 불국로${idx}`,
 
     tag: `관광지`,
@@ -69,7 +70,7 @@ export const DUMMY_PLAN: Plan = {
   schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_dayplan(idx)),
 }
 
-const random_Date = new Date()
+const random_Date: Date = new Date()
 
 export const INITIAL_PLAN: Plan = {
   id: -1, // 백엔드 값으로 대체

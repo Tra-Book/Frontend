@@ -1,9 +1,11 @@
+'use client'
 import Image from 'next/image'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Label } from '@/components/ui/label'
+import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import Dummy_thumbnail from '@/public/dummy/dummy_plan_thumbnail.png'
 
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -11,6 +13,29 @@ import { Input } from '../ui/input'
 interface UpdateInfoProps {}
 
 const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
+  const { planData, setPlanData } = usePlanStore()
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+  // #1. Image Update
+  const onClickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setPlanData({
+        imgSrc: file,
+      })
+
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  useEffect(() => {
+    console.log(previewUrl)
+  }, [previewUrl])
+
   return (
     <section className='mt-2 flex h-full w-full flex-col gap-5 border-t-[1px] border-tbPlaceholder p-10'>
       <div className='flex items-end gap-5'>
@@ -24,38 +49,31 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             <p className='text-base'>썸네일</p>
             <Image
               alt='썸네일 이미지'
-              src={Dummy_thumbnail}
-              className='mt-2 h-full w-auto rounded-lg'
+              src={previewUrl || (typeof planData.imgSrc === 'string' ? planData.imgSrc : PLAN_DEFAULT_IMAGE)}
+              className='aspect- mt-2 h-full rounded-lg'
               quality={70}
-              // layout='fill'
+              width={400}
+              height={180}
             />
           </Label>
-          <Input id='image' type='file' className='hidden' />
+          <Input id='image' type='file' className='hidden' onChange={onClickImage} />
         </div>
 
         <div className='grid w-1/2 grid-cols-2 grid-rows-3 justify-items-center gap-10'>
           <div className='w-full'>
-            <Label htmlFor='' className='mb-2 flex text-base'>
-              제목
-            </Label>
+            <Label className='mb-2 flex text-base'>제목</Label>
             <Input className='h-13' id='' type='text' />
           </div>
           <div className='w-full'>
-            <Label htmlFor='' className='mb-2 flex text-base'>
-              설명
-            </Label>
+            <Label className='mb-2 flex text-base'>설명</Label>
             <Input className='h-13' id='' type='text' />
           </div>
           <div className='w-full'>
-            <Label htmlFor='' className='mb-2 flex text-base'>
-              인원수
-            </Label>
+            <Label className='mb-2 flex text-base'>인원수</Label>
             <Input className='h-13' id='' type='text' />
           </div>
           <div className='w-full'>
-            <Label htmlFor='' className='mb-2 flex text-base'>
-              예산
-            </Label>
+            <Label className='mb-2 flex text-base'>예산</Label>
             <Input className='h-13' id='' type='text' />
           </div>
           <Button variant='tbPrimary' className='col-span-2 mt-2 w-40'>

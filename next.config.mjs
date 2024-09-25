@@ -7,14 +7,17 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
+        pathname: '/trabook-20240822/**',
       },
       {
         protocol: 'http',
-        hostname: 'tong.visitkorea.or.kr/**',
+        hostname: 'tong.visitkorea.or.kr',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'storage.cloud.google.com/**',
+        hostname: 'storage.cloud.google.com',
+        pathname: '/trabook-20240822/**',
       },
     ],
   },

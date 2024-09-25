@@ -5,35 +5,6 @@ import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
 import { toast } from '@/lib/utils/hooks/useToast'
 
 /**
- * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
- */
-export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: number): Plan => {
-  // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
-  const updatedSchedule = originPlan.schedule.map(schedule => {
-    if (schedule.day === currentDay) {
-      // #2. Order (순서), Duration (머무는 시간) 필드 추가하기
-
-      const newPlace: Place = {
-        ...place,
-        order: schedule.places ? schedule.places.length + 1 : 1,
-        duration: 60,
-      }
-      const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
-      return {
-        ...schedule,
-        places: updatedPlaces,
-      }
-    }
-    return schedule // 변경되지 않은 일정은 그대로 반환
-  })
-
-  return {
-    ...originPlan,
-    schedule: updatedSchedule, // 업데이트된 스케줄 반영
-  }
-}
-
-/**
  * Plan Update (DB 반영하기) 함수입니다.
  */
 export const updatePlan = async ({ plan, userId }: { plan: Plan; userId: number }) => {
@@ -212,3 +183,32 @@ interface FetchPlanProps {
 //     toast({ title: 'Internal Server Error Occured!' })
 //   }
 // }
+
+/**
+ * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
+ */
+export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: number): Plan => {
+  // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
+  const updatedSchedule = originPlan.schedule.map(schedule => {
+    if (schedule.day === currentDay) {
+      // #2. Order (순서), Duration (머무는 시간) 필드 추가하기
+
+      const newPlace: Place = {
+        ...place,
+        order: schedule.places ? schedule.places.length + 1 : 1,
+        duration: 60,
+      }
+      const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
+      return {
+        ...schedule,
+        places: updatedPlaces,
+      }
+    }
+    return schedule // 변경되지 않은 일정은 그대로 반환
+  })
+
+  return {
+    ...originPlan,
+    schedule: updatedSchedule, // 업데이트된 스케줄 반영
+  }
+}
