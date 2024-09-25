@@ -84,11 +84,11 @@ export const ROUTES = {
     },
   },
   COMMUNITY: {
-    PLACE: {
+    PLAN: {
       name: '여행 계획 커뮤니티',
       url: '/community/plan',
     },
-    PLAN: {
+    PLACE: {
       name: '여행지 커뮤니티',
       url: '/community/place',
     },
