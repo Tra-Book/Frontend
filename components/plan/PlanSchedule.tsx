@@ -147,8 +147,9 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         {id === 'scrap' && <LucideIcon name='ChevronLeft' onClick={moveBack} className='hover:text-tbRed' />}
         {!isReduced && <p className='mx-4'>강원도</p>}
         <DayDropdown
+          id='days'
+          startDate={plan.startDate}
           color={id === 'scrap' ? 'tbGreen' : 'tbPrimary'}
-          isReduced={isReduced}
           handleDayChange={handleDayChange}
           className={cn('mx-4 h-9 flex-grow', id === 'scrap' && 'bg-tbGreen hover:bg-tbGreenHover')}
         />

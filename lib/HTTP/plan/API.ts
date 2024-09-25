@@ -1,5 +1,9 @@
+import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
+import { toast } from '@/lib/utils/hooks/useToast'
+
+import { attachQuery, Queries } from '../http'
 
 /**
  * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
@@ -75,3 +79,48 @@ export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: numbe
 
 //   }
 // }
+
+/**
+ * Plan 정보를 받아오는 API 입니다.
+ */
+interface FetchPlanProps {
+  planId: number
+  accessToken: string
+}
+
+// export type PlanResponse {
+
+// }
+
+const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
+  try {
+    const Route = BACKEND_ROUTES.PLAN.GET
+    const query: Queries = [
+      {
+        key: 'planId',
+        value: planId,
+      },
+    ]
+
+    const res = await fetch(attachQuery(Route.url, query), {
+      method: Route.method,
+      headers: {
+        Authorization: accessToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        planId,
+      }),
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      const error = new Error('An error occurred while fetching places')
+      error.message = await res.json()
+      throw error
+    }
+    return
+  } catch (error) {
+    toast({ title: 'Internal Server Error Occured!' })
+  }
+}

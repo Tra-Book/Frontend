@@ -149,7 +149,12 @@ export const BACKEND_ROUTES = {
       url: '/auth/renew-token',
     },
   },
+
   PLAN: {
+    GET: {
+      method: HttpMethod.GET,
+      url: '/plan',
+    },
     CREATE: {
       method: HttpMethod.POST,
       url: '/plan/create',
@@ -159,6 +164,7 @@ export const BACKEND_ROUTES = {
       url: '/plan/update',
     },
   },
+
   PLACES: {
     GENERAL: {
       method: HttpMethod.GET,

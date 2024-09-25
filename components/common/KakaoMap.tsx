@@ -13,11 +13,6 @@ const KakaoMap = ({}: KakaoMapProps): ReactNode => {
   useKakaoLoader() // 카카오 지도 로딩
   const { pins, center, focusedPlanPins, focusedPlacePin } = useMapStore()
 
-  const pinsPath = pins?.map(pin => ({
-    lat: pin.latitude,
-    lng: pin.longitude,
-  }))
-
   const getPath = (pins: NullableGeoArray) => {
     if (pins) {
       return pins.map(pin => ({

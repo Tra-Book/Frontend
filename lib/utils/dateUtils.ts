@@ -4,7 +4,7 @@ import { ko } from 'date-fns/locale'
 
 export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 
-export const formatToKoreanShortDate = (date: Date) => format(date, 'yyyy년 M월', { locale: ko })
+export const formatToKoreanShortDate = (date: Date) => format(date, 'MM/dd(E)', { locale: ko })
 
 export const parseHypenDateToDate = (dateString: string) => parse(dateString, 'yyyy-MM-dd', new Date())
 
@@ -17,6 +17,9 @@ export const formatKoreanDate = (date: Date): string => {
   return `${formattedDate}(${dayOfWeek})`
 }
 
+export const formatShortKoreanDate = (date: Date): string => {
+  return format(date, 'MM/dd(E)', { locale: ko })
+}
 export const getTripDuration = (startDate: Date, endDate: Date): number => {
   return differenceInDays(endDate, startDate) + 1
 }

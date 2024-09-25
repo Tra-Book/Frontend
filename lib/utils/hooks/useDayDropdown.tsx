@@ -1,17 +1,22 @@
 'use client'
 
+import { addDays } from 'date-fns'
 import { useState } from 'react'
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import useDropdownStore from '@/lib/context/dropdownStore'
+import usePlanStore from '@/lib/context/planStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { ColorType } from '@/public/colors/colors'
 
 import { cn } from '../cn'
+import { formatToKoreanShortDate } from '../dateUtils'
 export interface DayDropdownProps {
-  color?: ColorType
-  isReduced: boolean
+  id: 'days' | 'showAll'
+  startDate: Date
   handleDayChange: (day: number) => void
+
+  color?: ColorType
   className?: string
 }
 
@@ -21,7 +26,11 @@ const useDayDropdown = (totalDays: number) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   // Dropdown UI
-  const DayDropdown = ({ color = 'tbPrimary', isReduced, handleDayChange, className }: DayDropdownProps) => {
+  const DayDropdown = ({ id, startDate, handleDayChange, color = 'tbPrimary', className }: DayDropdownProps) => {
+    const { isReduced } = usePlanStore()
+
+    const selectedDate = formatToKoreanShortDate(addDays(startDate, day - 1))
+
     const dropdownItemHandler = (day: number) => {
       handleDayChange(day)
       setDay(day)
@@ -31,6 +40,9 @@ const useDayDropdown = (totalDays: number) => {
     let [bgStyle, bgStyleHover]: Array<string> = ['bg-tbPrimary', 'hover:bg-tbPrimaryHover']
     if (color === 'tbGreen') [bgStyle, bgStyleHover] = ['bg-tbGreen', 'hover:bg-tbGreenHover']
 
+    const getDropdownItemStyle = (dayOpt: number) => {
+      return cn('mb-1 flex w-full items-center justify-center', bgStyleHover, day === dayOpt && bgStyle)
+    }
     return (
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger
@@ -41,8 +53,8 @@ const useDayDropdown = (totalDays: number) => {
             className,
           )}
         >
-          <p>{`${day}일차`}</p>
-          {!isReduced && <p className='text-xs text-tbGray'>12/29(수)</p>}
+          <p>{id === 'showAll' && day === 0 ? '전체 일정' : `${day}일차`}</p>
+          {!isReduced && <p className='flex items-center text-xs text-tbGray'>{selectedDate}</p>}
           <LucideIcon name='ChevronDown' size={26} className='absolute right-2' />
         </DropdownMenuTrigger>
         {/* 드롭다운 */}
@@ -54,11 +66,16 @@ const useDayDropdown = (totalDays: number) => {
           }}
           className='relative max-h-[20px] overflow-y-auto shadow-tb-shadow'
         >
+          {id === 'showAll' && (
+            <DropdownMenuItem onClick={() => dropdownItemHandler(0)} className={getDropdownItemStyle(0)}>
+              전체 일정
+            </DropdownMenuItem>
+          )}
           {Array.from({ length: totalDays }, (_, index) => index + 1).map(dayOpt => (
             <DropdownMenuItem
               key={dayOpt}
               onClick={() => dropdownItemHandler(dayOpt)}
-              className={cn('mb-1 flex w-full items-center justify-center', bgStyleHover, dayOpt === day && bgStyle)}
+              className={getDropdownItemStyle(dayOpt)}
             >
               <p>{`${dayOpt}일차`}</p>
             </DropdownMenuItem>

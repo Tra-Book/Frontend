@@ -60,7 +60,7 @@ export const DUMMY_PLAN: Plan = {
   endDate: new Date(),
   budget: 10000,
   state: '서울특별시',
-  description: '전역한 아들들과 떠나는 즐겨운 여행입니다! 전역한 아들들과 떠나는 즐겨운 여행입니다!',
+  description: '전역한 아들들과 떠나는 즐겨운 여행입니다!',
   imgSrc: DUMMYPLACEIMG,
   scrapCnt: 200,
   memberCnt: 10,
