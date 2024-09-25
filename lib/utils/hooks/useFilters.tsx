@@ -17,7 +17,7 @@ export const cityChoices = CITIES
 export type CityChoicesType = ['전체'] | string[][]
 
 export const planArrangeChoices = ['최신순', '좋아요순', '스크랩순', '댓글순'] as const
-export const placeArrangeChoices = ['평점순', '방문자순', '리뷰순'] as const
+export const placeArrangeChoices = ['방문자순', '평점순', '리뷰순'] as const
 export type ArrangeChoiceType = (typeof planArrangeChoices)[number] | (typeof placeArrangeChoices)[number]
 
 export const allElements = ['전체']
@@ -35,7 +35,7 @@ export type FilterType = {
 
 const useFilters = (name: 'Plan' | 'Place') => {
   const [filter, setFilter] = useState<FilterType>(initFilters)
-  const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '평점순')
+  const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '방문자순')
 
   const arrangeChoices = name === 'Plan' ? planArrangeChoices : placeArrangeChoices
 
