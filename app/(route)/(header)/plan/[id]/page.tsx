@@ -18,12 +18,17 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
   const session: any = useSession() // 해당 Plan의 User 정보 받기
 
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
-  const plan = DUMMY_PLAN
+  const data = DUMMY_PLAN
+  // TODO: 데이터 페칭
+  // const {data, isPending, isError, error } = useQuery({
+  //   queryKey: ['plan', id],
+  //   queryFn: fetchPlan,
+  // })
 
   return (
     <div className='relative flex w-4/5 max-w-[1200px] flex-col items-start justify-start'>
       {/* 설명 */}
-      <Description plan={plan} user={session.data?.user} className='h-60 min-h-min w-full' />
+      <Description plan={data} user={session.data?.user} className='h-60 min-h-min w-full' />
       {/* 지도 */}
       <Title title='여행 지도 ' />
       <div className='relative aspect-video w-full'>
@@ -31,7 +36,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
       </div>
       {/* 여행 일정 */}
       <Title title='여행 일정 ' />
-      <PlanDetailSchedule plan={plan} />
+      <PlanDetailSchedule plan={data} />
       {/* 댓글 */}
     </div>
   )

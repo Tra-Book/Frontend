@@ -1,10 +1,14 @@
 'use client'
 
+import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { ROUTES } from '@/lib/constants/routes'
+import usePlanStore from '@/lib/context/planStore'
+import { updatePlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 
@@ -17,7 +21,17 @@ const iconSize: number = 24
 
 const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const pathname = usePathname()
+  const { planData } = usePlanStore()
+  const session: any = useSession()
 
+  const { mutate } = useMutation({
+    mutationKey: ['plan', 'update'],
+    mutationFn: updatePlan,
+  })
+
+  const savePlanHandler = () => {
+    mutate({ plan: planData, userId: session.data?.user?.id })
+  }
   return (
     <div className={className}>
       <Link href={ROUTES.HOME.url} className={cn(style, 'font- text-center font-mono text-xl font-bold')}>
@@ -58,7 +72,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
       </div>
 
       <div className={cn(style)}>
-        <LucideIcon name='Save' size={iconSize} />
+        <LucideIcon name='Save' size={iconSize} onClick={savePlanHandler} />
         저장
       </div>
       <div className={cn(style)}>

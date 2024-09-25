@@ -1,11 +1,8 @@
-import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
-import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
-
 import { Comment } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
 
-const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumnail.png'
+export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumnail.png'
 export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumbnail.png'
 const get_dummy_place = (idx: number): Place => {
   return {
@@ -56,12 +53,13 @@ export const DUMMY_PLAN: Plan = {
   title: '가족 여행',
   likeCnt: 30,
   isDone: true,
+  isPublic: true,
   startDate: new Date(),
   endDate: new Date(),
   budget: 10000,
   state: '서울특별시',
   description: '전역한 아들들과 떠나는 즐겨운 여행입니다!',
-  imgSrc: DUMMYPLACEIMG,
+  imgSrc: PLAN_DEFAULT_IMAGE,
   scrapCnt: 200,
   memberCnt: 10,
   userId: 41,
@@ -81,8 +79,7 @@ export const INITIAL_PLAN: Plan = {
   startDate: random_Date,
   endDate: random_Date,
 
-  // imgSrc: string
-  imgSrc: DummyThumbNail, // Default : 아무 여행 이미지
+  imgSrc: PLAN_DEFAULT_IMAGE,
 
   title: null, // Default: null
   description: null, // Default: null
@@ -94,6 +91,7 @@ export const INITIAL_PLAN: Plan = {
 
   // #3. 커뮤니티 정보
   isDone: false,
+  isPublic: true, // Todo: 설정 페이지에서 isPublic을 설정하는 토글 페이지 만들기
   likeCnt: 0, // default: 0
   scrapCnt: 0, // default: 0
   comments: null, // default: 0

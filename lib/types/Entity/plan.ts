@@ -1,5 +1,3 @@
-import { StaticImageData } from 'next/image'
-
 import { StateType } from '@/lib/constants/regions'
 import { Nullable } from '@/lib/utils/typeUtils'
 
@@ -17,7 +15,8 @@ export interface Plan {
 
   // imgSrc: string
   // Todo: string으로 바꾸기
-  imgSrc: StaticImageData // Default : 아무 여행 이미지
+  // imgSrc: StaticImageData // Default : 아무 여행 이미지
+  imgSrc: string
 
   title: Nullable<string> // Default: null
   description: Nullable<string> // Default: null
@@ -25,7 +24,7 @@ export interface Plan {
   budget: Nullable<number> // Default: null
 
   isDone: boolean
-
+  isPublic: boolean
   // #2. 여행 일정
   schedule: Array<Schedule>
 
