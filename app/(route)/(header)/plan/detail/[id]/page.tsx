@@ -26,7 +26,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
   // })
 
   return (
-    <div className='relative flex w-4/5 max-w-[1200px] flex-col items-start justify-start overflow-x-hidden'>
+    <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start overflow-x-hidden'>
       {/* 설명 */}
       <Description plan={data} user={session.data?.user} className='h-60 min-h-min w-full' />
       {/* 지도 */}
@@ -46,6 +46,8 @@ export default PlanDetailsPage
 
 const Title = ({ title }: { title: string }): ReactNode => {
   return (
-    <div className='my-3 w-full border-t-2 border-solid border-tbPlaceholder pt-5 text-3xl font-semibold'>{title}</div>
+    <div className='mb-6 mt-10 w-full border-t-2 border-solid border-tbPlaceholder pt-5 text-3xl font-semibold'>
+      {title}
+    </div>
   )
 }

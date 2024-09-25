@@ -112,7 +112,11 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
     mutationKey: ['place', 'scrap', { planId: data.id }],
     mutationFn: scrapPlace,
     onSuccess: () => {},
-    // 실패하든 성공하든 실행되는 것
+    onError: () => {
+      console.log('Errorㅋㅋ')
+
+      setTmpIsScrap(prev => !prev)
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['places', 'search'] })
     },

@@ -125,7 +125,7 @@ export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlace
         latitude: place.latitude,
         longitude: place.longitude,
       },
-      tag: place.category,
+      tag: place.subcategory,
       // duration 없음
       stars: place.star,
       visitCnt: place.numOfAdded,
@@ -155,6 +155,7 @@ interface ScrapPlaceType {
 export const scrapPlace = async ({ placeId, accessToken }: ScrapPlaceType) => {
   try {
     const Route = BACKEND_ROUTES.PLACE.SCRAP
+    console.log(Route.url)
 
     const res = await fetch(`/server/${Route.url}`, {
       method: Route.method,
@@ -167,24 +168,16 @@ export const scrapPlace = async ({ placeId, accessToken }: ScrapPlaceType) => {
       }),
       credentials: 'include',
     })
-    if (res.ok) {
-      toast({ title: '보관함에 추가되었습니다!' })
-      // 낙관적 업데이트 (UI 먼저 반영)
+    if (!res.ok) {
+      const error = new Error('An error occurred while fetching places')
+      toast({ title: '보관함 추가 실패' })
 
-      return
+      error.message = await res.json()
+      throw error
     }
-    // 400 에러 처리
-    const status = res.status
-    const errorData = await res.json() // 에러 메시지 확인
 
-    switch (status) {
-      case 400:
-        console.log('Wrong Request')
-        break
-      default:
-        console.log('Unhandled error')
-        break
-    }
+    toast({ title: '보관함에 추가되었습니다!' })
+    return
   } catch (error) {
     console.log(error)
 

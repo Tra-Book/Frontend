@@ -58,13 +58,16 @@ interface SchedulesType {
   className?: string
 }
 const Schedules = ({ schedules, startDate, dropdownDay, className }: SchedulesType): ReactNode => {
-  return (
-    <div className={cn('flex w-full items-start justify-start', className)}>
-      {schedules.map(schedule => (
-        <UniSchedule schedule={schedule} key={schedule.day} date={addDays(startDate, schedule.day)} />
-      ))}
-    </div>
-  )
+  let contents
+  if (dropdownDay === 0) {
+    contents = schedules.map(schedule => (
+      <UniSchedule schedule={schedule} key={schedule.day} date={addDays(startDate, schedule.day)} />
+    ))
+  } else {
+    const schedule = schedules.find(schedule => schedule.day === dropdownDay) as Schedule
+    contents = <UniSchedule schedule={schedule} date={addDays(startDate, schedule.day)} />
+  }
+  return <div className={cn('flex w-full items-start justify-start', className)}>{contents}</div>
 }
 
 interface ScheduleProps {
@@ -108,10 +111,10 @@ const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
     </React.Fragment>
   ))
   return (
-    <div className='relative flex w-[21dvw] flex-col items-start justify-start border-b border-tbPlaceholder'>
+    <div className='relative flex w-fit flex-col items-start justify-start border-b border-tbPlaceholder'>
       <div className='mb-3 flex w-full items-center justify-between'>
         <p className='text-lg font-semibold'>{day}일차</p>
-        <p className='text-xs text-tbGray'>{formatKoreanDate(date)}</p>
+        <p className='mr-3 text-xs text-tbGray'>{formatKoreanDate(date)}</p>
       </div>
       <p className='text-sm text-tbGray'>{startTime}&nbsp; 출발</p>
       <div className='my-3 w-full border-l border-solid border-tbGray'>{contents}</div>
