@@ -23,7 +23,7 @@ interface PlanScheduleProps {
 
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
-  const { setPins, setFocusedPlanPins } = useMapStore()
+  const { setPins, clearPins, setFocusedPlanPins, clearAllPins } = useMapStore()
   const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
   const [durations, setDurations] = useState<Array<number>>([])
 
@@ -44,7 +44,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
       const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
       setPins(newPins)
     } else {
-      setPins(null)
+      clearPins()
     }
   }
 
@@ -77,7 +77,6 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         setFocusedPlanPins(newPins)
       }
     }
-    return () => setFocusedPlanPins(null)
   }, [schedule, setPins, setFocusedPlanPins]) // schedule 변경될 때만 호출
 
   // #3. 계획한 일정들

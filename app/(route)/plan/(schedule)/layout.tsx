@@ -1,7 +1,8 @@
 'use client'
-import React, { ReactElement, ReactNode } from 'react'
+import React, { ReactElement, ReactNode, useEffect } from 'react'
 
 import PlanSchedule from '@/components/plan/PlanSchedule'
+import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
 
 interface AddPlaceLayoutProps {
@@ -10,8 +11,12 @@ interface AddPlaceLayoutProps {
 
 const AddPlaceLayout = ({ children }: AddPlaceLayoutProps): ReactNode => {
   const { planData } = usePlanStore()
+  const { clearAllPins } = useMapStore()
 
-  console.log(planData)
+  // #2.2 Pin 업데이트
+  useEffect(() => {
+    return () => clearAllPins()
+  }, [clearAllPins]) // schedule 변경될 때만 호출
 
   // children에 day 값을 prop으로 전달
   return (

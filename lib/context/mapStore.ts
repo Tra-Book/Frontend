@@ -13,12 +13,17 @@ interface MapContext {
 
   pins: NullableGeoArray // 스케쥴 핀
   setPins: (updatedPins: NullableGeoArray) => void
+  clearPins: () => void
 
   focusedPlanPins: NullableGeoArray // 보관함 여행계획핀
   setFocusedPlanPins: (updatedPins: NullableGeoArray) => void
+  clearFocusedPlanPins: () => void
 
   focusedPlacePin: NullableGeo // 보관함 여행지핀
   setFocusedPlacePin: (updatedPin: NullableGeo) => void
+  clearFocusedPlacePin: () => void
+
+  clearAllPins: () => void
 }
 
 const useMapStore = create(
@@ -36,18 +41,24 @@ const useMapStore = create(
       setPins: (updatedPins: NullableGeoArray) => {
         set(() => ({ pins: updatedPins }))
       },
+      clearPins: () => set(() => ({ pins: null })),
 
       // 여행계획 클릭시
       focusedPlanPins: null,
       setFocusedPlanPins: (updatedPins: NullableGeoArray) => {
         set(() => ({ focusedPlanPins: updatedPins }))
       },
+      clearFocusedPlanPins: () => set(() => ({ focusedPlanPins: null })),
 
       // 여행지 하나 클릭시
       focusedPlacePin: null,
       setFocusedPlacePin: (updatedPin: NullableGeo) => {
         set(() => ({ focusedPlacePin: updatedPin }))
       },
+      clearFocusedPlacePin: () => set(() => ({ focusedPlacePin: null })),
+
+      //모든 Pin 지우기
+      clearAllPins: () => set(() => ({ pins: null, focusedPlanPins: null, focusedPlacePin: null })),
     }),
     {
       name: 'map-context',
