@@ -11,6 +11,7 @@ import usePlanStore from '@/lib/context/planStore'
 import { updatePlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import { toast } from '@/lib/utils/hooks/useToast'
 
 interface PlanSideBarProps {
   className?: string
@@ -30,10 +31,14 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     mutationFn: updatePlan,
     onSuccess: data => {
       const { imgSrc } = data
+      toast({ title: '저장되었습니다' }) // 성공 메세지
       // 이미지 업데이트
       setPlanData({
         imgSrc,
       })
+    },
+    onError: () => {
+      toast({ title: 'Error occured on Saving...' })
     },
   })
 

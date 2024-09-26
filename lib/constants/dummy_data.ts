@@ -84,8 +84,8 @@ export const INITIAL_PLAN: Plan = {
   userId: -1, //세션 값
 
   state: '서울특별시', // 초기 값으로 대체됨
-  startDate: random_Date,
-  endDate: random_Date,
+  startDate: new Date(),
+  endDate: new Date(),
 
   imgSrc: PLAN_DEFAULT_IMAGE,
 

@@ -3,8 +3,6 @@ import { CommentRequest } from '@/lib/types/Entity/comment'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
-import { toast } from '@/lib/utils/hooks/useToast'
-
 
 /**
  * Plan Update (DB 반영하기) 함수입니다.
@@ -75,29 +73,24 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
         : null,
   }
 
+  console.log(body)
+
   const Route = BACKEND_ROUTES.PLAN.UPDATE
-  console.log('url:', `/server/${Route.url}`)
 
-  try {
-    const res = await fetch(`/server/${Route.url}`, {
-      method: Route.method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) {
-      const error = new Error('다시 시도해주세요')
-      error.message = await res.json()
-      throw error
-    }
-    const data = await res.json()
-    return data
-
-    toast({ title: '저장되었습니다' }) // 성공 메세지
-  } catch (error) {
-    toast({ title: 'Internal Server Error Occured!' })
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const error = new Error('다시 시도해주세요')
+    error.message = await res.json()
+    throw error
   }
+  const data = await res.json()
+  return data
 }
 
 /**

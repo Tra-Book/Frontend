@@ -84,6 +84,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
           schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
           imgSrc: PLAN_DEFAULT_IMAGE,
         })
+
         backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
         return
       }

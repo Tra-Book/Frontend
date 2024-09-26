@@ -19,6 +19,7 @@ const MainLayout = ({ children, modal }: MainLayoutProps): ReactNode => {
 
   useEffect(() => {
     console.log(planData)
+    console.log(planData.startDate, typeof planData.startDate)
   }, [planData])
 
   return (

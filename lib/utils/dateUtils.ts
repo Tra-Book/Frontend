@@ -10,11 +10,18 @@ export const parseHypenDateToDate = (dateString: string): Date => parse(dateStri
 
 //"yyyy.MM.dd(요일)" 형태로 반환
 export const formatKoreanDate = (date: Date): string => {
-  const dayOfWeekMap = ['일', '월', '화', '수', '목', '금', '토']
-  const formattedDate = format(date, 'yyyy.MM.dd', { locale: ko })
-  const dayOfWeek = dayOfWeekMap[date.getDay()]
+  if (typeof date === 'object') {
+    const dayOfWeekMap = ['일', '월', '화', '수', '목', '금', '토']
+    const formattedDate = format(date, 'yyyy.MM.dd', { locale: ko })
+    const dayOfWeek = dayOfWeekMap[date.getDay()]
 
-  return `${formattedDate}(${dayOfWeek})`
+    return `${formattedDate}(${dayOfWeek})`
+  }
+  console.log(date)
+
+  console.log('date is not Date', typeof date)
+
+  return ''
 }
 
 export const formatShortKoreanDate = (date: Date): string => {
