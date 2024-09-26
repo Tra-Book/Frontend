@@ -3,18 +3,19 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
+import Comments from '@/components/plan/details/Comments'
 import Description from '@/components/plan/details/Description'
 import PlanDetailSchedule from '@/components/plan/details/Schedule'
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 
 interface PlanDetailsPageProps {
   params: {
-    id: number
+    id: string
   }
 }
 
 const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
-  const { id } = params // PlanId
+  const id = parseInt(params.id) // PlanId
   const session: any = useSession() // 해당 Plan의 User 정보 받기
 
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
@@ -26,9 +27,10 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
   // })
 
   return (
-    <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start overflow-x-hidden'>
+    <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
       {/* 설명 */}
-      <Description plan={data} user={session.data?.user} className='h-60 min-h-min w-full' />
+      {/* TODO: 글쓴이의 정보로 user바꾸기 */}
+      <Description plan={data} user={session.data} className='h-60 min-h-min w-full' />
       {/* 지도 */}
       <Title title='여행 지도 ' />
       <div className='relative aspect-video w-full'>
@@ -38,6 +40,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
       <Title title='여행 일정 ' />
       <PlanDetailSchedule plan={data} />
       {/* 댓글 */}
+      <Comments planId={id} comments={data.comments} user={session.data} className='w-full' />
     </div>
   )
 }

@@ -41,7 +41,7 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
         handleDayChange={handleDayChange}
         className='h-10 w-52 px-4 py-2'
       />
-      <Schedules schedules={schedule} startDate={startDate} dropdownDay={day} className='my-6 overflow-x-auto' />
+      <Schedules schedules={schedule} startDate={startDate} dropdownDay={day} className='my-6 w-full overflow-x-auto' />
     </>
   )
 }
@@ -67,7 +67,7 @@ const Schedules = ({ schedules, startDate, dropdownDay, className }: SchedulesTy
     const schedule = schedules.find(schedule => schedule.day === dropdownDay) as Schedule
     contents = <UniSchedule schedule={schedule} date={addDays(startDate, schedule.day)} />
   }
-  return <div className={cn('flex w-full items-start justify-start', className)}>{contents}</div>
+  return <div className={cn('flex items-start justify-start', className)}>{contents}</div>
 }
 
 interface ScheduleProps {
@@ -92,9 +92,9 @@ const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
       setDurations(results as Array<number>)
     }
   }
-  useEffect(() => {
-    calculateDurations()
-  }, [])
+  // useEffect(() => {
+  //   calculateDurations()
+  // }, [])
 
   // #2. 카드
   const contents = places.map((place, index) => (
@@ -104,7 +104,8 @@ const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
         <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
           <LucideIcon name='CarFront' size={26} />
           <div className='absolute right-4 text-sm text-tbGray'>
-            {durations[index] !== null ? `${durations[index]}분` : 'Loading...'}
+            0분
+            {/* {durations[index] !== null ? `${durations[index]}분` : 'Loading...'} */}
           </div>
         </div>
       )}
@@ -112,7 +113,7 @@ const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
   ))
   return (
     <div className='relative flex w-fit flex-col items-start justify-start border-b border-tbPlaceholder'>
-      <div className='mb-3 flex w-full items-center justify-between'>
+      <div className='mb-3 flex w-full items-center justify-start gap-3'>
         <p className='text-lg font-semibold'>{day}일차</p>
         <p className='mr-3 text-xs text-tbGray'>{formatKoreanDate(date)}</p>
       </div>

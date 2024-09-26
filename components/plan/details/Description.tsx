@@ -37,7 +37,7 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
     <div className={cn('relative flex cursor-pointer items-start justify-start gap-6 px-3 py-6', className)}>
       <div className='group relative aspect-video h-full origin-left'>
         <Image
-          src={imgSrc}
+          src={imgSrc as string}
           alt='Plan Image'
           width={320}
           height={200}
@@ -53,8 +53,8 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
         <div className='flex items-center justify-start gap-2'>
           <UserAvatar imgSrc='https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png' />
           <div>
-            <p className='font-semibold'>힐링여행</p>
-            <p className='text-xs text-tbGray'>좋은 사람과 좋은 여행</p>
+            <p className='text-lg font-semibold'>힐링여행</p>
+            <p className='text-sm text-tbGray'>좋은 사람과 좋은 여행</p>
           </div>
         </div>
         {/* 계획정보 */}

@@ -1,4 +1,4 @@
-import { Comment } from './comment'
+import { CommentResponse } from './comment'
 
 export interface Geo {
   latitude: number
@@ -23,7 +23,7 @@ export interface Place {
   stars: number // 평점
   visitCnt: number // 실제 계획에 담긴 횟수
 
-  reviews?: Array<Comment>
+  reviews?: Array<CommentResponse>
   reviewCnt: number
 
   isScraped: boolean

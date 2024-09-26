@@ -55,3 +55,26 @@ export const calculateLeftTIme = (startTime: string, endTime: string, durations:
 
   return `${formattedHour}:${formattedMin}`
 }
+/**
+ * 24H 미만: "HH시간"
+ * 24H 이상: "D일"
+ * @param date 타겟 시간입니다
+ * @returns 현재 시간과의 차이를 문자열로 나타냅니다
+ */
+export const getRelativeTimeString = (date: Date): string => {
+  const now: Date = new Date() // 현재 시간
+  const timeDiff: number = now.getMilliseconds() - date.getMilliseconds() // 시간 차이 (밀리초 단위)
+
+  const millisecondsInOneHour = 1000 * 60 * 60 // 1시간 = 3600000 밀리초
+  const millisecondsInOneDay = millisecondsInOneHour * 24 // 1일 = 86400000 밀리초
+
+  if (timeDiff < millisecondsInOneDay) {
+    // 24시간이 지나지 않은 경우
+    const hoursDifference = Math.floor(timeDiff / millisecondsInOneHour)
+    return `${hoursDifference}시간 전`
+  } else {
+    // 24시간이 지난 경우
+    const daysDifference = Math.floor(timeDiff / millisecondsInOneDay)
+    return `${daysDifference}일 전`
+  }
+}

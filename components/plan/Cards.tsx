@@ -113,8 +113,6 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
     mutationFn: scrapPlace,
     onSuccess: () => {},
     onError: () => {
-      console.log('Errorㅋㅋ')
-
       setTmpIsScrap(prev => !prev)
     },
     onSettled: () => {

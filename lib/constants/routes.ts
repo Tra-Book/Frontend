@@ -167,6 +167,12 @@ export const BACKEND_ROUTES = {
       method: HttpMethod.PATCH,
       url: '/plan/update',
     },
+    COMMENT: {
+      CREATE: {
+        method: HttpMethod.POST,
+        url: '/plan/comment/add',
+      },
+    },
   },
 
   PLACES: {

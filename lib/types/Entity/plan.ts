@@ -1,7 +1,7 @@
 import { StateType } from '@/lib/constants/regions'
 import { Nullable } from '@/lib/utils/typeUtils'
 
-import { Comment } from './comment'
+import { CommentResponse } from './comment'
 import { Place } from './place'
 
 export interface Plan {
@@ -28,7 +28,7 @@ export interface Plan {
   // #3. 커뮤니티 정보
   likeCnt: number // default: 0
   scrapCnt: number // default: 0
-  comments: Nullable<Array<Comment>> // default: null
+  comments: Nullable<Array<CommentResponse>> // default: null
 
   // #4. 요청 유저관련 정보
   isScraped: boolean

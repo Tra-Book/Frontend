@@ -1,3 +1,5 @@
+export const USER_DEAFULT_STATUSMESSAGE = '여행이 주는 행복'
+
 export interface BaseUser {
   id: number
   imageSrc: string

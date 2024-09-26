@@ -1,4 +1,4 @@
-import { Comment } from '../types/Entity/comment'
+import { CommentResponse } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
 
@@ -31,15 +31,6 @@ const get_dummy_place = (idx: number): Place => {
 }
 export const DUMMY_PLACES: Array<Place> = Array.from({ length: 6 }, (_, idx) => get_dummy_place(idx))
 
-export const DUMMY_COMMENT: Comment = {
-  id: 10,
-  parentId: 9,
-  content: '댓글',
-  date: new Date(),
-  thumbCnt: 100,
-  userId: 41,
-}
-
 const get_dummy_schedule = (idx: number): Schedule => {
   return {
     day: idx + 1,
@@ -49,8 +40,24 @@ const get_dummy_schedule = (idx: number): Schedule => {
   }
 }
 
+const get_dummy_parent_comment = (idx: number): CommentResponse => {
+  return {
+    planId: 258,
+
+    id: idx,
+    parentId: idx,
+    content: `정말 유용한 정보였습니다 감사합니다!${idx}`,
+    time: new Date(),
+    refOrder: 0,
+
+    userId: 49,
+    userName: `힐링여행${idx}`,
+    userImgsrc: USER_DEFAULT_IMAGE,
+    userStatusMessage: `좋은 사람과 좋은 여행${idx}`,
+  }
+}
 export const DUMMY_PLAN: Plan = {
-  id: 12345,
+  id: 258,
   title: '가족 여행',
   likeCnt: 30,
   isDone: true,
@@ -64,7 +71,7 @@ export const DUMMY_PLAN: Plan = {
   scrapCnt: 200,
   memberCnt: 10,
   userId: 41,
-  comments: new Array(12).fill(DUMMY_COMMENT),
+  comments: Array.from({ length: 6 }, (_, idx) => get_dummy_parent_comment(idx)),
   isScraped: true,
   isLiked: true,
   schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_schedule(idx)),

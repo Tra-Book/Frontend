@@ -1,4 +1,5 @@
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
+import { CommentRequest } from '@/lib/types/Entity/comment'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
@@ -199,6 +200,40 @@ interface FetchPlanProps {
 //     toast({ title: 'Internal Server Error Occured!' })
 //   }
 // }
+
+/**
+ * #3. 댓글 추가하기
+ */
+interface AddCommentProps {
+  newComment: CommentRequest
+  accessToken: string
+}
+export const addComment = async ({ newComment, accessToken }: AddCommentProps) => {
+  const body = newComment
+  const Route = BACKEND_ROUTES.PLAN.COMMENT.CREATE
+  try {
+    const res = await fetch(`/server/${Route.url}`, {
+      method: Route.method,
+      headers: {
+        Authorization: accessToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) {
+      const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+      const error = new Error('Error oucurred in adding comment')
+      error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+
+      throw error
+    }
+    const data = await res.json()
+    return data
+  } catch (error) {
+    // toast({ title: 'Internal Server Error Occured!' })
+    throw error
+  }
+}
 
 /**
  * 선택한 여행지를 여행 계획에 추가하는 함수입니다.

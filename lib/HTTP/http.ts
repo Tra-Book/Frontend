@@ -2,7 +2,14 @@ import { QueryClient } from '@tanstack/react-query'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity,
+      retry: 1,
+      retryDelay: 0,
+      // 1분으로 staleTime 지정하기
+      staleTime: 1 * 60 * 1000,
+    },
+    mutations: {
+      retry: 1,
+      retryDelay: 0,
     },
   },
 })

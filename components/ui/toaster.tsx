@@ -1,9 +1,11 @@
 'use client'
 
+import { ReactNode } from 'react'
+
 import { Toast, ToastClose, ToastProvider, ToastTitle, ToastViewport } from '@/components/ui/toast'
 import { useToast } from '@/lib/utils/hooks/useToast'
 
-export function Toaster() {
+export function Toaster(): ReactNode {
   const { toasts } = useToast()
 
   return (
