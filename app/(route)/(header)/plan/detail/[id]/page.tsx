@@ -40,7 +40,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
       <Title title='여행 일정 ' />
       <PlanDetailSchedule plan={data} />
       {/* 댓글 */}
-      <Comments planId={id} comments={data.comments} user={session.data} className='w-full' />
+      <Comments planId={id} comments={data.comments} user={session.data} className='mb-10 w-full' />
     </div>
   )
 }
