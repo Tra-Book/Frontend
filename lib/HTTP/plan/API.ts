@@ -5,6 +5,7 @@ import { Plan } from '@/lib/types/Entity/plan'
 import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
 import { toast } from '@/lib/utils/hooks/useToast'
 
+
 /**
  * Plan Update (DB 반영하기) 함수입니다.
  */
@@ -102,103 +103,100 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
 /**
  * Plan 정보를 받아오는 API 입니다.
  */
-interface FetchPlanProps {
-  planId: number
-  accessToken: string
-}
+// interface FetchPlanProps {
+//   planId: number
+//   accessToken: string
+// }
 
 // export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
-//   try {
-//     const Route = BACKEND_ROUTES.PLAN.GET
-//     const query: Queries = [
-//       {
-//         key: 'planId',
-//         value: planId,
-//       },
-//     ]
 
-//     const res = await fetch(attachQuery(Route.url, query), {
-//       method: Route.method,
-//       headers: {
-//         Authorization: accessToken,
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         planId,
-//       }),
-//       credentials: 'include',
-//     })
+//   const Route = BACKEND_ROUTES.PLAN.GET
+//   const query: Queries = [
+//     {
+//       key: 'planId',
+//       value: planId,
+//     },
+//   ]
 
-//     if (!res.ok) {
-//       const error = new Error('존재하지 않는 여행계획입니다')
-//       error.message = await res.json()
-//       throw error
-//     }
-//     const { plan, dayPlanList, user, tags, isLiked, scrapped  } = await res.json()
+//   const res = await fetch(attachQuery(Route.url, query), {
+//     method: Route.method,
+//     headers: {
+//       Authorization: accessToken,
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       planId,
+//     }),
+//     credentials: 'include',
+//   })
 
-//     const schedule: Array<Schedule> = dayPlanList.map((dayPlan) => ({
-//       day: dayPlan.day,
-//       startTime:dayPlan.startTime,
-//       endTime:dayPlan.endTime.
-//       places: dayPlan.scheduleList.map((item)=> ({
-//         id: item.placeId,
-
-//         name: item.placeName,
-//         imgSrc: item.imageSrc,
-//         address: item., // 주소 채워넣기
-//         geo: {
-//           latitide: item.latitide,
-//           lonitude:item.longitude,
-//         },
-
-//         tag: "string",
-//         duration: item.time,
-
-//         stars: item. // 평점
-//         visitCnt: number // 실제 계획에 담긴 횟수
-
-//         reviews?: Array<Comment>
-//         reviewCnt: number
-
-//         isScraped: boolean
-
-//         order?: number // 계획세우기에 담긴 순서
-//       })),
-//     }))
-//     const fetchedPlan: Plan = {
-//       id: plan.planId,
-//       userId: plan.userId,
-
-//       // #1. 기본 정보
-//       state: plan.state, // 불변
-//       startDate: parseHypenDateToDate(plan.startDate),
-//       endDate: parseHypenDateToDate(plan.endDate),
-
-//       imgSrc: PLAN_DEFAULT_IMAGE, // Default : 아무 여행 이미지
-
-//       title: plan.title, // Default: null
-//       description: plan.description, // Default: null
-//       memberCnt: plan.numOfPeople, // Default: null
-//       budget: plan.budget, // Default: null
-
-//       isDone: plan.isFinished,
-//       isPublic: plan.isPublic,
-//       // #2. 여행 일정
-//       schedule: Array<Schedule>
-
-//       // #3. 커뮤니티 정보
-//       likeCnt: number // default: 0
-//       scrapCnt: number // default: 0
-//       comments: Nullable<Array<Comment>> // default: null
-
-//       // #4. 요청 유저관련 정보
-//       isScraped: boolean
-//       isLiked: boolean
-//     }
-
-//   } catch (error) {
-//     toast({ title: 'Internal Server Error Occured!' })
+//   if (!res.ok) {
+//     const error = new Error('존재하지 않는 여행계획입니다')
+//     error.message = await res.json()
+//     throw error
 //   }
+//   const { plan, dayPlanList, user, tags, isLiked, scrapped  } = await res.json()
+
+//   const schedule: Array<Schedule> = dayPlanList.map((dayPlan) => ({
+//     day: dayPlan.day,
+//     startTime:dayPlan.startTime,
+//     endTime:dayPlan.endTime.
+//     places: dayPlan.scheduleList.map((item)=> ({
+//       id: item.placeId,
+
+//       name: item.placeName,
+//       imgSrc: item.imageSrc,
+//       address: item., // 주소 채워넣기
+//       geo: {
+//         latitide: item.latitide,
+//         lonitude:item.longitude,
+//       },
+
+//       tag: "string",
+//       duration: item.time,
+
+//       stars: item. // 평점
+//       visitCnt: number // 실제 계획에 담긴 횟수
+
+//       reviews?: Array<Comment>
+//       reviewCnt: number
+
+//       isScraped: boolean
+
+//       order?: number // 계획세우기에 담긴 순서
+//     })),
+//   }))
+//   const fetchedPlan: Plan = {
+//     id: plan.planId,
+//     userId: plan.userId,
+
+//     // #1. 기본 정보
+//     state: plan.state, // 불변
+//     startDate: parseHypenDateToDate(plan.startDate),
+//     endDate: parseHypenDateToDate(plan.endDate),
+
+//     imgSrc: PLAN_DEFAULT_IMAGE, // Default : 아무 여행 이미지
+
+//     title: plan.title, // Default: null
+//     description: plan.description, // Default: null
+//     memberCnt: plan.numOfPeople, // Default: null
+//     budget: plan.budget, // Default: null
+
+//     isDone: plan.isFinished,
+//     isPublic: plan.isPublic,
+//     // #2. 여행 일정
+//     schedule: Array<Schedule>
+
+//     // #3. 커뮤니티 정보
+//     likeCnt: number // default: 0
+//     scrapCnt: number // default: 0
+//     comments: Nullable<Array<Comment>> // default: null
+
+//     // #4. 요청 유저관련 정보
+//     isScraped: boolean
+//     isLiked: boolean
+//   }
+
 // }
 
 /**
@@ -211,28 +209,27 @@ interface AddCommentProps {
 export const addComment = async ({ newComment, accessToken }: AddCommentProps) => {
   const body = newComment
   const Route = BACKEND_ROUTES.PLAN.COMMENT.CREATE
-  try {
-    const res = await fetch(`/server/${Route.url}`, {
-      method: Route.method,
-      headers: {
-        Authorization: accessToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) {
-      const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
-      const error = new Error('Error oucurred in adding comment')
-      error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
 
-      throw error
-    }
-    const data = await res.json()
-    return data
-  } catch (error) {
-    // toast({ title: 'Internal Server Error Occured!' })
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('Error oucurred in adding comment')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    console.log(error.message)
+
     throw error
   }
+  const data = await res.json()
+  return data
+
+  // toast({ title: 'Internal Server Error Occured!' })
 }
 
 /**

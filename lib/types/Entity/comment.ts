@@ -9,7 +9,7 @@ export interface CommentRequest {
   parentId: number
 
   content: string
-  time: Date
+  time: string
   refOrder: number
 }
 

@@ -15,7 +15,7 @@ interface PlanDetailsPageProps {
 }
 
 const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
-  const id = parseInt(params.id) // PlanId
+  const planId = parseInt(params.id) // PlanId
   const session: any = useSession() // 해당 Plan의 User 정보 받기
 
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
@@ -40,7 +40,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
       <Title title='여행 일정 ' />
       <PlanDetailSchedule plan={data} />
       {/* 댓글 */}
-      <Comments planId={id} comments={data.comments} user={session.data} className='mb-10 w-full' />
+      <Comments planId={planId} comments={data.comments} user={session.data} className='mb-10 w-full' />
     </div>
   )
 }

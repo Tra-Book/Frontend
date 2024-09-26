@@ -47,7 +47,7 @@ const get_dummy_parent_comment = (idx: number): CommentResponse => {
     id: idx,
     parentId: idx,
     content: `정말 유용한 정보였습니다 감사합니다!${idx}`,
-    time: new Date(),
+    time: new Date().toISOString(),
     refOrder: 0,
 
     userId: 49,

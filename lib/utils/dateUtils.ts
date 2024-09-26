@@ -63,7 +63,7 @@ export const calculateLeftTIme = (startTime: string, endTime: string, durations:
  */
 export const getRelativeTimeString = (date: Date): string => {
   const now: Date = new Date() // 현재 시간
-  const timeDiff: number = now.getMilliseconds() - date.getMilliseconds() // 시간 차이 (밀리초 단위)
+  const timeDiff: number = now.getTime() - date.getTime() // 시간 차이 (밀리초 단위)
 
   const millisecondsInOneHour = 1000 * 60 * 60 // 1시간 = 3600000 밀리초
   const millisecondsInOneDay = millisecondsInOneHour * 24 // 1일 = 86400000 밀리초

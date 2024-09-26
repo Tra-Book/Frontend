@@ -11,7 +11,7 @@ import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
-import useFilters, { StateChoicesType } from '@/lib/utils/hooks/useFilters'
+import useFilters from '@/lib/utils/hooks/useFilters'
 
 import { Motion } from '../common/MotionWrapper'
 import { Button } from '../ui/button'
@@ -28,9 +28,13 @@ interface SearchAreaProps {
 
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
   const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
-  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
+  // # 처음 들어오면 설정한 지역으로 설정
+  useEffect(() => {
+    filterHandler('state', 'change', [planData.state])
+  }, [])
 
   // #0. Data Fetching
   const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
@@ -38,10 +42,10 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     queryFn: ({ pageParam = 0 }) =>
       fetchPlaces({
         searchInput: searchInputRef.current?.value || '',
-        states: ['서울특별시'] as Array<StateChoicesType>,
-        // states: filter.state,
+        states: filter.state.includes('전체') ? [] : filter.state,
         arrange: arrange,
         scrollNum: pageParam,
+        isScrap: false, // 일반 여행지 Fetching : False
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {

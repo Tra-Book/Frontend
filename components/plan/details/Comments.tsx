@@ -7,11 +7,13 @@ import UserAvatar from '@/components/common/UserAvatar'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { queryClient } from '@/lib/HTTP/http'
 import { addComment } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { CommentRequest, CommentResponse } from '@/lib/types/Entity/comment'
 import { USER_DEAFULT_STATUSMESSAGE } from '@/lib/types/Entity/user'
 import { cn } from '@/lib/utils/cn'
+import { getRelativeTimeString } from '@/lib/utils/dateUtils'
 import { toast } from '@/lib/utils/hooks/useToast'
 import { Nullable } from '@/lib/utils/typeUtils'
 
@@ -60,11 +62,11 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
   const dummy_comments = [
     {
       id: 0,
-      planId: 1,
+      planId: 1234,
       parentId: 0, // 본댓글
       content:
         '정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. ',
-      time: new Date('2024-09-26T08:00:00'),
+      time: new Date('2024-09-22T08:00:00').toISOString(),
       refOrder: 1,
       userId: 1,
       userName: 'User1',
@@ -73,11 +75,11 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
     },
     {
       id: 1,
-      planId: 1,
+      planId: 1234,
       parentId: 1, // id 1에 대한 대댓글
       content:
         '정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. ',
-      time: new Date('2024-09-26T09:00:00'),
+      time: new Date('2024-09-25T09:00:00').toISOString(),
       refOrder: 1,
       userId: 2,
       userName: 'User2',
@@ -86,11 +88,11 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
     },
     {
       id: 3,
-      planId: 1,
+      planId: 1234,
       parentId: 0, // 본댓글
       content:
         '정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. ',
-      time: new Date('2024-09-26T10:00:00'),
+      time: new Date('2024-09-21T10:00:00').toISOString(),
       refOrder: 2,
       userId: 3,
       userName: 'User3',
@@ -99,10 +101,10 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
     },
     {
       id: 4,
-      planId: 1,
+      planId: 1234,
       parentId: 1, // id 3에 대한 대댓글
       content: '대댓글 2-1',
-      time: new Date('2024-09-26T11:00:00'),
+      time: new Date('2024-09-26T11:00:00').toISOString(),
       refOrder: 1,
       userId: 4,
       userName: 'User4',
@@ -111,10 +113,10 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
     },
     {
       id: 5,
-      planId: 1,
+      planId: 1234,
       parentId: 1, // id 3에 대한 대댓글
       content: '대댓글 3-1',
-      time: new Date('2024-09-26T11:00:00'),
+      time: new Date('2024-09-26T11:00:00').toISOString(),
       refOrder: 2,
       userId: 4,
       userName: 'User4',
@@ -149,7 +151,9 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
 
       return { parentComment, childComments }
     })
-    .sort((a, b) => a.parentComment!.time.getMilliseconds() - b.parentComment!.time.getMilliseconds()) // 본댓글을 기준으로 시간 오름차순 정렬
+    .sort(
+      (a, b) => new Date(a.parentComment!.time).getMilliseconds() - new Date(b.parentComment!.time).getMilliseconds(),
+    ) // 본댓글을 기준으로 시간 오름차순 정렬
   console.log(sortedComments)
 
   return (
@@ -216,6 +220,8 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
     mutationFn: addComment,
     onSuccess: () => {
       // router.refresh()
+      queryClient.invalidateQueries({ queryKey: ['plan', planId] })
+      router.refresh()
       toast({ title: '댓글 업로드 성공' })
     },
     onError: error => {
@@ -241,7 +247,7 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
         planId: planId,
         parentId: id === 'parentComment' ? 0 : (addCommentParentId as number),
         content: commentRef.current.value,
-        time: new Date(),
+        time: new Date().toISOString(),
         refOrder: id === 'parentComment' ? 0 : (nextRefOrder as number), // New Comment
       }
       console.log(newComment)
@@ -305,8 +311,9 @@ const PlanComment = ({ id, comment, handleAddChildComment }: PlanCommentProps): 
         <UserAvatar imgSrc={userImgsrc} />
 
         <div className='flex flex-grow flex-col items-start justify-start'>
-          <div className='relative w-full text-lg font-semibold'>
-            {userName}
+          <div className='relative flex w-full items-center justify-start gap-2 text-lg font-semibold'>
+            <span>{userName}</span>
+            <span className='text-xs text-tbGray'>{getRelativeTimeString(new Date(time))}</span>
             <div className='absolute right-0 top-0 flex flex-row items-center justify-end gap-2'>
               <LucideIcon onClick={handleClick} name='MessageCircle' size={18} className='cursor-pointer' />
 

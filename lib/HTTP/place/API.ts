@@ -19,6 +19,8 @@ interface fetchPlacesParams {
   states: Array<StateChoicesType>
   arrange: ArrangeChoiceType
   scrollNum: number
+  isScrap: boolean
+  accessToken?: string
 }
 
 const get_arrange = (arrange: ArrangeChoiceType): string => {
@@ -61,6 +63,7 @@ export type PlaceResponse = {
   subcategory: string
   tel: string
   zipcode: string
+  isScraped: boolean
 }
 
 export type FetchPlacesResponse = {
@@ -70,7 +73,7 @@ export type FetchPlacesResponse = {
 
 export const SCROLL_SIZE = 12
 export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlacesResponse> => {
-  const { searchInput, states, arrange, scrollNum } = params
+  const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
   const queries: Queries = [
     {
       key: 'search',
@@ -88,6 +91,10 @@ export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlace
       key: 'pageNum',
       value: scrollNum,
     },
+    {
+      key: 'userScrapOnly',
+      value: isScrap,
+    },
   ]
   // states 추가하기
   states.forEach(state =>
@@ -101,48 +108,53 @@ export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlace
 
   const API_ROUTE = attachQuery(`/server/${API.url}`, queries)
 
-  try {
-    const res = await fetch(API_ROUTE, {
+  let res: Response
+  // #1. 유저가 스크랩한 여행지
+  if (isScrap) {
+    res = await fetch(API_ROUTE, {
+      method: API.method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accessToken as string,
+      },
+      credentials: 'include',
+    })
+  }
+  // #2. 그냥 여행지
+  else {
+    res = await fetch(API_ROUTE, {
       method: API.method,
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
-      next: { tags: ['places'] },
     })
-    if (!res.ok) {
-      const error = new Error('An error occurred while fetching places')
-      error.message = await res.json()
-      throw error
-    }
-    const { places, totalPages } = await res.json()
-    const datas: Place[] = places.map((place: PlaceResponse) => ({
-      id: place.placeId,
-      name: place.placeName,
-      imgSrc: place.imageSrc,
-      address: place.address,
-      geo: {
-        latitude: place.latitude,
-        longitude: place.longitude,
-      },
-      tag: place.subcategory,
-      // duration 없음
-      stars: place.star,
-      visitCnt: place.numOfAdded,
-      // reviews 아직 없음
-      // reviewCnt 아직 없음
-      reviewCnt: 0,
-      isScraped: false, // Todo: 실제 데이터 받아오기
-      // order 없음
-    }))
-    return { datas, totalPages }
-  } catch (error) {
-    toast({ title: 'Internal Server Error Occured!' })
   }
-  return {
-    datas: [],
-    totalPages: 0,
+  if (!res.ok) {
+    const error = new Error('An error occurred while fetching places')
+    error.message = await res.json()
+    throw error
   }
+  const { places, totalPages } = await res.json()
+  const datas: Place[] = places.map((place: PlaceResponse) => ({
+    id: place.placeId,
+    name: place.placeName,
+    imgSrc: place.imageSrc,
+    address: place.address,
+    geo: {
+      latitude: place.latitude,
+      longitude: place.longitude,
+    },
+    tag: place.subcategory,
+    // duration 필요 없음(선택한 여행지에서 필요)
+    stars: place.star,
+    visitCnt: place.numOfAdded,
+    // TODO: reviews 아직 없음
+    // TODO: reviewCnt 아직 없음
+    reviewCnt: 0,
+    isScraped: place.isScraped, // Todo: 실제 데이터 받아오기
+    // order 필요없음 (선택한 여행지에서 필요)
+  }))
+  return { datas, totalPages }
 }
 
 /**
