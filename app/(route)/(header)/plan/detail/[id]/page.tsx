@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
+import LoadingPage from '@/components/common/LoadingPage'
 import Comments from '@/components/plan/details/Comments'
 import Description from '@/components/plan/details/Description'
 import PlanDetailSchedule from '@/components/plan/details/Schedule'
@@ -45,7 +46,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     // toast({ title: error.message })
   }
   if (isPending) {
-    content = <div>Pending...</div>
+    content = <LoadingPage />
   }
   if (data) {
     content = (
