@@ -55,9 +55,6 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
     }
   }, [addCommentParentId]) // addCommentParentId가 변경될 때마다 스크롤 이동
 
-  // #0. 댓글/답글 작성 버튼 클릭시
-  const addChildCommentHandler = () => {}
-
   // 예시 데이터
   const dummy_comments = [
     {
@@ -221,7 +218,8 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
     onSuccess: () => {
       // router.refresh()
       queryClient.invalidateQueries({ queryKey: ['plan', planId] })
-      router.refresh()
+      // 낙관적 업데이트
+
       toast({ title: '댓글 업로드 성공' })
     },
     onError: error => {

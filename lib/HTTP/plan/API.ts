@@ -61,28 +61,19 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     isPublic: isPublic,
     isFinished: isDone,
   }
-  const body = {
-    plan: bodyPlan,
-    image:
-      typeof imgSrc === 'object'
-        ? (() => {
-            const formData = new FormData()
-            formData.append('image', imgSrc)
-            return formData
-          })()
-        : null,
-  }
 
-  console.log(body)
+  const formData = new FormData()
+  formData.append('plan', JSON.stringify(bodyPlan))
+  formData.append('image', imgSrc)
 
   const Route = BACKEND_ROUTES.PLAN.UPDATE
 
   const res = await fetch(`/server/${Route.url}`, {
     method: Route.method,
     headers: {
-      'Content-Type': 'application/json',
+      // 'Content-Type': 'multipart/form-data',
     },
-    body: JSON.stringify(body),
+    body: formData,
   })
   if (!res.ok) {
     const error = new Error('다시 시도해주세요')
@@ -202,6 +193,7 @@ interface AddCommentProps {
 export const addComment = async ({ newComment, accessToken }: AddCommentProps) => {
   const body = newComment
   const Route = BACKEND_ROUTES.PLAN.COMMENT.CREATE
+  console.log('accessToken: ', accessToken)
 
   const res = await fetch(`/server/${Route.url}`, {
     method: Route.method,
