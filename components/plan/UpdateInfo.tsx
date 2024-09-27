@@ -13,6 +13,7 @@ import { Plan } from '@/lib/types/Entity/plan'
 import { toast } from '@/lib/utils/hooks/useToast'
 import { Nullable } from '@/lib/utils/typeUtils'
 
+import Loading from '../common/Loading'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 
@@ -46,15 +47,14 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
   }
 
   // #2. 제출하기
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ['plan', 'update', planData.id],
     mutationFn: updatePlan,
-    onSuccess: data => {
-      const { imgSrc } = data
-      // 이미지 업데이트
-      setPlanData({
-        imgSrc,
-      })
+    onSuccess: (data, variables) => {
+      // #3. Todo: 여행계획 디테일 페이지로 Redirect
+    },
+    onError: error => {
+      toast({ title: error.message })
     },
   })
 
@@ -94,7 +94,6 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
 
     // #2. Update하기
     mutate({ plan: updatedPlan, userId: session.data.userId })
-    // #3. Todo: 여행계획 디테일 페이지로 Redirect
   }
 
   return (
@@ -160,7 +159,7 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             />
           </div>
           <Button onClick={addPostHandler} variant='tbPrimary' className='col-span-2 mt-2 w-40'>
-            글쓰기
+            {isPending ? <Loading /> : '여행 개시하기'}
           </Button>
         </div>
       </div>

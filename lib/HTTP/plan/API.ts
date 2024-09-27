@@ -1,8 +1,11 @@
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
-import { CommentRequest } from '@/lib/types/Entity/comment'
+import { CommentRequest, CommentResponse } from '@/lib/types/Entity/comment'
 import { Place } from '@/lib/types/Entity/place'
-import { Plan } from '@/lib/types/Entity/plan'
-import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
+import { Plan, Schedule } from '@/lib/types/Entity/plan'
+import { formatDateToHyphenDate, parseHypenDateToDate } from '@/lib/utils/dateUtils'
+import { Nullable } from '@/lib/utils/typeUtils'
+
+import { attachQuery, Queries } from '../http'
 
 /**
  * Plan Update (DB 반영하기) 함수입니다.
@@ -84,104 +87,134 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
   return data
 }
 
+interface FetchPlanProps {
+  planId: number
+  accessToken: string
+  signal: AbortSignal
+}
+
 /**
  * Plan 정보를 받아오는 API 입니다.
+ * @param planId: Params로 입력된 Id
  */
-// interface FetchPlanProps {
-//   planId: number
-//   accessToken: string
-// }
+export const fetchPlan = async ({ planId, accessToken, signal }: FetchPlanProps) => {
+  console.log('Fetching Plan Data')
+  const queries: Queries = [
+    {
+      key: 'planId',
+      value: planId,
+    },
+  ]
 
-// export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
+  const Route = BACKEND_ROUTES.PLAN.GET
 
-//   const Route = BACKEND_ROUTES.PLAN.GET
-//   const query: Queries = [
-//     {
-//       key: 'planId',
-//       value: planId,
-//     },
-//   ]
+  const res = await fetch(attachQuery(Route.url, queries), {
+    signal,
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
 
-//   const res = await fetch(attachQuery(Route.url, query), {
-//     method: Route.method,
-//     headers: {
-//       Authorization: accessToken,
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       planId,
-//     }),
-//     credentials: 'include',
-//   })
+  if (!res.ok) {
+    const error = new Error('존재하지 않는 여행계획입니다')
+    const errors = await res.json()
+    console.log(errors)
 
-//   if (!res.ok) {
-//     const error = new Error('존재하지 않는 여행계획입니다')
-//     error.message = await res.json()
-//     throw error
-//   }
-//   const { plan, dayPlanList, user, tags, isLiked, scrapped  } = await res.json()
+    throw error
+  }
+  const { plan, user, tags, comments, liked, scrapped } = await res.json()
 
-//   const schedule: Array<Schedule> = dayPlanList.map((dayPlan) => ({
-//     day: dayPlan.day,
-//     startTime:dayPlan.startTime,
-//     endTime:dayPlan.endTime.
-//     places: dayPlan.scheduleList.map((item)=> ({
-//       id: item.placeId,
+  const schedule: Array<Schedule> = plan.dayPlanList.map((dayPlan: any) => ({
+    day: dayPlan.day,
+    startTime: dayPlan.startTime,
+    endTime: dayPlan.endTime,
+    places: dayPlan.scheduleList.map(
+      (item: any) =>
+        ({
+          id: item.placeId,
 
-//       name: item.placeName,
-//       imgSrc: item.imageSrc,
-//       address: item., // 주소 채워넣기
-//       geo: {
-//         latitide: item.latitide,
-//         lonitude:item.longitude,
-//       },
+          name: item.placeName,
+          imgSrc: item.imageSrc,
+          address: item.address,
+          geo: {
+            latitude: item.latitude,
+            longitude: item.longitude,
+          },
 
-//       tag: "string",
-//       duration: item.time,
+          tag: item.subcategory,
+          duration: item.time,
 
-//       stars: item. // 평점
-//       visitCnt: number // 실제 계획에 담긴 횟수
+          stars: item.stars, // 평점
+          visitCnt: item.numOfAdded, // 실제 계획에 담긴 횟수
 
-//       reviews?: Array<Comment>
-//       reviewCnt: number
+          reviewCnt: item.numOfReview,
+          isScraped: false, // 안받는 데이터
 
-//       isScraped: boolean
+          order: item.order, // 계획세우기에 담긴 순서
+        }) as Place,
+    ),
+  }))
+  const planComments: Nullable<Array<CommentResponse>> = comments.map((comment: any) => ({
+    id: comment.commentId,
 
-//       order?: number // 계획세우기에 담긴 순서
-//     })),
-//   }))
-//   const fetchedPlan: Plan = {
-//     id: plan.planId,
-//     userId: plan.userId,
+    userId: comment.user.userId,
+    userName: comment.user.username,
+    userImgsrc: comment.user.image,
+    userStatusMessage: comment.user.status_message,
 
-//     // #1. 기본 정보
-//     state: plan.state, // 불변
-//     startDate: parseHypenDateToDate(plan.startDate),
-//     endDate: parseHypenDateToDate(plan.endDate),
+    planId: comment.planId,
 
-//     imgSrc: PLAN_DEFAULT_IMAGE, // Default : 아무 여행 이미지
+    parentId: comment.parentId,
 
-//     title: plan.title, // Default: null
-//     description: plan.description, // Default: null
-//     memberCnt: plan.numOfPeople, // Default: null
-//     budget: plan.budget, // Default: null
+    content: comment.content,
+    time: comment.time,
+    refOrder: comment.refOrder,
+  }))
 
-//     isDone: plan.isFinished,
-//     isPublic: plan.isPublic,
-//     // #2. 여행 일정
-//     schedule: Array<Schedule>
+  const planData: Plan = {
+    id: plan.planId,
+    userId: plan.userId,
 
-//     // #3. 커뮤니티 정보
-//     likeCnt: number // default: 0
-//     scrapCnt: number // default: 0
-//     comments: Nullable<Array<Comment>> // default: null
+    // #1. 기본 정보
+    state: plan.state, // 불변
+    startDate: parseHypenDateToDate(plan.startDate),
+    endDate: parseHypenDateToDate(plan.endDate),
 
-//     // #4. 요청 유저관련 정보
-//     isScraped: boolean
-//     isLiked: boolean
-//   }
+    imgSrc: plan.imgSrc, // Default : 아무 여행 이미지
 
-// }
+    title: plan.title, // Default: null
+    description: plan.description, // Default: null
+    memberCnt: plan.numOfPeople, // Default: null
+    budget: plan.budget, // Default: null
+
+    isDone: plan.isFinished,
+    isPublic: plan.isPublic,
+    // #2. 여행 일정
+    schedule: schedule,
+
+    // #3. 커뮤니티 정보
+    likeCnt: plan.likes, // default: 0
+    scrapCnt: plan.scraps, // default: 0
+    comments: planComments, // default: null
+
+    // #4. 요청 유저관련 정보
+    isScraped: scrapped,
+    isLiked: liked,
+  }
+
+  // 계획을 만든 사람의 정보
+  const planUser = {
+    userId: user.userId as number,
+    username: user.username as string,
+    status_message: user.status_message as string,
+    image: user.image as string,
+  }
+
+  return { planData, planUser, tags }
+}
 
 /**
  * #3. 댓글 추가하기
@@ -193,7 +226,6 @@ interface AddCommentProps {
 export const addComment = async ({ newComment, accessToken }: AddCommentProps) => {
   const body = newComment
   const Route = BACKEND_ROUTES.PLAN.COMMENT.CREATE
-  console.log('accessToken: ', accessToken)
 
   const res = await fetch(`/server/${Route.url}`, {
     method: Route.method,

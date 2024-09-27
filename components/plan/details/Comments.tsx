@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
+import Loading from '@/components/common/Loading'
 import UserAvatar from '@/components/common/UserAvatar'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -27,36 +28,8 @@ interface GroupedComments {
   [key: number]: CommentResponse[] // 숫자형 키를 사용하여 CommentResponse 배열을 저장
 }
 const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNode => {
-  // 대댓글 다루기
-  const [addCommentParentId, setAddCommentParentId] = useState<number>()
-  const [nextRefOrder, setNextRefOrder] = useState<number>(1) // 다음 refOrder를 저장하기 위한 상태
-
-  const addCommentRef = useRef<HTMLDivElement | null>(null) // 스크롤 이동을 위한 ref
-  const handleAddChildComment = (parentId: number) => {
-    setAddCommentParentId(parentId)
-  }
-
-  useEffect(() => {
-    if (addCommentParentId !== undefined && addCommentRef.current) {
-      addCommentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }) // t
-
-      // refOrder 계산 로직 추가
-      const targetCommentGroup = sortedComments.find(
-        commentGroup => commentGroup.parentComment?.id === addCommentParentId,
-      )
-
-      if (targetCommentGroup) {
-        const lastChildComment = targetCommentGroup.childComments[targetCommentGroup.childComments.length - 1]
-        const lastRefOrder = lastChildComment ? lastChildComment.refOrder : 0 // 마지막 대댓글의 refOrder
-        setNextRefOrder(lastRefOrder + 1) // 다음 refOrder 설정
-      } else {
-        setNextRefOrder(1) // 대댓글이 없는 경우 1로 설정
-      }
-    }
-  }, [addCommentParentId]) // addCommentParentId가 변경될 때마다 스크롤 이동
-
   // 예시 데이터
-  const dummy_comments = [
+  let dummy_comments = [
     {
       id: 0,
       planId: 1234,
@@ -121,10 +94,50 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
       userStatusMessage: 'Good day',
     },
   ]
+  const [planComments, setPlanComments] = useState<Nullable<CommentResponse[]>>(dummy_comments)
+  // TODO: 진짜 데이터로 바꾸기
+  // const [planComments, setPlanComments] = useState<Nullable<CommentResponse[]>>(comments)
+  // 대댓글 다루기
+  const [addCommentParentId, setAddCommentParentId] = useState<number>()
+  const [nextRefOrder, setNextRefOrder] = useState<number>(1) // 다음 refOrder를 저장하기 위한 상태
 
-  // 1. parentId로 그룹화
-  const groupedComments: GroupedComments = dummy_comments
-    ? dummy_comments.reduce((acc, comment) => {
+  const addCommentRef = useRef<HTMLDivElement | null>(null) // 스크롤 이동을 위한 ref
+
+  /**
+   * 대댓글창 열기 함수
+   * @param parentId 열고자 하는 댓글의 부모 ID
+   */
+  const handleAddChildComment = (parentId: number | undefined) => {
+    setAddCommentParentId(parentId)
+  }
+  const addPlanComment = (newComment: CommentResponse) => {
+    setPlanComments(prev => (prev ? [...prev, newComment] : [newComment]))
+    // TODO: Dest_comment 지우기
+    dummy_comments = [...dummy_comments, newComment]
+  }
+
+  useEffect(() => {
+    if (addCommentParentId !== undefined && addCommentRef.current) {
+      addCommentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }) // t
+
+      // refOrder 계산 로직 추가
+      const targetCommentGroup = sortedComments.find(
+        commentGroup => commentGroup.parentComment?.id === addCommentParentId,
+      )
+
+      if (targetCommentGroup) {
+        const lastChildComment = targetCommentGroup.childComments[targetCommentGroup.childComments.length - 1]
+        const lastRefOrder = lastChildComment ? lastChildComment.refOrder : 0 // 마지막 대댓글의 refOrder
+        setNextRefOrder(lastRefOrder + 1) // 다음 refOrder 설정
+      } else {
+        setNextRefOrder(1) // 대댓글이 없는 경우 1로 설정
+      }
+    }
+  }, [addCommentParentId]) // addCommentParentId가 변경될 때마다 스크롤 이동
+
+  // #1. parentId로 그룹화
+  const groupedComments: GroupedComments = planComments
+    ? planComments.reduce((acc, comment) => {
         const { parentId } = comment
         if (!acc[parentId]) {
           acc[parentId] = []
@@ -133,9 +146,8 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
         return acc
       }, {} as GroupedComments)
     : []
-  // console.log(groupedComments)
 
-  // 2. 본댓글과 대댓글 분리 및 본댓글 기준 정렬
+  // #2. 본댓글과 대댓글 분리 및 본댓글 기준 정렬
   const sortedComments = Object.values(groupedComments)
     .filter((group: CommentResponse[]) => group.some(comment => comment.id === comment.parentId))
     .map((group: CommentResponse[]) => {
@@ -151,12 +163,17 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
     .sort(
       (a, b) => new Date(a.parentComment!.time).getMilliseconds() - new Date(b.parentComment!.time).getMilliseconds(),
     ) // 본댓글을 기준으로 시간 오름차순 정렬
-  console.log(sortedComments)
 
   return (
     <div className={cn('relative flex flex-col items-end justify-start gap-2', className)}>
-      <p className='w-full py-3 text-xl font-semibold'>댓글&nbsp;{comments?.length}개</p>
-      <PostComment id='parentComment' user={user} planId={planId} />
+      <p className='w-full py-3 text-xl font-semibold'>댓글&nbsp;{planComments?.length}개</p>
+      <PostComment
+        id='parentComment'
+        user={user}
+        planId={planId}
+        handleAddChildComment={handleAddChildComment}
+        addPlanComment={addPlanComment}
+      />
 
       {sortedComments.map(commentGroup => (
         <div
@@ -184,6 +201,8 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
                 planId={planId}
                 addCommentParentId={addCommentParentId}
                 nextRefOrder={nextRefOrder}
+                handleAddChildComment={handleAddChildComment}
+                addPlanComment={addPlanComment}
               />
             )}
           </div>
@@ -204,22 +223,47 @@ interface PostCommentProps {
   planId: number
   addCommentParentId?: number
   nextRefOrder?: number
+  handleAddChildComment: (parentId: number | undefined) => void
+  addPlanComment: (newComment: CommentResponse) => void
 }
-const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: PostCommentProps) => {
+const PostComment = ({
+  id,
+  user,
+  planId,
+  addCommentParentId,
+  nextRefOrder,
+  handleAddChildComment,
+  addPlanComment,
+}: PostCommentProps) => {
   const router = useRouter()
-  // console.log('user:', user)
 
   const commentRef = useRef<HTMLTextAreaElement>(null)
 
   // #0. 제출
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ['plan', 'comment', planId],
     mutationFn: addComment,
-    onSuccess: () => {
+    /**
+     * data: mutate return value
+     * variables: mutate 인자
+     */
+    onSuccess: (data, variables) => {
       // router.refresh()
       queryClient.invalidateQueries({ queryKey: ['plan', planId] })
-      // 낙관적 업데이트
-
+      // #1. 대댓글창 닫기
+      handleAddChildComment(undefined)
+      // #2. 낙관적 업데이트
+      const newComment: CommentResponse = {
+        ...variables.newComment,
+        parentId: variables.newComment.parentId === 0 ? data.commentId : variables.newComment.parentId,
+        id: data.commentId,
+        userId: user.userId,
+        userName: user.nickname,
+        userStatusMessage: user.status_message,
+        userImgsrc: user.image,
+      }
+      addPlanComment(newComment)
+      // #3. 완료창
       toast({ title: '댓글 업로드 성공' })
     },
     onError: error => {
@@ -240,6 +284,10 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
   // #1. 버튼 클릭시 제출
   const handleSubmit = () => {
     const comment = commentRef.current?.value.trim()
+    if (comment?.length === 0) {
+      toast({ title: '댓글을 작성하여 주세요' })
+      return
+    }
     if (comment && commentRef.current) {
       const newComment: CommentRequest = {
         planId: planId,
@@ -248,7 +296,6 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
         time: new Date().toISOString(),
         refOrder: id === 'parentComment' ? 0 : (nextRefOrder as number), // New Comment
       }
-      console.log(newComment)
 
       mutate({ newComment: newComment, accessToken: user.accessToken })
     }
@@ -269,9 +316,15 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
       <div className='flex w-full items-end justify-start gap-4'>
         <Textarea ref={commentRef} placeholder={'멋진 댓글을 달아주세요!'} onKeyDown={handleKeyDown} />
 
-        <Button variant={id === 'parentComment' ? 'tbPrimary' : 'tbSecondary'} onClick={handleSubmit}>
-          {id === 'parentComment' ? '댓글 작성' : '답글 작성'}
-        </Button>
+        {
+          <Button
+            variant={id === 'parentComment' ? 'tbPrimary' : 'tbSecondary'}
+            onClick={handleSubmit}
+            className='relative h-12 w-20'
+          >
+            {isPending ? <Loading /> : id === 'parentComment' ? '댓글 작성' : '답글 작성'}
+          </Button>
+        }
       </div>
     </div>
   )
@@ -283,7 +336,7 @@ const PostComment = ({ id, user, planId, addCommentParentId, nextRefOrder }: Pos
 interface PlanCommentProps {
   id: 'parentComment' | 'childComment'
   comment: CommentResponse
-  handleAddChildComment: (parentId: number) => void
+  handleAddChildComment: (parentId: number | undefined) => void
 }
 const PlanComment = ({ id, comment, handleAddChildComment }: PlanCommentProps): ReactNode => {
   const { content, time, userImgsrc, userName, userStatusMessage } = comment
@@ -313,7 +366,9 @@ const PlanComment = ({ id, comment, handleAddChildComment }: PlanCommentProps): 
             <span>{userName}</span>
             <span className='text-xs text-tbGray'>{getRelativeTimeString(new Date(time))}</span>
             <div className='absolute right-0 top-0 flex flex-row items-center justify-end gap-2'>
-              <LucideIcon onClick={handleClick} name='MessageCircle' size={18} className='cursor-pointer' />
+              {id === 'parentComment' && (
+                <LucideIcon onClick={handleClick} name='MessageCircle' size={18} className='cursor-pointer' />
+              )}
 
               <LucideIcon name='EllipsisVertical' size={18} className='cursor-pointer' />
             </div>

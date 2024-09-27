@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 
 import Backdrop from '@/components/common/Backdrop'
 import UserAvatar from '@/components/common/UserAvatar'
+import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
@@ -16,6 +17,8 @@ interface DescriptionProps {
 }
 
 const Description = ({ plan, user, className }: DescriptionProps): ReactNode => {
+  console.log('Description', plan)
+
   // #0. 데이터
   const {
     imgSrc,
@@ -37,7 +40,7 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
     <div className={cn('relative flex cursor-pointer items-start justify-start gap-6 px-3 py-6', className)}>
       <div className='group relative aspect-video h-full origin-left'>
         <Image
-          src={imgSrc as string}
+          src={(imgSrc as string) || PLAN_DEFAULT_IMAGE}
           alt='Plan Image'
           width={320}
           height={200}
@@ -51,10 +54,14 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
       <div className={cn('flex h-fit w-fit flex-grow origin-left flex-col items-start justify-start gap-3')}>
         {/* 유저정보 */}
         <div className='flex items-center justify-start gap-2'>
-          <UserAvatar imgSrc='https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png' />
+          <UserAvatar
+            imgSrc={
+              user.image || 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
+            }
+          />
           <div>
-            <p className='text-lg font-semibold'>힐링여행</p>
-            <p className='text-sm text-tbGray'>좋은 사람과 좋은 여행</p>
+            <p className='text-lg font-semibold'>{user.username}</p>
+            <p className='text-sm text-tbGray'>{user.status_message}</p>
           </div>
         </div>
         {/* 계획정보 */}
@@ -70,7 +77,7 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
         </div>
         <div className='flex items-center justify-start gap-3'>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-            <LucideIcon name='Heart' fill='tbRed' strokeWidth={0} />
+            <LucideIcon name='Heart' fill={isLiked ? 'tbRed' : undefined} strokeWidth={0} />
             <span>{likeCnt}</span>
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
@@ -78,7 +85,7 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
             <span>{comments?.length}</span>
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-            <LucideIcon name='Bookmark' />
+            <LucideIcon name='Bookmark' fill={isScraped ? 'tbRed' : undefined} />
             <span>{scrapCnt}</span>
           </div>
         </div>

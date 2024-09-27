@@ -13,6 +13,8 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import { toast } from '@/lib/utils/hooks/useToast'
 
+import Loading from '../common/Loading'
+
 interface PlanSideBarProps {
   className?: string
 }
@@ -26,7 +28,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const { planData, setPlanData } = usePlanStore()
   const session: any = useSession()
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ['plan', 'update', planData.id],
     mutationFn: updatePlan,
     onSuccess: data => {
@@ -87,8 +89,14 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
       </div>
 
       <div onClick={savePlanHandler} className={cn(style)}>
-        <LucideIcon name='Save' size={iconSize} />
-        저장
+        {isPending ? (
+          <Loading />
+        ) : (
+          <>
+            <LucideIcon name='Save' size={iconSize} />
+            저장
+          </>
+        )}
       </div>
       <div className={cn(style)}>
         <LucideIcon name='Settings' size={iconSize} />

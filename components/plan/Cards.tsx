@@ -46,7 +46,7 @@ export const SchedulePlaceCard = ({ id, data, isReduced, className }: SchedulePl
             <Image
               width={124}
               height={124}
-              src={imgSrc}
+              src={imgSrc as string}
               alt='Place Image'
               className='h-full w-full origin-center rounded-md'
             />

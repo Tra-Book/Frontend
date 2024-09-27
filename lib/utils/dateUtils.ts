@@ -72,16 +72,21 @@ export const getRelativeTimeString = (date: Date): string => {
   const now: Date = new Date() // 현재 시간
   const timeDiff: number = now.getTime() - date.getTime() // 시간 차이 (밀리초 단위)
 
-  const millisecondsInOneHour = 1000 * 60 * 60 // 1시간 = 3600000 밀리초
-  const millisecondsInOneDay = millisecondsInOneHour * 24 // 1일 = 86400000 밀리초
+  const msInOneMin = 1000 * 60 // 1분: 60초 * 1000ms
+  const msInOneHour = msInOneMin * 60 // 1시간 = 60분
+  const msInOneDay = msInOneHour * 24 // 1일 = 24시간
 
-  if (timeDiff < millisecondsInOneDay) {
+  if (timeDiff < msInOneHour) {
+    const minutesDifference = Math.floor(timeDiff / msInOneMin)
+    return `${minutesDifference}분 전`
+  }
+  if (timeDiff < msInOneDay) {
     // 24시간이 지나지 않은 경우
-    const hoursDifference = Math.floor(timeDiff / millisecondsInOneHour)
+    const hoursDifference = Math.floor(timeDiff / msInOneHour)
     return `${hoursDifference}시간 전`
   } else {
     // 24시간이 지난 경우
-    const daysDifference = Math.floor(timeDiff / millisecondsInOneDay)
+    const daysDifference = Math.floor(timeDiff / msInOneDay)
     return `${daysDifference}일 전`
   }
 }
