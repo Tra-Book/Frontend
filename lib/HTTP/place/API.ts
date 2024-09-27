@@ -106,7 +106,7 @@ export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlace
 
   const API = BACKEND_ROUTES.PLACES.GENERAL
 
-  const API_ROUTE = attachQuery(`/server/${API.url}`, queries)
+  const API_ROUTE = attachQuery(`/server${API.url}`, queries)
 
   let res: Response
   // #1. 유저가 스크랩한 여행지

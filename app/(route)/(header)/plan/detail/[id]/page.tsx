@@ -2,16 +2,16 @@
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import Comments from '@/components/plan/details/Comments'
 import Description from '@/components/plan/details/Description'
 import PlanDetailSchedule from '@/components/plan/details/Schedule'
+import useDropdownStore from '@/lib/context/dropdownStore'
 import { fetchPlan } from '@/lib/HTTP/plan/API'
 import { CommentResponse } from '@/lib/types/Entity/comment'
 import { Plan } from '@/lib/types/Entity/plan'
-import { toast } from '@/lib/utils/hooks/useToast'
 import { Nullable } from '@/lib/utils/typeUtils'
 
 interface PlanDetailsPageProps {
@@ -26,16 +26,23 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
   const planId = parseInt(params.id) // PlanId
   const session: any = useSession() // 해당 Plan의 User 정보 받기
 
+  // #0. Day:0 is UI for all Schedule
+  const { setDay } = useDropdownStore()
+  useEffect(() => {
+    setDay(0)
+    return () => setDay(1)
+  }, [])
+
   // const data = DUMMY_PLAN
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['plan', planId],
-    queryFn: ({ signal }) => fetchPlan({ planId: planId, accessToken: session.data.accessToken, signal }),
+    queryFn: () => fetchPlan({ planId: planId, accessToken: session.data ? session.data.accessToken : null }),
   })
 
   let content
   if (isError) {
-    toast({ title: error.message })
+    // toast({ title: error.message })
   }
   if (isPending) {
     content = <div>Pending...</div>
@@ -45,16 +52,20 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
       <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
         {/* 설명 */}
         {/* TODO: 글쓴이의 정보로 user바꾸기 */}
-        <Description plan={data?.planData as Plan} user={data?.planUser} className='h-60 min-h-min w-full' />
-        {/* 지도 */}
+        <Description
+          plan={data?.planData as Plan}
+          planUser={data?.planUser}
+          user={session.data}
+          className='h-60 min-h-min w-full'
+        />
         <Title title='여행 지도 ' />
         <div className='relative aspect-video w-full'>
           <KakaoMap />
         </div>
-        {/* 여행 일정 */}
+
         <Title title='여행 일정 ' />
         <PlanDetailSchedule plan={data?.planData as Plan} />
-        {/* 댓글 */}
+
         <Comments
           planId={planId}
           comments={data?.planData.comments as Nullable<CommentResponse[]>}

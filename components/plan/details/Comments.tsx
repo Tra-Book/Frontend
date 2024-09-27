@@ -8,6 +8,7 @@ import UserAvatar from '@/components/common/UserAvatar'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { ROUTES } from '@/lib/constants/routes'
 import { queryClient } from '@/lib/HTTP/http'
 import { addComment } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -28,75 +29,7 @@ interface GroupedComments {
   [key: number]: CommentResponse[] // 숫자형 키를 사용하여 CommentResponse 배열을 저장
 }
 const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNode => {
-  // 예시 데이터
-  let dummy_comments = [
-    {
-      id: 0,
-      planId: 1234,
-      parentId: 0, // 본댓글
-      content:
-        '정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. ',
-      time: new Date('2024-09-22T08:00:00').toISOString(),
-      refOrder: 1,
-      userId: 1,
-      userName: 'User1',
-      userImgsrc: 'img1.png',
-      userStatusMessage: 'Hello',
-    },
-    {
-      id: 1,
-      planId: 1234,
-      parentId: 1, // id 1에 대한 대댓글
-      content:
-        '정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. ',
-      time: new Date('2024-09-25T09:00:00').toISOString(),
-      refOrder: 1,
-      userId: 2,
-      userName: 'User2',
-      userImgsrc: 'img2.png',
-      userStatusMessage: 'Hi',
-    },
-    {
-      id: 3,
-      planId: 1234,
-      parentId: 0, // 본댓글
-      content:
-        '정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. 정말 아름다운 여행이로군요. ',
-      time: new Date('2024-09-21T10:00:00').toISOString(),
-      refOrder: 2,
-      userId: 3,
-      userName: 'User3',
-      userImgsrc: 'img3.png',
-      userStatusMessage: 'Good morning',
-    },
-    {
-      id: 4,
-      planId: 1234,
-      parentId: 1, // id 3에 대한 대댓글
-      content: '대댓글 2-1',
-      time: new Date('2024-09-26T11:00:00').toISOString(),
-      refOrder: 1,
-      userId: 4,
-      userName: 'User4',
-      userImgsrc: 'img4.png',
-      userStatusMessage: 'Good day',
-    },
-    {
-      id: 5,
-      planId: 1234,
-      parentId: 1, // id 3에 대한 대댓글
-      content: '대댓글 3-1',
-      time: new Date('2024-09-26T11:00:00').toISOString(),
-      refOrder: 2,
-      userId: 4,
-      userName: 'User4',
-      userImgsrc: 'img4.png',
-      userStatusMessage: 'Good day',
-    },
-  ]
-  const [planComments, setPlanComments] = useState<Nullable<CommentResponse[]>>(dummy_comments)
-  // TODO: 진짜 데이터로 바꾸기
-  // const [planComments, setPlanComments] = useState<Nullable<CommentResponse[]>>(comments)
+  const [planComments, setPlanComments] = useState<Nullable<CommentResponse[]>>(comments)
   // 대댓글 다루기
   const [addCommentParentId, setAddCommentParentId] = useState<number>()
   const [nextRefOrder, setNextRefOrder] = useState<number>(1) // 다음 refOrder를 저장하기 위한 상태
@@ -112,8 +45,6 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
   }
   const addPlanComment = (newComment: CommentResponse) => {
     setPlanComments(prev => (prev ? [...prev, newComment] : [newComment]))
-    // TODO: Dest_comment 지우기
-    dummy_comments = [...dummy_comments, newComment]
   }
 
   useEffect(() => {
@@ -147,6 +78,8 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
       }, {} as GroupedComments)
     : []
 
+  console.log(groupedComments)
+
   // #2. 본댓글과 대댓글 분리 및 본댓글 기준 정렬
   const sortedComments = Object.values(groupedComments)
     .filter((group: CommentResponse[]) => group.some(comment => comment.id === comment.parentId))
@@ -160,10 +93,8 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
 
       return { parentComment, childComments }
     })
-    .sort(
-      (a, b) => new Date(a.parentComment!.time).getMilliseconds() - new Date(b.parentComment!.time).getMilliseconds(),
-    ) // 본댓글을 기준으로 시간 오름차순 정렬
-
+    .sort((a, b) => new Date(a.parentComment!.time).getTime() - new Date(b.parentComment!.time).getTime()) // 본댓글을 기준으로 시간 오름차순 정렬
+  console.log(sortedComments)
   return (
     <div className={cn('relative flex flex-col items-end justify-start gap-2', className)}>
       <p className='w-full py-3 text-xl font-semibold'>댓글&nbsp;{planComments?.length}개</p>
@@ -284,6 +215,12 @@ const PostComment = ({
   // #1. 버튼 클릭시 제출
   const handleSubmit = () => {
     const comment = commentRef.current?.value.trim()
+    // Case1: 로그인X 상태
+    if (!user) {
+      router.push(ROUTES.AUTH.LOGIN.url)
+      return
+    }
+    // Case1: 댓글 안씀
     if (comment?.length === 0) {
       toast({ title: '댓글을 작성하여 주세요' })
       return

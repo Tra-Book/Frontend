@@ -1,10 +1,12 @@
 'use client'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 
 import Backdrop from '@/components/common/Backdrop'
 import UserAvatar from '@/components/common/UserAvatar'
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
@@ -12,14 +14,15 @@ import { formatKoreanDate } from '@/lib/utils/dateUtils'
 
 interface DescriptionProps {
   plan: Plan
+  planUser: any
   user: any
   className?: string
 }
 
-const Description = ({ plan, user, className }: DescriptionProps): ReactNode => {
-  console.log('Description', plan)
+const Description = ({ plan, planUser, user, className }: DescriptionProps): ReactNode => {
+  const router = useRouter()
 
-  // #0. 데이터
+  // #0. 계획 데이터
   const {
     imgSrc,
     title,
@@ -34,8 +37,26 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
     isScraped,
     comments,
   } = plan
-  // # 유저 더미 데이터
+  console.log('imgSrc:', imgSrc)
 
+  /**
+   * 좋아요 클릭 함수
+   */
+  const likeHandler = () => {
+    // #1. 로그인X 상태 (좋아요 누르기, 스크랩 누르기)
+    if (!user) {
+      router.push(ROUTES.AUTH.LOGIN.url)
+    }
+    // #2. 로그인 상태
+  }
+
+  const scrapHandler = () => {
+    // #1. 로그인X 상태 (좋아요 누르기, 스크랩 누르기)
+    if (!user) {
+      router.push(ROUTES.AUTH.LOGIN.url)
+    }
+    // #2. 로그인 상태
+  }
   return (
     <div className={cn('relative flex cursor-pointer items-start justify-start gap-6 px-3 py-6', className)}>
       <div className='group relative aspect-video h-full origin-left'>
@@ -56,12 +77,13 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
         <div className='flex items-center justify-start gap-2'>
           <UserAvatar
             imgSrc={
-              user.image || 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
+              planUser.image ||
+              'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
             }
           />
           <div>
-            <p className='text-lg font-semibold'>{user.username}</p>
-            <p className='text-sm text-tbGray'>{user.status_message}</p>
+            <p className='text-lg font-semibold'>{planUser.username}</p>
+            <p className='text-sm text-tbGray'>{planUser.status_message}</p>
           </div>
         </div>
         {/* 계획정보 */}
@@ -80,11 +102,11 @@ const Description = ({ plan, user, className }: DescriptionProps): ReactNode => 
             <LucideIcon name='Heart' fill={isLiked ? 'tbRed' : undefined} strokeWidth={0} />
             <span>{likeCnt}</span>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+          <div onClick={likeHandler} className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='MessageCircle' />
             <span>{comments?.length}</span>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+          <div onClick={scrapHandler} className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='Bookmark' fill={isScraped ? 'tbRed' : undefined} />
             <span>{scrapCnt}</span>
           </div>

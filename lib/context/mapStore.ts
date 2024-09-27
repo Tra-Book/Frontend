@@ -1,26 +1,23 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+import { MAX_MAP_MARKERS } from '@/components/common/MapPin'
+
 import { Geo } from '../types/Entity/place'
 import { Nullable } from '../utils/typeUtils'
 
-export type NullableGeo = Nullable<Geo>
-export type NullableGeoArray = Nullable<Array<Geo>>
+// Nullable 타입을 정의합니다.
 
 interface MapContext {
   center: Geo // 중심좌표
   setCenter: (newCenter: Geo) => void
 
-  pins: NullableGeoArray // 스케쥴 핀
-  setPins: (updatedPins: NullableGeoArray) => void
+  pins: Array<Geo[]> // 스케줄 핀
+  setPins: (day: number, updatedPins: Geo[]) => void
   clearPins: () => void
 
-  focusedPlanPins: NullableGeoArray // 보관함 여행계획핀
-  setFocusedPlanPins: (updatedPins: NullableGeoArray) => void
-  clearFocusedPlanPins: () => void
-
-  focusedPlacePin: NullableGeo // 보관함 여행지핀
-  setFocusedPlacePin: (updatedPin: NullableGeo) => void
+  focusedPlacePin: Nullable<Geo> // 보관함 여행지핀
+  setFocusedPlacePin: (updatedPin: Nullable<Geo>) => void
   clearFocusedPlacePin: () => void
 
   clearAllPins: () => void
@@ -37,28 +34,35 @@ const useMapStore = create(
         set(() => ({ center: newCenter }))
       },
 
-      pins: null,
-      setPins: (updatedPins: NullableGeoArray) => {
-        set(() => ({ pins: updatedPins }))
+      pins: Array.from({ length: MAX_MAP_MARKERS + 1 }, () => []),
+      /**
+       *
+       * @param day 핀이 업데이트될 날짜
+       * @param updatedPins 바뀔 핀값
+       */
+      setPins: (day: number, updatedPins: Geo[]) => {
+        set(state => {
+          const newPins = [...state.pins]
+          newPins[day] = updatedPins
+          return { pins: newPins }
+        })
       },
-      clearPins: () => set(() => ({ pins: null })),
-
-      // 여행계획 클릭시
-      focusedPlanPins: null,
-      setFocusedPlanPins: (updatedPins: NullableGeoArray) => {
-        set(() => ({ focusedPlanPins: updatedPins }))
-      },
-      clearFocusedPlanPins: () => set(() => ({ focusedPlanPins: null })),
+      clearPins: () => set(() => ({ pins: Array.from({ length: MAX_MAP_MARKERS + 1 }, () => []) })),
 
       // 여행지 하나 클릭시
       focusedPlacePin: null,
-      setFocusedPlacePin: (updatedPin: NullableGeo) => {
+      setFocusedPlacePin: (updatedPin: Nullable<Geo>) => {
         set(() => ({ focusedPlacePin: updatedPin }))
       },
       clearFocusedPlacePin: () => set(() => ({ focusedPlacePin: null })),
 
       //모든 Pin 지우기
-      clearAllPins: () => set(() => ({ pins: null, focusedPlanPins: null, focusedPlacePin: null })),
+      // 모든 Pin 지우기
+      clearAllPins: () =>
+        set(() => ({
+          pins: Array.from({ length: MAX_MAP_MARKERS + 1 }, () => []),
+          focusedPlacePin: null,
+        })),
     }),
     {
       name: 'map-context',

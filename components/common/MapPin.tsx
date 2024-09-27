@@ -6,6 +6,28 @@ import { Geo } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
 import { ColorType } from '@/public/colors/colors'
 
+export const MAX_MAP_MARKERS = 10
+export const MAP_MARKERS: string[] = ['']
+
+for (let i = 1; i <= MAX_MAP_MARKERS; i++) {
+  MAP_MARKERS.push(`https://storage.googleapis.com/trabook-20240822/frontendComponent/map_marker_day${i}.png`)
+}
+export const MAP_MARKER_COLORS: string[] = [
+  '#FFFFFF', // 안쓰는 값
+  '#FF8710',
+  '#A3D184',
+  '#F45858',
+  '#FFD25E',
+  '#0277FF',
+  '#D544F2',
+  '#3EFFD2',
+  '#9D5618',
+  '#92A5F3',
+  '#160C03',
+]
+
+const FOCUS_MAP_PIN = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
+
 interface MapPinProps {
   num: number
   size?: number
@@ -24,29 +46,27 @@ export const MapPin = ({ num, size, fill = 'tbOrange', className }: MapPinProps)
 
 interface SpriteMapMarkerProps {
   geo: Geo
+  day?: number
   order: number
-  id: 'schedule' | 'focus' | 'scrap'
+  id: 'pins' | 'focus'
 }
 
 const MARKER_SIZE = 44
 const MAX_MARKER_COUNT = 16
-export const SpriteMapMarker = ({ geo, order, id }: SpriteMapMarkerProps): ReactNode => {
+export const SpriteMapMarker = ({ geo, day, order, id }: SpriteMapMarkerProps): ReactNode => {
   let imgSrc: string = ''
   let zIndex: number
-  switch (id) {
-    case 'schedule': // 주황색
-      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers.png'
-      zIndex = 20
-      break // T 모양
-    case 'focus':
-      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
-      zIndex = 30
-      break
-    case 'scrap': // 초록색
-      imgSrc = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_markers_tbGreen.png'
-      zIndex = 10
-      break
+  if (id === 'pins') {
+    // pins인 경우 day 무조건 있음
+    imgSrc = MAP_MARKERS[day as number]
+    zIndex = 10
   }
+  // 하나의 핀 (id === "focus")
+  else {
+    imgSrc = FOCUS_MAP_PIN
+    zIndex = 20
+  }
+
   return (
     <MapMarker
       position={{

@@ -90,15 +90,13 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
 interface FetchPlanProps {
   planId: number
   accessToken: string
-  signal: AbortSignal
 }
 
 /**
  * Plan 정보를 받아오는 API 입니다.
  * @param planId: Params로 입력된 Id
  */
-export const fetchPlan = async ({ planId, accessToken, signal }: FetchPlanProps) => {
-  console.log('Fetching Plan Data')
+export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
   const queries: Queries = [
     {
       key: 'planId',
@@ -106,16 +104,14 @@ export const fetchPlan = async ({ planId, accessToken, signal }: FetchPlanProps)
     },
   ]
 
-  const Route = BACKEND_ROUTES.PLAN.GET
+  const API = BACKEND_ROUTES.PLAN.GET
 
-  const res = await fetch(attachQuery(Route.url, queries), {
-    method: Route.method,
-    headers: {
-      Authorization: accessToken,
-      'Content-Type': 'application/json',
-    },
+  const res = await fetch(`${attachQuery(`/server/${API.url}`, queries)}`, {
+    method: API.method,
+    headers: accessToken
+      ? { Authorization: accessToken, 'Content-Type': 'application/json' }
+      : { 'Content-Type': 'application/json' },
     credentials: 'include',
-    signal,
   })
 
   if (!res.ok) {

@@ -17,7 +17,7 @@ import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
 
 interface SchedulePlaceCardProps {
-  id: 'schedule' | 'scrap'
+  id: 'schedule' | 'scrap' | 'dummy'
   data: Place
   isReduced: boolean
   className?: string
@@ -27,17 +27,18 @@ export const SchedulePlaceCard = ({ id, data, isReduced, className }: SchedulePl
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration, geo } = data
   const { setCenter } = useMapStore()
 
-  const addressArr = address
-    .split(' ')
-    .filter((val, index) => index === 0 || index === 1)
-    .join(' ')
+  // const addressArr = address
+  //   .split(' ')
+  //   .filter((val, index) => index === 0 || index === 1)
+  //   .join(' ')
 
   return (
     <>
       <div
         onClick={() => setCenter(geo)}
         className={cn(
-          'relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4',
+          'relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-b-[0.5px] border-tbPlaceholder px-3 py-4',
+          id === 'dummy' && 'pointer-events-none invisible opacity-0',
           className,
         )}
       >
@@ -46,7 +47,7 @@ export const SchedulePlaceCard = ({ id, data, isReduced, className }: SchedulePl
             <Image
               width={124}
               height={124}
-              src={imgSrc as string}
+              src={(imgSrc as string) || PLACE_DEFAULT_IMAGE}
               alt='Place Image'
               className='h-full w-full origin-center rounded-md'
             />
@@ -68,13 +69,13 @@ export const SchedulePlaceCard = ({ id, data, isReduced, className }: SchedulePl
               fill={id === 'schedule' ? 'tbOrange' : 'tbGreen'}
               className='group-hover:scale-125'
             />
-            <span className='text-base font-semibold group-hover:text-tbBlue'>{name}</span>
+            <span className='line-clamp-1 text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
 
           <p className='w-fit text-sm'>{address}</p>
 
           <div className='flex w-full items-center justify-between text-sm'>
-            <p># {tag}</p>
+            <p># {tag || '태그 없음'}</p>
             <p className='text-tbGray'>{duration}분</p>
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>

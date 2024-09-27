@@ -17,9 +17,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'storage.cloud.google.com',
-        pathname: '/trabook-20240822/**',
+        pathname: '/**',
       },
     ],
+    minimumCacheTTL: 1500000,
   },
   async rewrites() {
     return [

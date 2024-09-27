@@ -2,8 +2,11 @@
 import { addDays } from 'date-fns'
 import React, { ReactNode, useEffect, useState } from 'react'
 
+import { DUMMY_PLACES } from '@/lib/constants/dummy_data'
 import useDropdownStore from '@/lib/context/dropdownStore'
+import useMapStore from '@/lib/context/mapStore'
 import LucideIcon from '@/lib/icons/LucideIcon'
+import { Geo } from '@/lib/types/Entity/place'
 import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import { formatKoreanDate } from '@/lib/utils/dateUtils'
@@ -20,19 +23,44 @@ interface PlanDetailScheduleProps {
 const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): ReactNode => {
   const { startDate, schedule } = plan
 
-  const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
+  const { DayDropdown } = useDayDropdown(schedule.length)
   const { setDay } = useDropdownStore()
+  const { pins, setPins, clearPins } = useMapStore()
 
-  // #0. Day:0 is UI for all Schedule
-  useEffect(() => {
-    setDay(0)
-    return () => setDay(1)
-  }, [])
-
-  // Change Day
   const handleDayChange = (day: number) => {
     setDay(day)
+    // 해당하는 날짜의 Pin만 남기기
+    // #1. 전체인 경우 (day == 0)
+    if (day === 0) {
+      // 전체 pin 더하기
+      schedule.map((item, index) => {
+        const geoArray: Geo[] = item.places.map(place => place.geo)
+        setPins(index + 1, geoArray)
+      })
+    }
+    // #2. 특정 day인 경우
+    else {
+      // #1. day에 해당하는 schedule 찾기
+      const targetSchedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
+      // #2. Schedule의 핀 가져오기
+      if (targetSchedule?.places) {
+        const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
+        clearPins()
+        setPins(day, newPins) // Day1 색만쓸거임
+      } else {
+        clearPins()
+      }
+    }
   }
+
+  // # 모든 Schedule의 Pin 더하기
+  useEffect(() => {
+    schedule.map((item, index) => {
+      const geoArray: Geo[] = item.places.map(place => place.geo)
+      setPins(index + 1, geoArray)
+    })
+  }, [schedule])
+
   return (
     <>
       <DayDropdown
@@ -41,7 +69,7 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
         handleDayChange={handleDayChange}
         className='h-10 w-52 px-4 py-2'
       />
-      <Schedules schedules={schedule} startDate={startDate} dropdownDay={day} className='my-6 w-full overflow-x-auto' />
+      <Schedules schedules={schedule} startDate={startDate} className='my-6 w-full overflow-x-auto' />
     </>
   )
 }
@@ -54,17 +82,18 @@ export default PlanDetailSchedule
 interface SchedulesType {
   schedules: Schedule[]
   startDate: Date
-  dropdownDay: number
   className?: string
 }
-const Schedules = ({ schedules, startDate, dropdownDay, className }: SchedulesType): ReactNode => {
+const Schedules = ({ schedules, startDate, className }: SchedulesType): ReactNode => {
+  const { day } = useDropdownStore()
+
   let contents
-  if (dropdownDay === 0) {
+  if (day === 0) {
     contents = schedules.map(schedule => (
       <UniSchedule schedule={schedule} key={schedule.day} date={addDays(startDate, schedule.day)} />
     ))
   } else {
-    const schedule = schedules.find(schedule => schedule.day === dropdownDay) as Schedule
+    const schedule = schedules.find(schedule => schedule.day === day) as Schedule
     contents = <UniSchedule schedule={schedule} date={addDays(startDate, schedule.day)} />
   }
   return <div className={cn('flex items-start justify-start', className)}>{contents}</div>
@@ -76,6 +105,7 @@ interface ScheduleProps {
 }
 const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
   const { day, startTime, endTime, places } = schedule
+
   const [durations, setDurations] = useState<Array<number>>([])
 
   // #1. 거리 계산
@@ -96,30 +126,45 @@ const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
   //   calculateDurations()
   // }, [])
 
+  console.log('contents started')
+
   // #2. 카드
-  const contents = places.map((place, index) => (
-    <React.Fragment key={place.order}>
-      <SchedulePlaceCard id='schedule' data={place} isReduced={false} className='h-[200px]' />
-      {index + 1 !== places?.length && (
-        <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
-          <LucideIcon name='CarFront' size={26} />
-          <div className='absolute right-4 text-sm text-tbGray'>
-            0분
-            {/* {durations[index] !== null ? `${durations[index]}분` : 'Loading...'} */}
+  let contents
+  // width만 차지하고 보이지 않는 카드를 만들어라!
+  if (places.length === 0) {
+    contents = <SchedulePlaceCard id='dummy' data={DUMMY_PLACES[0]} isReduced={false} className='h-[200px]' />
+  }
+  // 원래 카드
+  else {
+    contents = places.map((place, index) => (
+      <React.Fragment key={place.order}>
+        <SchedulePlaceCard id='schedule' data={place} isReduced={false} className='h-[200px]' />
+        {index + 1 !== places?.length && (
+          <div className='relative flex min-h-14 w-full items-center justify-center border-t-[0.5px] border-tbPlaceholder px-3'>
+            <LucideIcon name='CarFront' size={26} />
+            <div className='absolute right-4 text-sm text-tbGray'>
+              0분
+              {/* {durations[index] !== null ? `${durations[index]}분` : 'Loading...'} */}
+            </div>
           </div>
-        </div>
-      )}
-    </React.Fragment>
-  ))
+        )}
+      </React.Fragment>
+    ))
+  }
+
   return (
-    <div className='relative flex w-fit flex-col items-start justify-start border-b border-tbPlaceholder'>
+    <div className='relative flex w-fit flex-col items-start justify-start'>
       <div className='mb-3 flex w-full items-center justify-start gap-3'>
         <p className='text-lg font-semibold'>{day}일차</p>
         <p className='mr-3 text-xs text-tbGray'>{formatKoreanDate(date)}</p>
       </div>
-      <p className='text-sm text-tbGray'>{startTime}&nbsp; 출발</p>
-      <div className='my-3 w-full border-l border-solid border-tbGray'>{contents}</div>
-      <p className='text-sm text-tbGray'>{endTime}&nbsp;도착</p>
+      <div className='flex w-full items-center justify-between text-sm text-tbGray'>
+        <span>{startTime}&nbsp;출발</span>
+        <span className='mr-3'>{endTime}&nbsp;도착</span>
+      </div>
+      <div className={cn('my-3 w-full', places.length && 'border-l border-t border-solid border-tbGray')}>
+        {contents}
+      </div>
     </div>
   )
 }

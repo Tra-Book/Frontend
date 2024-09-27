@@ -23,7 +23,7 @@ interface PlanScheduleProps {
 
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
-  const { setPins, clearPins, setFocusedPlanPins, clearAllPins } = useMapStore()
+  const { setPins, clearPins } = useMapStore()
   const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
   const [durations, setDurations] = useState<Array<number>>([])
 
@@ -42,7 +42,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     // #2. Schedule의 핀 가져오기
     if (targetSchedule?.places) {
       const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
-      setPins(newPins)
+      setPins(1, newPins) // Day1 색만쓸거임
     } else {
       clearPins()
     }
@@ -71,13 +71,13 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     if (schedule?.places) {
       const newPins: Array<Geo> = schedule.places.map(place => place.geo)
       if (id === 'schedule') {
-        setPins(newPins)
+        setPins(1, newPins) // Day1 색만쓸거임
         calculateDurations()
       } else {
-        setFocusedPlanPins(newPins)
+        setPins(2, newPins) // Day2 : 보관함 여행계획
       }
     }
-  }, [schedule, setPins, setFocusedPlanPins]) // schedule 변경될 때만 호출
+  }, [schedule, setPins]) // schedule 변경될 때만 호출
 
   // #3. 계획한 일정들
   let contents
