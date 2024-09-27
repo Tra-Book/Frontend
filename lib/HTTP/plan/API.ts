@@ -109,13 +109,13 @@ export const fetchPlan = async ({ planId, accessToken, signal }: FetchPlanProps)
   const Route = BACKEND_ROUTES.PLAN.GET
 
   const res = await fetch(attachQuery(Route.url, queries), {
-    signal,
     method: Route.method,
     headers: {
       Authorization: accessToken,
       'Content-Type': 'application/json',
     },
     credentials: 'include',
+    signal,
   })
 
   if (!res.ok) {
