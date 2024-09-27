@@ -4,6 +4,7 @@ import { Map, Polyline } from 'react-kakao-maps-sdk'
 import useMapStore from '@/lib/context/mapStore'
 import { Geo } from '@/lib/types/Entity/place'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
+import { colorSet, ColorType } from '@/public/colors/colors'
 
 import { MAP_MARKER_COLORS, SpriteMapMarker } from './MapPin'
 
@@ -46,7 +47,7 @@ const KakaoMap = (): ReactNode => {
         <Polyline
           key={dayPinIndex}
           path={getPath(dayPin)}
-          strokeColor={MAP_MARKER_COLORS[dayPinIndex]}
+          strokeColor={colorSet[MAP_MARKER_COLORS[dayPinIndex] as ColorType]}
           strokeStyle='shortdot'
           strokeWeight={4}
         />

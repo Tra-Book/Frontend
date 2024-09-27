@@ -24,6 +24,11 @@ export const colorSet = {
   tbOrange: config.theme.extend.colors.tbOrange,
 
   tbWhite: config.theme.extend.colors.tbWhite,
+  tbMappin6: config.theme.extend.colors.tbMappin6,
+  tbMappin7: config.theme.extend.colors.tbMappin7,
+  tbMappin8: config.theme.extend.colors.tbMappin8,
+  tbMappin9: config.theme.extend.colors.tbMappin9,
+  tbMappin10: config.theme.extend.colors.tbMappin10,
 }
 
 export type ColorType = keyof typeof colorSet

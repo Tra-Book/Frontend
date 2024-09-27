@@ -25,7 +25,7 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
 
   const { DayDropdown } = useDayDropdown(schedule.length)
   const { setDay } = useDropdownStore()
-  const { pins, setPins, clearPins } = useMapStore()
+  const { setCenter, pins, setPins, clearPins } = useMapStore()
 
   const handleDayChange = (day: number) => {
     setDay(day)
@@ -46,7 +46,8 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
       if (targetSchedule?.places) {
         const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
         clearPins()
-        setPins(day, newPins) // Day1 색만쓸거임
+        setPins(day, newPins)
+        if (newPins.length) setCenter(newPins[0]) // 처음 핀으로 이동
       } else {
         clearPins()
       }
@@ -88,22 +89,32 @@ const Schedules = ({ schedules, startDate, className }: SchedulesType): ReactNod
   const { day } = useDropdownStore()
 
   let contents
+  // #1. 전체 인경우
   if (day === 0) {
-    contents = schedules.map(schedule => (
-      <UniSchedule schedule={schedule} key={schedule.day} date={addDays(startDate, schedule.day)} />
+    contents = schedules.map((schedule, index) => (
+      <UniSchedule
+        schedule={schedule}
+        fillIndex={index + 1}
+        key={schedule.day}
+        date={addDays(startDate, schedule.day)}
+      />
     ))
-  } else {
-    const schedule = schedules.find(schedule => schedule.day === day) as Schedule
-    contents = <UniSchedule schedule={schedule} date={addDays(startDate, schedule.day)} />
+  }
+  // #2. 특정 Day인 경우
+  else {
+    const scheduleIndex = schedules.findIndex(schedule => schedule.day === day)
+    const schedule = schedules[scheduleIndex]
+    contents = <UniSchedule schedule={schedule} fillIndex={scheduleIndex + 1} date={addDays(startDate, schedule.day)} />
   }
   return <div className={cn('flex items-start justify-start', className)}>{contents}</div>
 }
 
 interface ScheduleProps {
   schedule: Schedule
+  fillIndex: number
   date: Date
 }
-const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
+const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode => {
   const { day, startTime, endTime, places } = schedule
 
   const [durations, setDurations] = useState<Array<number>>([])
@@ -126,19 +137,25 @@ const UniSchedule = ({ schedule, date }: ScheduleProps): ReactNode => {
   //   calculateDurations()
   // }, [])
 
-  console.log('contents started')
-
   // #2. 카드
   let contents
   // width만 차지하고 보이지 않는 카드를 만들어라!
   if (places.length === 0) {
-    contents = <SchedulePlaceCard id='dummy' data={DUMMY_PLACES[0]} isReduced={false} className='h-[200px]' />
+    contents = (
+      <SchedulePlaceCard
+        id='dummy'
+        data={DUMMY_PLACES[0]}
+        fillIndex={fillIndex}
+        isReduced={false}
+        className='h-[200px]'
+      />
+    )
   }
   // 원래 카드
   else {
     contents = places.map((place, index) => (
       <React.Fragment key={place.order}>
-        <SchedulePlaceCard id='schedule' data={place} isReduced={false} className='h-[200px]' />
+        <SchedulePlaceCard id='schedule' data={place} fillIndex={fillIndex} isReduced={false} className='h-[200px]' />
         {index + 1 !== places?.length && (
           <div className='relative flex min-h-14 w-full items-center justify-center border-t-[0.5px] border-tbPlaceholder px-3'>
             <LucideIcon name='CarFront' size={26} />

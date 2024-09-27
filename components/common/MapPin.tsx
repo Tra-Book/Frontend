@@ -14,16 +14,16 @@ for (let i = 1; i <= MAX_MAP_MARKERS; i++) {
 }
 export const MAP_MARKER_COLORS: string[] = [
   '#FFFFFF', // 안쓰는 값
-  '#FF8710',
-  '#A3D184',
-  '#F45858',
-  '#FFD25E',
-  '#0277FF',
-  '#D544F2',
-  '#3EFFD2',
-  '#9D5618',
-  '#92A5F3',
-  '#160C03',
+  'tbOrange',
+  'tbGreen',
+  'tbRed',
+  'tbPrimary',
+  'tbBlue',
+  'tbMappin6',
+  'tbMappin7',
+  'tbMappin8',
+  'tbMappin9',
+  'tbMappin10',
 ]
 
 const FOCUS_MAP_PIN = 'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
@@ -31,14 +31,20 @@ const FOCUS_MAP_PIN = 'https://storage.cloud.google.com/trabook-20240822/fronten
 interface MapPinProps {
   num: number
   size?: number
-  fill?: ColorType
+  fillIndex: number
   className?: string
 }
 
-export const MapPin = ({ num, size, fill = 'tbOrange', className }: MapPinProps): ReactNode => {
+export const MapPin = ({ num, size, fillIndex = 1, className }: MapPinProps): ReactNode => {
   return (
     <div className={cn('relative h-fit w-fit', className)}>
-      <LucideIcon size={size} name='MapPin' fill={fill} strokeWidth={0} className='origin-bottom' />
+      <LucideIcon
+        size={size}
+        name='MapPin'
+        fill={MAP_MARKER_COLORS[fillIndex] as ColorType}
+        strokeWidth={0}
+        className='origin-bottom'
+      />
       <span className='group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs'>{num}</span>
     </div>
   )
