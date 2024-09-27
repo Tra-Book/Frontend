@@ -1,4 +1,4 @@
-export const USER_DEAFULT_STATUSMESSAGE = '여행이 주는 행복'
+export const USER_DEAFULT_STATUSMESSAGE = 'TRABOOK과 떠나는 여행'
 
 export interface BaseUser {
   id: number

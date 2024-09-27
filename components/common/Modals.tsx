@@ -51,7 +51,7 @@ export const InfoModal = ({ isOpen, data, onClose, onConfirm }: InfoModalProps) 
 interface ConfirmModalProps {
   isOpen: boolean // boolean state value
   data: ModalData
-  onClose: () => void
+  onClose: () => void // 닫기
   onConfirm: () => void // 확인 버튼 클릭 시 실행될 함수
 }
 
@@ -72,7 +72,7 @@ export const ConfirmModal = ({ isOpen, data, onClose, onConfirm }: ConfirmModalP
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className='relative flex w-full items-center justify-between gap-4'>
-          <Button variant='tbSecondary' className='w-full'>
+          <Button onClick={() => onClose()} variant='tbSecondary' className='w-full'>
             취소
           </Button>
           <Button onClick={handleConfirm} variant='tbPrimary' className='w-full'>

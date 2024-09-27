@@ -8,6 +8,7 @@ import UserAvatar from '@/components/common/UserAvatar'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import { queryClient } from '@/lib/HTTP/http'
 import { addComment } from '@/lib/HTTP/plan/API'
@@ -16,6 +17,7 @@ import { CommentRequest, CommentResponse } from '@/lib/types/Entity/comment'
 import { USER_DEAFULT_STATUSMESSAGE } from '@/lib/types/Entity/user'
 import { cn } from '@/lib/utils/cn'
 import { getRelativeTimeString } from '@/lib/utils/dateUtils'
+import useModal from '@/lib/utils/hooks/useModal'
 import { toast } from '@/lib/utils/hooks/useToast'
 import { Nullable } from '@/lib/utils/typeUtils'
 
@@ -167,7 +169,7 @@ const PostComment = ({
   addPlanComment,
 }: PostCommentProps) => {
   const router = useRouter()
-
+  const { modalData, handleModalStates, Modal } = useModal()
   const commentRef = useRef<HTMLTextAreaElement>(null)
 
   // #0. 제출
@@ -217,7 +219,7 @@ const PostComment = ({
     const comment = commentRef.current?.value.trim()
     // Case1: 로그인X 상태
     if (!user) {
-      router.push(ROUTES.AUTH.LOGIN.url)
+      handleModalStates(ClientModalData.loginRequiredError, 'open')
       return
     }
     // Case1: 댓글 안씀
@@ -241,13 +243,11 @@ const PostComment = ({
   return (
     <div className='flex w-full flex-col items-start justify-start gap-3'>
       <div className='flex items-center justify-start gap-2'>
-        {/* Todo: 실제 유저 이미지로 변경하기 */}
-        {/* <UserAvatar imgSrc={session.data.image || USER_DEFAULT_IMAGE} /> */}
-        <UserAvatar imgSrc={USER_DEFAULT_IMAGE} />
+        <UserAvatar imgSrc={user ? user.image : USER_DEFAULT_IMAGE} />
 
         <div className='flex flex-col items-start justify-start'>
-          <p className='text-lg font-semibold'>{'김지호'}</p>
-          <p className='text-sm text-tbGray'>{USER_DEAFULT_STATUSMESSAGE}</p>
+          <p className='text-lg font-semibold'>{user ? user.nickname : '로그인하세요'}</p>
+          <p className='text-sm text-tbGray'>{user ? user.status_message : USER_DEAFULT_STATUSMESSAGE}</p>
         </div>
       </div>
       <div className='flex w-full items-end justify-start gap-4'>
@@ -263,6 +263,7 @@ const PostComment = ({
           </Button>
         }
       </div>
+      <Modal id='confirm' onConfirm={() => router.push(ROUTES.AUTH.LOGIN.url)} />
     </div>
   )
 }
