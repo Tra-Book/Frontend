@@ -2,6 +2,7 @@ import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
 import LucideIcon from '@/lib/icons/LucideIcon'
+import { removeTagsAndParentheses } from '@/lib/utils/stringUtils'
 import BusanImg from '@/public/images/busan.jpg'
 
 import { CommunityPlace } from './placeType'
@@ -22,7 +23,7 @@ const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
         className='mb-2 h-2/3 w-full rounded-lg'
       />
       <div className='flex flex-col justify-between pl-2'>
-        <h2 className='text-lg font-medium'>{place.placeName}</h2>
+        <h2 className='truncate text-lg font-medium'>{removeTagsAndParentheses(place.placeName)}</h2>
         <p># {place.category}</p>
         <div className='flex gap-3'>
           <div className='flex items-center gap-1'>
