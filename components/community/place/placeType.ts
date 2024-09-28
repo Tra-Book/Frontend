@@ -13,4 +13,18 @@ export interface CommunityPlace {
   scraps: number
   star: number
   placeName: string
+  description?: null
+  subcategory?: string
+}
+
+type Comment = {
+  commentId: number
+  placeId: number
+  content: string
+  date: string
+}
+
+export interface DetailPlace {
+  place: CommunityPlace
+  comments: Comment[]
 }

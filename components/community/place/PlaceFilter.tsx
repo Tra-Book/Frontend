@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
+import Loading from '@/components/common/Loading'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { PLACE_TAG, PlaceTagType } from '@/lib/constants/tag'
@@ -74,8 +75,8 @@ const PlaceFilter = ({}: PlaceFilterProps): ReactNode => {
     setFilterDetail(detail)
   }
 
-  const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['places', 'community'],
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
+    queryKey: ['places', 'community', filterDetail],
     queryFn: ({ pageParam = 0 }) =>
       getPlaces({
         filterDetail: filterDetail,
@@ -171,6 +172,8 @@ const PlaceFilter = ({}: PlaceFilterProps): ReactNode => {
             </Fragment>
           )
         })}
+        {/* Loading */}
+        <Loading size={40} />
       </div>
     </div>
   )
