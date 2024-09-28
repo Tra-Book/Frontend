@@ -1,7 +1,6 @@
 'use client'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import Link from 'next/link'
 import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
@@ -158,14 +157,12 @@ const PlaceFilter = ({}: PlaceFilterProps): ReactNode => {
             <Fragment key={`${scrollIndex}-${group.places[0]?.placeId}`}>
               {group?.places.map((place: CommunityPlace, index: number) => (
                 <>
-                  <Link
-                    href={`/community/place/detail/${place.placeId}`}
+                  <div
                     key={`${scrollIndex}-${index}-${place.placeId}`}
-                    scroll={false}
                     className='flex h-[288px] w-[330px] items-center justify-center'
                   >
                     <PlaceCard place={place} />
-                  </Link>
+                  </div>
                   {scrollIndex === data.pages.length - 1 && index === 8 && <div ref={ref} />}
                 </>
               ))}

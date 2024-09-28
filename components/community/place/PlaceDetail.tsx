@@ -17,7 +17,6 @@ interface PlaceDetailProps {
 }
 
 const PlaceDetail = ({ place }: PlaceDetailProps): ReactNode => {
-  console.log(place)
   useKakaoLoader() // 카카오 지도 로딩
   const router = useRouter()
 

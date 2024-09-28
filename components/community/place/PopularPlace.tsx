@@ -3,7 +3,6 @@
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
-import Link from 'next/link'
 import React, { ReactNode, useEffect, useState } from 'react'
 import Slider from 'react-slick'
 
@@ -68,15 +67,9 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
         <Slider {...setting}>
           {popular &&
             popular.map(item => (
-              <Link
-                key={item.placeId}
-                className='h-[320px]'
-                style={{ width: 400 }}
-                href={`/community/place/detail/${item.placeId}`}
-                scroll={false}
-              >
+              <div key={item.placeId} className='h-[320px]' style={{ width: 400 }}>
                 {render(item)}
-              </Link>
+              </div>
             ))}
         </Slider>
       </div>

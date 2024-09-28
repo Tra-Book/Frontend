@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import React, { ReactNode } from 'react'
 
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
@@ -14,7 +15,11 @@ interface PlaceCardProps {
 
 const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
   return (
-    <div className='h-[95%] w-[90%] rounded-lg p-3 shadow-tb-shadow hover:scale-105 hover:cursor-pointer'>
+    <Link
+      href={`/community/place/detail/${place.placeId}`}
+      scroll={false}
+      className='block h-[95%] w-[90%] rounded-lg p-3 shadow-tb-shadow hover:scale-105 hover:cursor-pointer'
+    >
       <Image
         src={place.imageSrc || PLACE_DEFAULT_IMAGE || BusanImg}
         alt='BusanImg'
@@ -37,7 +42,7 @@ const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
