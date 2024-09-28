@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
+import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { removeTagsAndParentheses } from '@/lib/utils/stringUtils'
 import BusanImg from '@/public/images/busan.jpg'
@@ -15,7 +16,7 @@ const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
   return (
     <div className='h-[95%] w-[90%] rounded-lg p-3 shadow-tb-shadow hover:scale-105 hover:cursor-pointer'>
       <Image
-        src={place.imageSrc || BusanImg}
+        src={place.imageSrc || PLACE_DEFAULT_IMAGE || BusanImg}
         alt='BusanImg'
         width={200}
         height={200}
