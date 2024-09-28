@@ -8,20 +8,20 @@ import { Motion } from '@/components/common/MotionWrapper'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
+import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
-import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
 interface PlaceStorePageProps {}
 
 const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
-  useKakaoLoader() // 카카오 지도 로딩
-
-  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { planData, setPlanData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { setCenter, setFocusedPlacePin } = useMapStore()
+  const { day } = useDropdownStore()
 
   const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
@@ -31,8 +31,15 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
   }
 
   const handleAddPlace = () => {
-    // update();
+    if (focusedPlaceCard) {
+      const newPlan: Plan = addPlaceToPlan(planData, focusedPlaceCard, day)
+
+      setPlanData(newPlan)
+    }
+    // 초기화
+
     setFocusedPlaceCard(undefined) // 초기화
+    setFocusedPlacePin(null)
   }
 
   const handleClickCard = (card: Place) => {
@@ -44,7 +51,6 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
   useEffect(() => {
     return () => setFocusedPlacePin(null)
   }, [])
-  // Todo: 전역 변수에서 Schedule 가져오기
   return (
     <>
       {/* 선택바 */}
@@ -90,6 +96,7 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
             </Button>
           </Motion>
         )}
+
         {focusedPlaceCard && (
           <Button
             onClick={handleAddPlace}
