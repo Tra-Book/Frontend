@@ -1,10 +1,13 @@
 'use client'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
+import { queryClient } from '@/lib/HTTP/http'
 import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
@@ -27,6 +30,9 @@ interface SearchAreaProps {
 }
 
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
+  const pathname = usePathname()
+  const session: any = useSession()
+
   const { filter, filterHandler, arrange, UseArrange, UseFilter } = useFilters(name)
   const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
@@ -39,16 +45,17 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     filterHandler('state', 'change', [planData.state])
   }, [])
 
-  // #0. Data Fetching
-  const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['places', 'search'],
+  const { data, fetchNextPage, isPending, isFetching, hasNextPage, refetch } = useInfiniteQuery({
+    queryKey:
+      name === 'Plan' ? ['plans', 'scrap'] : pathname.includes('scrap') ? ['places', 'scrap'] : ['places', 'schedule'],
     queryFn: ({ pageParam = 0 }) =>
       fetchPlaces({
         searchInput: searchInputRef.current?.value || '',
-        states: isFirstQueryDone ? [planData.state] : filter.state.includes('전체') ? [] : filter.state,
+        states: !isFirstQueryDone ? [planData.state] : filter.state.includes('전체') ? [] : filter.state,
         arrange: arrange,
         scrollNum: pageParam,
-        isScrap: false, // 일반 여행지 Fetching : False
+        isScrap: pathname.includes('scrap') ? true : false, // 일반 여행지 Fetching : False
+        accessToken: session.data.accessToken,
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
@@ -58,6 +65,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
       const nextPage = allPages.length + 1 //
       return nextPage <= maxPage ? nextPage : undefined // 다음 데이터가 있는지 없는지 판단
     },
+    enabled: session.data !== undefined,
   })
 
   // #0-1. Scroll Event Data Fetching
@@ -69,15 +77,31 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
 
   // #0-2. New Data Fetching
   useEffect(() => {
-    refetch()
+    queryClient.refetchQueries({
+      queryKey:
+        name === 'Plan'
+          ? ['plans', 'scrap']
+          : pathname.includes('scrap')
+            ? ['places', 'scrap']
+            : ['places', 'schedule'],
+    })
+    refetch() // 첫 페이지부터 refetch하도록 설정
   }, [filter, arrange])
+
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault()
     refetch()
   }
 
   let contents
-  if (isPending) {
+  if (!session.data) {
+    contents = (
+      <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
+        잠시만 기다려주세요
+      </div>
+    )
+  }
+  if (isFetching) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
         <Motion animation={bounce()}>{name === 'Place' ? '여행지 로딩중입니다!' : '여행계획 로딩중입니다'}</Motion>

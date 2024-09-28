@@ -2,12 +2,14 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
+import { Motion } from '@/components/common/MotionWrapper'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
 import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
+import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 
@@ -62,14 +64,11 @@ const PlanSchedulePage = (): ReactNode => {
         <KakaoMap />
 
         {!isSearching && (
-          <Button
-            onClick={handleSearchBtn}
-            variant='tbPrimary'
-            size='lg'
-            className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
-          >
-            장소 검색하기
-          </Button>
+          <Motion animation={bounce()} className='absolute bottom-4 right-1/2 z-10'>
+            <Button onClick={handleSearchBtn} variant='tbPrimary' size='lg' className='px-12 text-base'>
+              장소 검색하기
+            </Button>
+          </Motion>
         )}
 
         {focusedPlaceCard && (

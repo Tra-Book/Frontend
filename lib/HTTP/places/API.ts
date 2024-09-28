@@ -35,14 +35,13 @@ interface fetchPlacesParams {
   arrange: ArrangeChoiceType
   scrollNum: number
   isScrap: boolean
-  accessToken?: string
+  accessToken: string
 }
 
 export type PlaceResponse = {
   placeId: number
   cityId: number
   address: string
-  category: string
   description: string
   imageSrc: string
   latitude: number
@@ -53,17 +52,22 @@ export type PlaceResponse = {
   ratingScore: number
   scraps: number
   star: number
+  category: string
   subcategory: string
   tel: string
   zipcode: string
-  isScraped: boolean
+  scrapped: boolean
 }
 export type PlaceCardType = Omit<Place, 'duration' | 'order'>
 
 export const SCROLL_SIZE = 12
-export const fetchPlaces = async (params: fetchPlacesParams) => {
+export const fetchPlaces = async (
+  params: fetchPlacesParams,
+): Promise<{
+  datas: PlaceCardType[]
+  totalPages: number
+}> => {
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
-  console.log('Fetches by state:', states)
 
   const queries: Queries = [
     {
@@ -135,7 +139,7 @@ export const fetchPlaces = async (params: fetchPlacesParams) => {
       latitude: place.latitude,
       longitude: place.longitude,
     },
-    tag: place.subcategory,
+    tag: place.category,
     // duration 필요 없음(선택한 여행지에서 필요)
     stars: place.star,
     visitCnt: place.numOfAdded,
@@ -143,8 +147,10 @@ export const fetchPlaces = async (params: fetchPlacesParams) => {
     reviews: ['여기 너무 좋아요~ 데이트 장소', '핫플핫플 핫핫'], // Dummy
     reviewCnt: 200, // Dummy
 
-    isScraped: place.isScraped, // Todo: 실제 데이터 받아오기
-    // order 필요없음 (선택한 여행지에서 필요)
+    isScraped: place.scrapped,
   }))
+  console.log('FEtched datas', datas)
+  console.log('Fetched totalPages', totalPages)
+
   return { datas, totalPages }
 }

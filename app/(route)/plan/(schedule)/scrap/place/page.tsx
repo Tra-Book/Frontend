@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
@@ -83,14 +84,11 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
         <KakaoMap />
 
         {!isSearching && (
-          <Button
-            onClick={openSearchBar}
-            variant='tbPrimary'
-            size='lg'
-            className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
-          >
-            보관함 열기
-          </Button>
+          <Motion animation={bounce()} className='absolute bottom-4 right-1/2 z-10'>
+            <Button onClick={openSearchBar} variant='tbPrimary' size='lg' className='px-12 text-base'>
+              보관함 열기
+            </Button>
+          </Motion>
         )}
         {focusedPlaceCard && (
           <Button
