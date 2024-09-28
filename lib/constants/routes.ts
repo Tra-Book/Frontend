@@ -181,16 +181,22 @@ export const BACKEND_ROUTES = {
     },
   },
 
+  PLACE: {
+    SCRAP: {
+      ADD: {
+        method: HttpMethod.POST,
+        url: '/place/scrap',
+      },
+      DELETE: {
+        method: HttpMethod.DELETE,
+        url: '/place/scrap',
+      },
+    },
+  },
   PLACES: {
     GENERAL: {
       method: HttpMethod.GET,
       url: '/places/general',
-    },
-  },
-  PLACE: {
-    SCRAP: {
-      method: HttpMethod.POST,
-      url: '/place/scrap',
     },
   },
 }

@@ -45,7 +45,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     filterHandler('state', 'change', [planData.state])
   }, [])
 
-  const { data, fetchNextPage, isPending, isFetching, hasNextPage, refetch } = useInfiniteQuery({
+  const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
     queryKey:
       name === 'Plan' ? ['plans', 'scrap'] : pathname.includes('scrap') ? ['places', 'scrap'] : ['places', 'schedule'],
     queryFn: ({ pageParam = 0 }) =>
@@ -101,7 +101,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
       </div>
     )
   }
-  if (isFetching) {
+  if (isFetching && !isFetchingNextPage) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
         <Motion animation={bounce()}>{name === 'Place' ? '여행지 로딩중입니다!' : '여행계획 로딩중입니다'}</Motion>

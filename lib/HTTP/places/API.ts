@@ -104,26 +104,16 @@ export const fetchPlaces = async (
   const API_ROUTE = attachQuery(`/server${API.url}`, queries)
 
   let res: Response
-  // #1. 유저가 스크랩한 여행지
-  if (isScrap) {
-    res = await fetch(API_ROUTE, {
-      method: API.method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: accessToken as string,
-      },
-      credentials: 'include',
-    })
-  }
-  // #2. 그냥 여행지
-  else {
-    res = await fetch(API_ROUTE, {
-      method: API.method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  }
+  // #1. 그냥 여행지 + 유저가 스크랩한 여행지
+  res = await fetch(API_ROUTE, {
+    method: API.method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: accessToken as string,
+    },
+    credentials: 'include',
+  })
+
   if (!res.ok) {
     const error = new Error('An error occurred while fetching places')
     error.message = await res.json()

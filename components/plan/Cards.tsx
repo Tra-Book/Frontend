@@ -7,11 +7,12 @@ import React, { ReactNode, useState } from 'react'
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
-import { scrapPlace } from '@/lib/HTTP/place/API'
+import { placeAddScrap } from '@/lib/HTTP/place/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
+import { toast } from '@/lib/utils/hooks/useToast'
 
 import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
@@ -106,10 +107,15 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
     setTmpIsScrap(prev => !prev)
   }
 
+  /**
+   * 스크랩하기
+   */
   const { mutate } = useMutation({
     mutationKey: ['place', 'scrap', { planId: data.id }],
-    mutationFn: scrapPlace,
-    onSuccess: () => {},
+    mutationFn: placeAddScrap,
+    onSuccess: () => {
+      toast({ title: '보관함에 추가되었습니다!' })
+    },
     onError: () => {
       setTmpIsScrap(prev => !prev)
     },
@@ -145,7 +151,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
           <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           <LucideIcon
             name='Bookmark'
-            className='absolute right-2 hover:fill-tbRed'
+            className={cn('absolute right-2', tmpIsScrap ? 'hover:fill-none' : 'hover:fill-tbRed')}
             fill={tmpIsScrap ? 'tbRed' : undefined}
             onClick={scrapHandler}
           />
