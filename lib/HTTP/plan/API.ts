@@ -46,18 +46,6 @@ export const createPlan = async ({ state, startDate, endDate, accessToken }: Cre
   const data = await res.json()
 
   return data
-  // setPlanData({
-  //   id: data.planId,
-  //   userId: session.data.userId,
-  //   startDate: selected.from,
-  //   endDate: selected.to,
-  //   state: body.state,
-  //   schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
-  //   imgSrc: PLAN_DEFAULT_IMAGE,
-  // })
-
-  // backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
-  // return
 }
 
 /**

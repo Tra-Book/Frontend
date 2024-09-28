@@ -1,47 +1,58 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
-import { DummyPlanType } from '@/app/(route)/(header)/main/page'
+import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
+import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
 
 import Backdrop from '../common/Backdrop'
 
-interface PlanCardProps {
-  data: DummyPlanType
+interface MainPlanCardProps {
+  data: PlanCardType
 }
 
 // Todo: data props type 지정
-const MainPlanCard = ({ data }: PlanCardProps): ReactNode => {
+const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
+  const { imgSrc, title, state, description, likeCnt, commentCnt, scrapCnt, startDate, endDate } = data
   return (
     <div className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
       <div className='group relative w-full overflow-hidden rounded-md'>
-        <Image src={data.imageSrc} alt='Plan Image' className='aspect-video w-full rounded-md object-cover' />
+        <Image
+          width={300}
+          height={200}
+          src={(imgSrc as string) || PLAN_DEFAULT_IMAGE}
+          alt='Plan Image'
+          className='aspect-video w-full rounded-md object-cover'
+        />
         <Backdrop className='hidden aspect-video w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>
-          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{data.title}</h2>
-          <span className='text-xs'>{data.state}</span>
+          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{title}</h2>
+          <span className='text-xs'>{state}</span>
         </div>
 
-        <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{data.description}</p>
+        <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{description}</p>
 
         <div className='flex items-center justify-between text-xs lg:text-sm'>
           <div className='flex items-center gap-2'>
             <div className='flex items-center gap-1'>
               <LucideIcon color='tbRed' name='Heart' strokeWidth={3} />
-              <span>{data.likes}</span>
+              <span>{likeCnt}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='MessageCircle' strokeWidth={3} />
-              <span>{data.comments}</span>
+              <span>{commentCnt}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Bookmark' strokeWidth={3} />
-              <span>{data.scraps}</span>
+              <span>{scrapCnt}</span>
             </div>
           </div>
-          <span>{data.schedule}</span>
+          <span>
+            {formatDateToHyphenDate(startDate)} ~ {formatDateToHyphenDate(endDate)}
+          </span>
         </div>
       </div>
     </div>

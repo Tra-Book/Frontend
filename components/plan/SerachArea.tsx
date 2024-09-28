@@ -5,7 +5,7 @@ import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
-import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/place/API'
+import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
@@ -27,7 +27,7 @@ interface SearchAreaProps {
 }
 
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
-  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
+  const { filter, filterHandler, arrange, UseArrange, UseFilter } = useFilters(name)
   const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리

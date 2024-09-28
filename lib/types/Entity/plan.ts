@@ -26,9 +26,10 @@ export interface Plan {
   schedule: Array<Schedule>
 
   // #3. 커뮤니티 정보
+  comments: Nullable<Array<CommentResponse>> // default: null
   likeCnt: number // default: 0
   scrapCnt: number // default: 0
-  comments: Nullable<Array<CommentResponse>> // default: null
+  commentCnt: number
 
   // #4. 요청 유저관련 정보
   isScraped: boolean

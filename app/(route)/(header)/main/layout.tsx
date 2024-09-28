@@ -1,29 +1,30 @@
+'use client'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
-import { auth } from '@/auth'
 import MainSideBar from '@/components/main/MainSideBar'
 import { ToastProvider } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
+import { queryClient } from '@/lib/HTTP/http'
 
 interface MainLayoutProps {
   children: React.ReactNode
 }
 
-const MainLayout = async ({ children }: MainLayoutProps): Promise<ReactNode> => {
-  const s: any = await auth()
+const MainLayout = ({ children }: MainLayoutProps): ReactNode => {
+  const session: any = useSession()
+  console.log()
 
   return (
     <main className='flex min-h-screen w-dvw bg-tbSecondary pt-24'>
-      <MainSideBar
-        isCredentails={s.user.provider === 'credentials'}
-        image={s.user.image}
-        status_message={s.user.status_message}
-        nickname={s.user.nickname}
-      />
-      <ToastProvider>
-        {children}
-        <Toaster />
-      </ToastProvider>
+      <QueryClientProvider client={queryClient}>
+        <MainSideBar />
+        <ToastProvider>
+          {children}
+          <Toaster />
+        </ToastProvider>
+      </QueryClientProvider>
     </main>
   )
 }

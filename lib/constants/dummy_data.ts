@@ -71,6 +71,7 @@ export const DUMMY_PLAN: Plan = {
   imgSrc: PLAN_DEFAULT_IMAGE,
   scrapCnt: 200,
   memberCnt: 10,
+  commentCnt: 6,
   userId: 41,
   comments: Array.from({ length: 6 }, (_, idx) => get_dummy_parent_comment(idx)),
   isScraped: true,
@@ -103,6 +104,7 @@ export const INITIAL_PLAN: Plan = {
   isPublic: true, // Todo: 설정 페이지에서 isPublic을 설정하는 토글 페이지 만들기
   likeCnt: 0, // default: 0
   scrapCnt: 0, // default: 0
+  commentCnt: 0, // default: 0
   comments: null, // default: 0
 
   // #4. 요청 유저관련 정보
