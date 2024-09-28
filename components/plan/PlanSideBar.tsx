@@ -6,11 +6,13 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
+import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import { updatePlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import useModal from '@/lib/utils/hooks/useModal'
 import { toast } from '@/lib/utils/hooks/useToast'
 
 import Loading from '../common/Loading'
@@ -25,8 +27,10 @@ const iconSize: number = 24
 
 const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const pathname = usePathname()
-  const { planData, setPlanData } = usePlanStore()
   const session: any = useSession()
+
+  const { planData, setPlanData } = usePlanStore()
+  const { modalData, handleModalStates, Modal } = useModal()
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['plan', 'update', planData.id],
@@ -46,6 +50,11 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
 
   const savePlanHandler = () => {
     mutate({ plan: planData, userId: session.data.userId })
+  }
+
+  // TODO: 저장 로직 만들기
+  const openModalHandler = () => {
+    handleModalStates(ClientModalData.serviceOnReady, 'open')
   }
   return (
     <div className={className}>
@@ -98,10 +107,11 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
           </>
         )}
       </div>
-      <div className={cn(style)}>
+      <div className={cn(style)} onClick={openModalHandler}>
         <LucideIcon name='Settings' size={iconSize} />
         설정
       </div>
+      <Modal id='info' onConfirm={() => {}} />
     </div>
   )
 }

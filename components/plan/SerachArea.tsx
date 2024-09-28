@@ -14,7 +14,7 @@ import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
-import useFilters from '@/lib/utils/hooks/useFilters'
+import useFilters, { initArrange } from '@/lib/utils/hooks/useFilters'
 
 import { Motion } from '../common/MotionWrapper'
 import { Button } from '../ui/button'
@@ -33,7 +33,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   const pathname = usePathname()
   const session: any = useSession()
 
-  const { filter, filterHandler, arrange, UseArrange, UseFilter } = useFilters(name)
+  const { filter, filterHandler, arrange, arrangeHandler, UseArrange, UseFilter } = useFilters(name)
   const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
@@ -92,8 +92,15 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     event.preventDefault()
     refetch()
   }
+  const resetHandler = () => {
+    if (searchInputRef.current) searchInputRef.current.value = ''
+    filterHandler('all', 'reset')
+    arrangeHandler(initArrange['Plan'])
+  }
 
   let contents
+  console.log(data)
+
   if (!session.data) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
@@ -107,14 +114,14 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
         <Motion animation={bounce()}>{name === 'Place' ? '여행지 로딩중입니다!' : '여행계획 로딩중입니다'}</Motion>
       </div>
     )
-  } else if (!data) {
+  } else if (data?.pages[0].datas.length === 0) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-xl font-bold'>
         <p>검색 결과가 없습니다!</p>
         <Button
           variant='tbPrimary'
           className='relative flex h-14 w-40 items-center justify-center gap-3 text-lg font-semibold'
-          onClick={() => filterHandler('all', 'reset')}
+          onClick={resetHandler}
         >
           초기화
           <LucideIcon name='RotateCw' size={20} />
@@ -124,23 +131,25 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   } else {
     // #2. 무한스크롤 적용
     if (name === 'Place') {
-      contents = data.pages.map((page, scrollIndex) =>
-        page.datas.map((place, index) => {
-          // Fetch boundary를 8번째 카드 이후에 배치
-          const isBoundary = scrollIndex === data.pages.length - 1 && index === SCROLL_SIZE / 2
-          return (
-            <React.Fragment key={place.id}>
-              <PlaceCard
-                data={place}
-                focusedPlaceCard={focusCard as Place | undefined}
-                handleClickCard={handleClickCard as (card: Place) => void}
-              />
-              {/* 무한스크롤 경계(중간에 위치) */}
-              {isBoundary && <div ref={ref} />}
-            </React.Fragment>
-          )
-        }),
-      )
+      contents =
+        data &&
+        data.pages.map((page, scrollIndex) =>
+          page.datas.map((place, index) => {
+            // Fetch boundary를 8번째 카드 이후에 배치
+            const isBoundary = scrollIndex === data.pages.length - 1 && index === SCROLL_SIZE / 2
+            return (
+              <React.Fragment key={place.id}>
+                <PlaceCard
+                  data={place}
+                  focusedPlaceCard={focusCard as Place | undefined}
+                  handleClickCard={handleClickCard as (card: Place) => void}
+                />
+                {/* 무한스크롤 경계(중간에 위치) */}
+                {isBoundary && <div ref={ref} />}
+              </React.Fragment>
+            )
+          }),
+        )
     } else {
       // TODO: 보관함 > 여행계획 페칭한걸로 대체
       let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)

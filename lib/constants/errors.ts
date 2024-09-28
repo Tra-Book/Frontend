@@ -52,4 +52,10 @@ export const ClientModalData = {
     description: '일시적 오류. 다시 시도해주세요',
     isError: true,
   },
+  // 임시
+  serviceOnReady: {
+    title: '서비스 준비중입니다!',
+    description: '더 좋은 서비스로 돌아오겠습니다',
+    isError: false,
+  },
 } as const
