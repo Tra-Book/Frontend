@@ -45,13 +45,9 @@ const PlanSchedulePage = (): ReactNode => {
 
   const handleAddPlace = () => {
     // update();
-    console.log(focusedPlaceCard)
 
     if (focusedPlaceCard) {
       const newPlan: Plan = addPlaceToPlan(planData, focusedPlaceCard, day)
-      console.log('newPlan')
-
-      console.log(newPlan.schedule)
 
       setPlanData(newPlan)
     }

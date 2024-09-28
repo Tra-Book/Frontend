@@ -1,17 +1,16 @@
-import DUMMYPLACEIMG from '@/public/dummy/dummy_place_image.png'
-import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
-
-import { Comment } from '../types/Entity/comment'
+import { CommentResponse } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
+import { StateType } from './regions'
 
-const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumnail.png'
+export const USER_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/profilePhoto/default.png'
+export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumbnail.png'
 export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumbnail.png'
 const get_dummy_place = (idx: number): Place => {
   return {
     id: idx,
     name: `토함산자연휴양림${idx}`,
-    imgSrc: PLAN_DEFAULT_IMAGE,
+    imgSrc: PLACE_DEFAULT_IMAGE,
     address: `경상북도 경주시 양북면 불국로${idx}`,
 
     tag: `관광지`,
@@ -33,16 +32,7 @@ const get_dummy_place = (idx: number): Place => {
 }
 export const DUMMY_PLACES: Array<Place> = Array.from({ length: 6 }, (_, idx) => get_dummy_place(idx))
 
-export const DUMMY_COMMENT: Comment = {
-  id: 10,
-  parentId: 9,
-  content: '댓글',
-  date: new Date(),
-  thumbCnt: 100,
-  userId: 41,
-}
-
-const get_dummy_dayplan = (idx: number): Schedule => {
+const get_dummy_schedule = (idx: number): Schedule => {
   return {
     day: idx + 1,
     startTime: '08:00',
@@ -51,38 +41,54 @@ const get_dummy_dayplan = (idx: number): Schedule => {
   }
 }
 
+const get_dummy_parent_comment = (idx: number): CommentResponse => {
+  return {
+    planId: 258,
+
+    id: idx,
+    parentId: idx,
+    content: `정말 유용한 정보였습니다 감사합니다!${idx}`,
+    time: new Date().toISOString(),
+    refOrder: 0,
+
+    userId: 49,
+    userName: `힐링여행${idx}`,
+    userImgsrc: USER_DEFAULT_IMAGE,
+    userStatusMessage: `좋은 사람과 좋은 여행${idx}`,
+  }
+}
 export const DUMMY_PLAN: Plan = {
-  id: 12345,
+  id: 258,
   title: '가족 여행',
   likeCnt: 30,
   isDone: true,
+  isPublic: true,
   startDate: new Date(),
   endDate: new Date(),
   budget: 10000,
   state: '서울특별시',
-  description: '전역한 아들들과 떠나는 즐겨운 여행입니다! 전역한 아들들과 떠나는 즐겨운 여행입니다!',
-  imgSrc: DUMMYPLACEIMG,
+  description: '전역한 아들들과 떠나는 즐겨운 여행입니다!',
+  imgSrc: PLAN_DEFAULT_IMAGE,
   scrapCnt: 200,
   memberCnt: 10,
   userId: 41,
-  comments: new Array(12).fill(DUMMY_COMMENT),
+  comments: Array.from({ length: 6 }, (_, idx) => get_dummy_parent_comment(idx)),
   isScraped: true,
   isLiked: true,
-  schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_dayplan(idx)),
+  schedule: Array.from({ length: 6 }, (_, idx) => get_dummy_schedule(idx)),
 }
 
-const random_Date = new Date()
+const random_Date: Date = new Date()
 
 export const INITIAL_PLAN: Plan = {
   id: -1, // 백엔드 값으로 대체
   userId: -1, //세션 값
 
-  state: '서울특별시', // 초기 값으로 대체됨
-  startDate: random_Date,
-  endDate: random_Date,
+  state: '' as StateType, // 초기 값으로 대체됨
+  startDate: new Date(),
+  endDate: new Date(),
 
-  // imgSrc: string
-  imgSrc: DummyThumbNail, // Default : 아무 여행 이미지
+  imgSrc: PLAN_DEFAULT_IMAGE,
 
   title: null, // Default: null
   description: null, // Default: null
@@ -94,6 +100,7 @@ export const INITIAL_PLAN: Plan = {
 
   // #3. 커뮤니티 정보
   isDone: false,
+  isPublic: true, // Todo: 설정 페이지에서 isPublic을 설정하는 토글 페이지 만들기
   likeCnt: 0, // default: 0
   scrapCnt: 0, // default: 0
   comments: null, // default: 0
@@ -108,6 +115,6 @@ export const generate_initial_schedule = (day: number): Array<Schedule> => {
     day: idx + 1,
     startTime: '08:00',
     endTime: '22:00',
-    places: null,
+    places: [],
   }))
 }

@@ -23,7 +23,7 @@ interface PlanScheduleProps {
 
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
-  const { setPins, setFocusedPlanPins } = useMapStore()
+  const { setPins, clearPins } = useMapStore()
   const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
   const [durations, setDurations] = useState<Array<number>>([])
 
@@ -42,9 +42,9 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     // #2. Schedule의 핀 가져오기
     if (targetSchedule?.places) {
       const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
-      setPins(newPins)
+      setPins(1, newPins) // Day1 색만쓸거임
     } else {
-      setPins(null)
+      clearPins()
     }
   }
 
@@ -71,14 +71,13 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     if (schedule?.places) {
       const newPins: Array<Geo> = schedule.places.map(place => place.geo)
       if (id === 'schedule') {
-        setPins(newPins)
+        setPins(1, newPins) // Day1 색만쓸거임
         calculateDurations()
       } else {
-        setFocusedPlanPins(newPins)
+        setPins(2, newPins) // Day2 : 보관함 여행계획
       }
     }
-    return () => setFocusedPlanPins(null)
-  }, [schedule, setPins, setFocusedPlanPins]) // schedule 변경될 때만 호출
+  }, [schedule, setPins]) // schedule 변경될 때만 호출
 
   // #3. 계획한 일정들
   let contents
@@ -98,7 +97,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   // #3.2 해당일자의 DayPlan이 있는 경우 (places제외, 디폴트로 만들어줘서 항상 있어야 함)
   else {
     // #유저가 추가한 여행지가 아직 없음
-    if (!schedule.places) {
+    if (schedule.places.length === 0) {
       contents = (
         <div
           className={cn(
@@ -147,8 +146,9 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         {id === 'scrap' && <LucideIcon name='ChevronLeft' onClick={moveBack} className='hover:text-tbRed' />}
         {!isReduced && <p className='mx-4'>강원도</p>}
         <DayDropdown
+          id='days'
+          startDate={plan.startDate}
           color={id === 'scrap' ? 'tbGreen' : 'tbPrimary'}
-          isReduced={isReduced}
           handleDayChange={handleDayChange}
           className={cn('mx-4 h-9 flex-grow', id === 'scrap' && 'bg-tbGreen hover:bg-tbGreenHover')}
         />

@@ -4,19 +4,29 @@ import { ko } from 'date-fns/locale'
 
 export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 
-export const formatToKoreanShortDate = (date: Date) => format(date, 'yyyy년 M월', { locale: ko })
+export const formatToKoreanShortDate = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
 
-export const parseHypenDateToDate = (dateString: string) => parse(dateString, 'yyyy-MM-dd', new Date())
+export const parseHypenDateToDate = (dateString: string): Date => parse(dateString, 'yyyy-MM-dd', new Date())
 
 //"yyyy.MM.dd(요일)" 형태로 반환
 export const formatKoreanDate = (date: Date): string => {
-  const dayOfWeekMap = ['일', '월', '화', '수', '목', '금', '토']
-  const formattedDate = format(date, 'yyyy.MM.dd', { locale: ko })
-  const dayOfWeek = dayOfWeekMap[date.getDay()]
+  if (typeof date === 'object') {
+    const dayOfWeekMap = ['일', '월', '화', '수', '목', '금', '토']
+    const formattedDate = format(date, 'yyyy.MM.dd', { locale: ko })
+    const dayOfWeek = dayOfWeekMap[date.getDay()]
 
-  return `${formattedDate}(${dayOfWeek})`
+    return `${formattedDate}(${dayOfWeek})`
+  }
+  console.log(date)
+
+  console.log('date is not Date', typeof date)
+
+  return ''
 }
 
+export const formatShortKoreanDate = (date: Date): string => {
+  return format(date, 'MM/dd(E)', { locale: ko })
+}
 export const getTripDuration = (startDate: Date, endDate: Date): number => {
   return differenceInDays(endDate, startDate) + 1
 }
@@ -51,4 +61,32 @@ export const calculateLeftTIme = (startTime: string, endTime: string, durations:
   const formattedMin = String(min).padStart(2, '0')
 
   return `${formattedHour}:${formattedMin}`
+}
+/**
+ * 24H 미만: "HH시간"
+ * 24H 이상: "D일"
+ * @param date 타겟 시간입니다
+ * @returns 현재 시간과의 차이를 문자열로 나타냅니다
+ */
+export const getRelativeTimeString = (date: Date): string => {
+  const now: Date = new Date() // 현재 시간
+  const timeDiff: number = now.getTime() - date.getTime() // 시간 차이 (밀리초 단위)
+
+  const msInOneMin = 1000 * 60 // 1분: 60초 * 1000ms
+  const msInOneHour = msInOneMin * 60 // 1시간 = 60분
+  const msInOneDay = msInOneHour * 24 // 1일 = 24시간
+
+  if (timeDiff < msInOneHour) {
+    const minutesDifference = Math.floor(timeDiff / msInOneMin)
+    return `${minutesDifference}분 전`
+  }
+  if (timeDiff < msInOneDay) {
+    // 24시간이 지나지 않은 경우
+    const hoursDifference = Math.floor(timeDiff / msInOneHour)
+    return `${hoursDifference}시간 전`
+  } else {
+    // 24시간이 지난 경우
+    const daysDifference = Math.floor(timeDiff / msInOneDay)
+    return `${daysDifference}일 전`
+  }
 }

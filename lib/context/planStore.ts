@@ -15,6 +15,15 @@ interface PlanContext {
   setIsSearching: (val: boolean | ((prev: boolean) => boolean)) => void
 }
 
+// Helper function to revive date strings to Date objects
+// const reviveDates = (planData: Plan): Plan => {
+//   return {
+//     ...planData,
+//     startDate: new Date(planData.startDate),
+//     endDate: new Date(planData.endDate),
+//   }
+// }
+
 const usePlanStore = create(
   persist<PlanContext>(
     set => ({
@@ -39,7 +48,15 @@ const usePlanStore = create(
     }),
     {
       name: 'plan-context',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => sessionStorage, {
+        reviver: (key, value) => {
+          if (value) {
+            if (key === 'startDate' || key === 'endDate') return new Date(value as string)
+          }
+          return value
+        },
+      }),
+      // 상태를 불러올 때 호출
     },
   ),
 )

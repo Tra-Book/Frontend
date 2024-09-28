@@ -2,26 +2,24 @@
 
 import 'react-day-picker/dist/style.css'
 
+import { useMutation } from '@tanstack/react-query'
 import { ko } from 'date-fns/locale'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
-import { generate_initial_schedule } from '@/lib/constants/dummy_data'
+import { generate_initial_schedule, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
-import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
+import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
+import { createPlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
-import {
-  formatDateToHyphenDate,
-  formatToKoreanShortDate,
-  getTripDuration,
-  parseHypenDateToDate,
-} from '@/lib/utils/dateUtils'
+import { formatToKoreanShortDate, getTripDuration } from '@/lib/utils/dateUtils'
 import { useToast } from '@/lib/utils/hooks/useToast'
 
+import Loading from '../common/Loading'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 
@@ -31,13 +29,14 @@ interface PlanStartModalProps {}
 
 const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const router = useRouter()
-  const session: any = useSession()
-  const [inputState, setInputState] = useState<string>('')
-  const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
   const { toast } = useToast()
-  const { setPlanData } = usePlanStore()
 
+  const session: any = useSession()
+  const { planData, setPlanData } = usePlanStore()
+  const [inputState, setInputState] = useState<StateType | string>(planData.state || '')
+  const [step, setStep] = useState<number>(0) // 0: 여행 지역, 1: 여행 기간
   const [selected, setSelected] = useState<DateRange>()
+
   const handleSelect = (newSelected?: DateRange) => {
     // Update the selected dates
     setSelected(newSelected)
@@ -47,59 +46,50 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     setStep(prev => (prev === 0 ? 1 : 0))
   }
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ['plan', 'create'],
+    mutationFn: createPlan,
+    onSuccess: (data, variables) => {
+      setPlanData({
+        id: data.planId,
+        userId: session.data.userId,
+        startDate: variables.startDate,
+        endDate: variables.endDate,
+        state: variables.state,
+        schedule: generate_initial_schedule(getTripDuration(variables.startDate, variables.endDate)), // Default Schedule
+        imgSrc: PLAN_DEFAULT_IMAGE,
+      })
+      router.replace(ROUTES.PLAN.PlAN.url)
+    },
+  })
+
   const onClickFinish = async () => {
     if (!STATES.some(state => state === inputState)) {
-      alert('도시를 입력해주세요.')
+      toast({ title: '도시를 입력해주세요.' })
       return
     }
     if (selected?.from === undefined || selected?.to === undefined) {
-      alert('기간을 입력해주세요.')
+      toast({ title: '기간을 입력해주세요.' })
       return
     }
-    const body = {
-      state: inputState as StateType,
-      startDate: formatDateToHyphenDate(selected.from),
-      endDate: formatDateToHyphenDate(selected.to),
-    }
-
-    // let backendRoute
-    // state.planData.id ? (backendRoute = BACKEND_ROUTES.PLAN.UPDATE) : (backendRoute = BACKEND_ROUTES.PLAN.CREATE)
-    let backendRoute = BACKEND_ROUTES.PLAN.CREATE
-
-    try {
-      const res = await fetch('/server' + backendRoute.url, {
-        method: backendRoute.method,
-        headers: {
-          Authorization: session.data.accessToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-        credentials: 'include',
+    // Case1: 새로운 계획을 생성하는 경우
+    if (planData.id === -1) {
+      mutate({
+        state: inputState as StateType,
+        startDate: selected.from,
+        endDate: selected.to,
+        accessToken: session.data.accessToken,
       })
-
-      const status = res.status
-      const data = await res.json()
-      if (res.ok) {
-        setPlanData({
-          id: data.planId,
-          userId: session.data.userId,
-          startDate: parseHypenDateToDate(body.startDate),
-          endDate: parseHypenDateToDate(body.endDate),
-          state: body.state,
-          schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
-        })
-        backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
-        return
-      }
-      switch (status) {
-        // status에 따라 추가 필요
-        default:
-          toast({ title: '다시 시도해주세요.' })
-          return
-      }
-    } catch (error) {
-      toast({ title: '다시 시도해주세요.' })
-      return
+    }
+    // Case2: 기존 계획을 수정하는 경우
+    else {
+      setPlanData({
+        ...planData,
+        state: inputState as StateType,
+        startDate: selected.from,
+        endDate: selected.to,
+      })
+      router.replace(ROUTES.PLAN.PlAN.url)
     }
   }
 
@@ -223,7 +213,13 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
             {step === 0 ? '다음' : '이전'}
           </Button>
           <Button variant='tbSecondary' className='ml-3' onClick={onClickFinish}>
-            완료
+            {isPending ? (
+              <p className='flex items-center gap-1'>
+                완료 <Loading />
+              </p>
+            ) : (
+              '완료'
+            )}
           </Button>
         </div>
       </div>

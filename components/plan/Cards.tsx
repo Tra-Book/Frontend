@@ -17,29 +17,42 @@ import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
 
 interface SchedulePlaceCardProps {
-  id: 'schedule' | 'scrap'
+  id: 'schedule' | 'scrap' | 'dummy'
   data: Place
+  fillIndex: number
   isReduced: boolean
+  className?: string
 }
 
-export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProps): ReactNode => {
+export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }: SchedulePlaceCardProps): ReactNode => {
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration, geo } = data
   const { setCenter } = useMapStore()
 
-  const addressArr = address
-    .split(' ')
-    .filter((val, index) => index === 0 || index === 1)
-    .join(' ')
+  // const addressArr = address
+  //   .split(' ')
+  //   .filter((val, index) => index === 0 || index === 1)
+  //   .join(' ')
+  // console.log('schedulePalceCArd Data:', data)
 
   return (
     <>
       <div
         onClick={() => setCenter(geo)}
-        className='relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-y-[0.5px] border-tbPlaceholder px-3 py-4'
+        className={cn(
+          'relative flex min-h-min w-full cursor-pointer items-start justify-start gap-3 border-b-[0.5px] border-tbPlaceholder px-3 py-4',
+          id === 'dummy' && 'pointer-events-none invisible opacity-0',
+          className,
+        )}
       >
         {!isReduced && (
           <div className='group relative aspect-square h-full origin-left'>
-            <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
+            <Image
+              width={124}
+              height={124}
+              src={(imgSrc as string) || PLACE_DEFAULT_IMAGE}
+              alt='Place Image'
+              className='h-full w-full origin-center rounded-md'
+            />
             <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
           </div>
         )}
@@ -52,19 +65,14 @@ export const SchedulePlaceCard = ({ id, data, isReduced }: SchedulePlaceCardProp
           )}
         >
           <div className='group flex w-fit items-center justify-start'>
-            <MapPin
-              num={order as number}
-              size={22}
-              fill={id === 'schedule' ? 'tbOrange' : 'tbGreen'}
-              className='group-hover:scale-125'
-            />
-            <span className='text-base font-semibold group-hover:text-tbBlue'>{name}</span>
+            <MapPin num={order as number} size={22} fillIndex={fillIndex} className='group-hover:scale-125' />
+            <span className='line-clamp-1 text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
 
           <p className='w-fit text-sm'>{address}</p>
 
           <div className='flex w-full items-center justify-between text-sm'>
-            <p># {tag}</p>
+            <p># {tag || '태그 없음'}</p>
             <p className='text-tbGray'>{duration}분</p>
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
@@ -102,7 +110,9 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
     mutationKey: ['place', 'scrap', { planId: data.id }],
     mutationFn: scrapPlace,
     onSuccess: () => {},
-    // 실패하든 성공하든 실행되는 것
+    onError: () => {
+      setTmpIsScrap(prev => !prev)
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['places', 'search'] })
     },
@@ -177,7 +187,13 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       onClick={() => handleClickCard(data)}
     >
       <div className='group relative aspect-square h-full origin-left'>
-        <Image src={imgSrc} alt='Place Image' className='h-full w-full origin-center rounded-md' />
+        <Image
+          src={imgSrc as string}
+          alt='Place Image'
+          width={124}
+          height={124}
+          className='h-full w-full origin-center rounded-md'
+        />
         <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
 

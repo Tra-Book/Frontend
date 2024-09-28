@@ -21,8 +21,8 @@ const MainLayout = ({ children, modal }: MainLayoutProps): ReactNode => {
           <PlanSideBar className='flex h-full w-[16vw] max-w-[100px] flex-col border-r-[1px] border-tbPlaceholder' />
           {children}
           <Toaster />
+          {modal}
         </QueryClientProvider>
-        {modal}
       </ToastProvider>
     </main>
   )

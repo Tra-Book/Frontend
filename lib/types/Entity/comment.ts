@@ -3,12 +3,21 @@
 모두: GET Request때 받은 Data
 */
 
-export interface Comment {
-  id: number
-  parentId: number
-  userId: number
+export interface CommentRequest {
+  planId: number
 
-  date: Date
+  parentId: number
+
   content: string
-  thumbCnt: number
+  time: string
+  refOrder: number
+}
+
+export interface CommentResponse extends CommentRequest {
+  id: number
+
+  userId: number
+  userName: string
+  userImgsrc: string
+  userStatusMessage: string
 }

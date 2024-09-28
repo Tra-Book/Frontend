@@ -72,6 +72,10 @@ export const ROUTES = {
       name: '여행 일정',
       url: '/plan/schedule',
     },
+    DETAIL: {
+      name: '여행 디테일',
+      url: '/plan/detail',
+    },
     SCRAP: {
       PLAN: {
         name: '보관함 여행계획',
@@ -149,7 +153,12 @@ export const BACKEND_ROUTES = {
       url: '/auth/renew-token',
     },
   },
+
   PLAN: {
+    GET: {
+      method: HttpMethod.GET,
+      url: '/plan',
+    },
     CREATE: {
       method: HttpMethod.POST,
       url: '/plan/create',
@@ -158,7 +167,14 @@ export const BACKEND_ROUTES = {
       method: HttpMethod.PATCH,
       url: '/plan/update',
     },
+    COMMENT: {
+      CREATE: {
+        method: HttpMethod.POST,
+        url: '/plan/comment/add',
+      },
+    },
   },
+
   PLACES: {
     GENERAL: {
       method: HttpMethod.GET,

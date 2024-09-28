@@ -19,6 +19,8 @@ interface fetchPlacesParams {
   states: Array<StateChoicesType>
   arrange: ArrangeChoiceType
   scrollNum: number
+  isScrap: boolean
+  accessToken?: string
 }
 
 const get_arrange = (arrange: ArrangeChoiceType): string => {
@@ -61,6 +63,7 @@ export type PlaceResponse = {
   subcategory: string
   tel: string
   zipcode: string
+  isScraped: boolean
 }
 
 export type FetchPlacesResponse = {
@@ -69,8 +72,8 @@ export type FetchPlacesResponse = {
 }
 
 export const SCROLL_SIZE = 12
-export const fetchPlans = async (params: fetchPlacesParams): Promise<FetchPlacesResponse> => {
-  const { searchInput, states, arrange, scrollNum } = params
+export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlacesResponse> => {
+  const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
   const queries: Queries = [
     {
       key: 'search',
@@ -88,6 +91,10 @@ export const fetchPlans = async (params: fetchPlacesParams): Promise<FetchPlaces
       key: 'pageNum',
       value: scrollNum,
     },
+    {
+      key: 'userScrapOnly',
+      value: isScrap,
+    },
   ]
   // states 추가하기
   states.forEach(state =>
@@ -99,50 +106,55 @@ export const fetchPlans = async (params: fetchPlacesParams): Promise<FetchPlaces
 
   const API = BACKEND_ROUTES.PLACES.GENERAL
 
-  const API_ROUTE = attachQuery(`/server/${API.url}`, queries)
+  const API_ROUTE = attachQuery(`/server${API.url}`, queries)
 
-  try {
-    const res = await fetch(API_ROUTE, {
+  let res: Response
+  // #1. 유저가 스크랩한 여행지
+  if (isScrap) {
+    res = await fetch(API_ROUTE, {
+      method: API.method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accessToken as string,
+      },
+      credentials: 'include',
+    })
+  }
+  // #2. 그냥 여행지
+  else {
+    res = await fetch(API_ROUTE, {
       method: API.method,
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
-      next: { tags: ['places'] },
     })
-    if (!res.ok) {
-      const error = new Error('An error occurred while fetching places')
-      error.message = await res.json()
-      throw error
-    }
-    const { places, totalPages } = await res.json()
-    const datas: Place[] = places.map((place: PlaceResponse) => ({
-      id: place.placeId,
-      name: place.placeName,
-      imgSrc: place.imageSrc,
-      address: place.address,
-      geo: {
-        latitude: place.latitude,
-        longitude: place.longitude,
-      },
-      tag: place.category,
-      // duration 없음
-      stars: place.star,
-      visitCnt: place.numOfAdded,
-      // reviews 아직 없음
-      // reviewCnt 아직 없음
-      reviewCnt: 0,
-      isScraped: false, // Todo: 실제 데이터 받아오기
-      // order 없음
-    }))
-    return { datas, totalPages }
-  } catch (error) {
-    toast({ title: 'Internal Server Error Occured!' })
   }
-  return {
-    datas: [],
-    totalPages: 0,
+  if (!res.ok) {
+    const error = new Error('An error occurred while fetching places')
+    error.message = await res.json()
+    throw error
   }
+  const { places, totalPages } = await res.json()
+  const datas: Place[] = places.map((place: PlaceResponse) => ({
+    id: place.placeId,
+    name: place.placeName,
+    imgSrc: place.imageSrc,
+    address: place.address,
+    geo: {
+      latitude: place.latitude,
+      longitude: place.longitude,
+    },
+    tag: place.subcategory,
+    // duration 필요 없음(선택한 여행지에서 필요)
+    stars: place.star,
+    visitCnt: place.numOfAdded,
+    // TODO: reviews 아직 없음
+    // TODO: reviewCnt 아직 없음
+    reviewCnt: 0,
+    isScraped: place.isScraped, // Todo: 실제 데이터 받아오기
+    // order 필요없음 (선택한 여행지에서 필요)
+  }))
+  return { datas, totalPages }
 }
 
 /**
@@ -155,6 +167,7 @@ interface ScrapPlaceType {
 export const scrapPlace = async ({ placeId, accessToken }: ScrapPlaceType) => {
   try {
     const Route = BACKEND_ROUTES.PLACE.SCRAP
+    console.log(Route.url)
 
     const res = await fetch(`/server/${Route.url}`, {
       method: Route.method,
@@ -167,24 +180,16 @@ export const scrapPlace = async ({ placeId, accessToken }: ScrapPlaceType) => {
       }),
       credentials: 'include',
     })
-    if (res.ok) {
-      toast({ title: '보관함에 추가되었습니다!' })
-      // 낙관적 업데이트 (UI 먼저 반영)
+    if (!res.ok) {
+      const error = new Error('An error occurred while fetching places')
+      toast({ title: '보관함 추가 실패' })
 
-      return
+      error.message = await res.json()
+      throw error
     }
-    // 400 에러 처리
-    const status = res.status
-    const errorData = await res.json() // 에러 메시지 확인
 
-    switch (status) {
-      case 400:
-        console.log('Wrong Request')
-        break
-      default:
-        console.log('Unhandled error')
-        break
-    }
+    toast({ title: '보관함에 추가되었습니다!' })
+    return
   } catch (error) {
     console.log(error)
 

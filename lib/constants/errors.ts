@@ -41,7 +41,11 @@ export const ClientModalData = {
     description: '변경된 내용을 저장하지 않고 이동하시겠습니까?',
     isError: true,
   },
-
+  loginRequiredError: {
+    title: '로그인 필요',
+    description: '로그인 창으로 이동하시겠습니까?',
+    isError: true,
+  },
   // Server Error
   serverError: {
     title: '서버 오류',

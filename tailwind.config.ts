@@ -86,6 +86,11 @@ const config = {
         tbOrange: '#FF8710',
 
         tbWhite: '#FFFFFF',
+        tbMappin6: '#D544F2',
+        tbMappin7: '#3EFFD2',
+        tbMappin8: '#9D5618',
+        tbMappin9: '#92A5F3',
+        tbMappin10: '#160C03',
       },
       borderRadius: {
         lg: 'var(--radius)',

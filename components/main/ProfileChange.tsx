@@ -68,7 +68,6 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
 
   const onClickButton = async () => {
     toast({ title: '변경 내용 저장 완료!' })
-    console.log('Clicked!')
 
     // 닉네임 validation
     const username: string = nickname.trim()

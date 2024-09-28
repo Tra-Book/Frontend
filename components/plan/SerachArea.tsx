@@ -5,13 +5,13 @@ import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
-import { fetchPlans, SCROLL_SIZE } from '@/lib/HTTP/place/API'
+import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/place/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
-import useFilters, { StateChoicesType } from '@/lib/utils/hooks/useFilters'
+import useFilters from '@/lib/utils/hooks/useFilters'
 
 import { Motion } from '../common/MotionWrapper'
 import { Button } from '../ui/button'
@@ -28,20 +28,24 @@ interface SearchAreaProps {
 
 const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
   const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
-  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
+  // # 처음 들어오면 설정한 지역으로 설정
+  useEffect(() => {
+    filterHandler('state', 'change', [planData.state])
+  }, [])
 
   // #0. Data Fetching
   const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
     queryKey: ['places', 'search'],
     queryFn: ({ pageParam = 0 }) =>
-      fetchPlans({
+      fetchPlaces({
         searchInput: searchInputRef.current?.value || '',
-        states: ['서울특별시'] as Array<StateChoicesType>,
-        // states: filter.state,
+        states: filter.state.includes('전체') ? [] : filter.state,
         arrange: arrange,
         scrollNum: pageParam,
+        isScrap: false, // 일반 여행지 Fetching : False
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
@@ -57,7 +61,6 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage()
-      console.log('Fetch new places')
     }
   }, [inView])
 
@@ -74,7 +77,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   if (isPending) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
-        <Motion animation={bounce()}>여행지 로딩중입니다!</Motion>
+        <Motion animation={bounce()}>{name === 'Place' ? '여행지 로딩중입니다!' : '여행계획 로딩중입니다'}</Motion>
       </div>
     )
   } else if (!data) {
