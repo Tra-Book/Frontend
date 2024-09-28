@@ -18,10 +18,9 @@ const MainPage = (): ReactNode => {
 
   let contents
   if (isPending) {
-    contents = <LoadingPage />
+    contents = <LoadingPage className='h-0 min-h-screen-header w-fit flex-grow' />
   }
   if (data) {
-    console.log(data)
     contents = (
       <div className='relative flex h-min min-h-screen-header flex-grow flex-col items-start justify-start gap-2 bg-white px-6 md:px-10'>
         <p className='flex h-[10dvh] min-h-[60px] w-full items-end pl-1 text-3xl font-semibold xl:text-4xl'>

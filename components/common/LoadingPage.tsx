@@ -14,8 +14,8 @@ interface LoadingPageProps {
 const LoadingPage = ({ className }: LoadingPageProps): ReactNode => {
   return (
     <>
-      <MobileLoading className='sm:hidden' />
-      <DesktopLoading className='hidden sm:flex' />
+      <MobileLoading className={cn('sm:hidden', className)} />
+      <DesktopLoading className={cn('hidden sm:flex', className)} />
     </>
   )
 }

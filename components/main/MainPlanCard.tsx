@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { formatDateToHyphenDate } from '@/lib/utils/dateUtils'
+import { formatDateToShortHyphenDate } from '@/lib/utils/dateUtils'
 
 import Backdrop from '../common/Backdrop'
 
@@ -51,7 +51,7 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
             </div>
           </div>
           <span>
-            {formatDateToHyphenDate(startDate)} ~ {formatDateToHyphenDate(endDate)}
+            {formatDateToShortHyphenDate(startDate)} ~ {formatDateToShortHyphenDate(endDate)}
           </span>
         </div>
       </div>

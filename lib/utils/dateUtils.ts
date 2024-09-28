@@ -3,6 +3,7 @@ import { format } from 'date-fns/format'
 import { ko } from 'date-fns/locale'
 
 export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
+export const formatDateToShortHyphenDate = (date: Date): string => format(date, 'yy.MM.dd')
 
 export const formatToKoreanShortDate = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
 
