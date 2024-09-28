@@ -6,7 +6,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { ROUTES } from '@/lib/constants/routes'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import useFilters from '@/lib/utils/hooks/useFilters'
+import useFilters, { initArrange } from '@/lib/utils/hooks/useFilters'
 import { scrollToTop } from '@/lib/utils/scroll'
 
 import CustomPagination, { ELEMENTS_PER_PAGE } from '../common/Pagination'
@@ -46,7 +46,7 @@ interface MainPlanContentsProps {
 const MainPlanContents = ({ plans }: MainPlanContentsProps): ReactNode => {
   const pathname = usePathname()
 
-  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters('Plan')
+  const { filter, filterHandler, applyAllFilters, arrange, arrangeHandler, UseArrange, UseFilter } = useFilters('Plan')
   const [searchInput, setSearchInput] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
@@ -54,6 +54,11 @@ const MainPlanContents = ({ plans }: MainPlanContentsProps): ReactNode => {
   const movePageHandler = (pageNumber: number) => {
     setCurrentPage(pageNumber)
     scrollToTop()
+  }
+  const resetHandler = () => {
+    setSearchInput('')
+    filterHandler('all', 'reset')
+    arrangeHandler(initArrange['Plan'])
   }
 
   // 필터 적용된 데이터
@@ -101,9 +106,9 @@ const MainPlanContents = ({ plans }: MainPlanContentsProps): ReactNode => {
         <Button
           variant='tbPrimary'
           className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'
-          onClick={() => filterHandler('all', 'reset')}
+          onClick={resetHandler}
         >
-          필터 초기화
+          초기화
           <LucideIcon name='RotateCw' size={26} />
         </Button>
       </div>

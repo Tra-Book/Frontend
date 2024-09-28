@@ -11,7 +11,6 @@ export interface Place {
   id: number
 
   name: string // 여행지명
-  // imgSrc: string
   // 임시 Dummy Data를 위해
   imgSrc: Nullable<string>
   address: string // 한글 주소

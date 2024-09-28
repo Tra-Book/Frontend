@@ -4,7 +4,6 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import KakaoMap from '@/components/common/KakaoMap'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
-import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
@@ -25,27 +24,7 @@ const PlanSchedulePage = (): ReactNode => {
     setIsSearching(true)
   }
 
-  // Todo: UPDATE fetch 만들기
-  const update = async () => {
-    try {
-      const res = await fetch(`server/${BACKEND_ROUTES.PLAN.UPDATE.url}`, {
-        method: BACKEND_ROUTES.PLAN.UPDATE.method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
-        credentials: 'include',
-      })
-
-      if (res.ok) {
-      }
-      const status = res.status
-    } catch (error) {}
-  }
-
   const handleAddPlace = () => {
-    // update();
-
     if (focusedPlaceCard) {
       const newPlan: Plan = addPlaceToPlan(planData, focusedPlaceCard, day)
 

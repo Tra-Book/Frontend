@@ -1,4 +1,3 @@
-'use client'
 import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
@@ -15,7 +14,7 @@ const MainStorePlacePage = ({}: MainStorePlacePageProps): ReactNode => {
         여행지
       </p>
 
-      <Contents name='Place' datas={dummy_places} />
+      <Contents name='Place' />
     </div>
   )
 }

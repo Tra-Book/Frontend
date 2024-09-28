@@ -8,15 +8,6 @@ import { ArrangeChoiceType, StateChoicesType } from '@/lib/utils/hooks/useFilter
 
 import { attachQuery, Queries } from '../http'
 
-interface fetchPlacesParams {
-  searchInput: string
-  states: Array<StateChoicesType>
-  arrange: ArrangeChoiceType
-  scrollNum: number
-  isScrap: boolean
-  accessToken?: string
-}
-
 const get_arrange = (arrange: ArrangeChoiceType): string => {
   switch (arrange) {
     case '댓글순':
@@ -37,6 +28,14 @@ const get_arrange = (arrange: ArrangeChoiceType): string => {
     case '평점순':
       return 'star'
   }
+}
+interface fetchPlacesParams {
+  searchInput: string
+  states: Array<StateChoicesType>
+  arrange: ArrangeChoiceType
+  scrollNum: number
+  isScrap: boolean
+  accessToken?: string
 }
 
 export type PlaceResponse = {
@@ -59,15 +58,13 @@ export type PlaceResponse = {
   zipcode: string
   isScraped: boolean
 }
-
-export type FetchPlacesResponse = {
-  datas: Array<Place>
-  totalPages: number
-}
+export type PlaceCardType = Omit<Place, 'duration' | 'order'>
 
 export const SCROLL_SIZE = 12
-export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlacesResponse> => {
+export const fetchPlaces = async (params: fetchPlacesParams) => {
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
+  console.log('Fetches by state:', states)
+
   const queries: Queries = [
     {
       key: 'search',
@@ -129,7 +126,7 @@ export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlace
     throw error
   }
   const { places, totalPages } = await res.json()
-  const datas: Place[] = places.map((place: PlaceResponse) => ({
+  const datas: PlaceCardType[] = places.map((place: PlaceResponse) => ({
     id: place.placeId,
     name: place.placeName,
     imgSrc: place.imageSrc,
@@ -142,9 +139,10 @@ export const fetchPlaces = async (params: fetchPlacesParams): Promise<FetchPlace
     // duration 필요 없음(선택한 여행지에서 필요)
     stars: place.star,
     visitCnt: place.numOfAdded,
-    // TODO: reviews 아직 없음
-    // TODO: reviewCnt 아직 없음
-    reviewCnt: 0,
+    // TODO: reviews 백엔드 로직 아직 없음
+    reviews: ['여기 너무 좋아요~ 데이트 장소', '핫플핫플 핫핫'], // Dummy
+    reviewCnt: 200, // Dummy
+
     isScraped: place.isScraped, // Todo: 실제 데이터 받아오기
     // order 필요없음 (선택한 여행지에서 필요)
   }))

@@ -6,6 +6,7 @@ import { StateType } from './regions'
 export const USER_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/profilePhoto/default.png'
 export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumbnail.png'
 export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumbnail.png'
+
 const get_dummy_place = (idx: number): Place => {
   return {
     id: idx,

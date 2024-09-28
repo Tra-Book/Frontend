@@ -1,6 +1,6 @@
 'use client'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import React, { ReactNode, useEffect, useRef } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
@@ -31,8 +31,11 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
+
   // # 처음 들어오면 설정한 지역으로 설정
+  const [isFirstQueryDone, setIsFirstQueryDone] = useState(false)
   useEffect(() => {
+    setIsFirstQueryDone(true)
     filterHandler('state', 'change', [planData.state])
   }, [])
 
@@ -42,7 +45,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
     queryFn: ({ pageParam = 0 }) =>
       fetchPlaces({
         searchInput: searchInputRef.current?.value || '',
-        states: filter.state.includes('전체') ? [] : filter.state,
+        states: isFirstQueryDone ? [planData.state] : filter.state.includes('전체') ? [] : filter.state,
         arrange: arrange,
         scrollNum: pageParam,
         isScrap: false, // 일반 여행지 Fetching : False

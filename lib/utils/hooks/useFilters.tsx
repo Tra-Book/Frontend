@@ -25,6 +25,13 @@ export const initFilters: FilterType = {
   state: allElements as Array<StateChoicesType>,
   city: allElements as CityChoicesType,
 }
+export const initArrange: {
+  Plan: (typeof planArrangeChoices)[number]
+  Place: (typeof placeArrangeChoices)[number]
+} = {
+  Plan: '최신순',
+  Place: '방문자순',
+}
 
 export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
@@ -34,7 +41,7 @@ export type FilterType = {
 
 const useFilters = (name: 'Plan' | 'Place') => {
   const [filter, setFilter] = useState<FilterType>(initFilters)
-  const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '방문자순')
+  const [arrange, setArrange] = useState<ArrangeChoiceType>(initArrange[name])
 
   const arrangeChoices = name === 'Plan' ? planArrangeChoices : placeArrangeChoices
 
