@@ -59,7 +59,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
           user={session.data}
           className='h-60 min-h-min w-full'
         />
-        <Title title='여행 지도 ' />
+        <Title title='여행도 ' />
         <div className='relative aspect-video w-full'>
           <KakaoMap />
         </div>

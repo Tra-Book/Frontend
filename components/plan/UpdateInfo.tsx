@@ -144,6 +144,7 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             <Label className='mb-2 flex text-base'>인원수</Label>
             <Input
               className='h-13'
+              placeholder='몇명이서 여행가시나요?'
               type='number'
               value={memberCnt ? memberCnt : ''}
               onChange={e => setMemberCnt(e.target.value ? parseInt(e.target.value, 10) : null)}
@@ -154,11 +155,12 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             <Input
               className='h-13'
               type='number'
+              placeholder='예산을 입력해주세요?'
               value={budget ? budget : ''}
               onChange={e => setBudget(e.target.value ? parseInt(e.target.value, 10) : null)}
             />
           </div>
-          <Button onClick={addPostHandler} variant='tbPrimary' className='col-span-2 mt-2 w-40'>
+          <Button onClick={addPostHandler} variant='tbPrimary' className='col-span-2 mt-2 w-40 justify-self-end'>
             {isPending ? <Loading /> : '여행 개시하기'}
           </Button>
         </div>

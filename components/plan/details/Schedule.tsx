@@ -36,6 +36,10 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
       schedule.map((item, index) => {
         const geoArray: Geo[] = item.places.map(place => place.geo)
         setPins(index + 1, geoArray)
+        // 첫 위치로 Map Center 두기
+        if (index === 0) {
+          setCenter(geoArray[0])
+        }
       })
     }
     // #2. 특정 day인 경우

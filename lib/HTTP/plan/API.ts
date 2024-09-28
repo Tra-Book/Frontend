@@ -1,3 +1,4 @@
+import { StateType } from '@/lib/constants/regions'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { CommentRequest, CommentResponse } from '@/lib/types/Entity/comment'
 import { Place } from '@/lib/types/Entity/place'
@@ -6,6 +7,58 @@ import { formatDateToHyphenDate, parseHypenDateToDate } from '@/lib/utils/dateUt
 import { Nullable } from '@/lib/utils/typeUtils'
 
 import { attachQuery, Queries } from '../http'
+
+/**
+ * Plan Create > 새로운 여행 계획 만들기 함수입니다.
+ */
+interface CreatePlanProps {
+  state: StateType
+  startDate: Date
+  endDate: Date
+  accessToken: string
+}
+export const createPlan = async ({ state, startDate, endDate, accessToken }: CreatePlanProps) => {
+  console.log('creating plan')
+
+  let backendRoute = BACKEND_ROUTES.PLAN.CREATE
+  const body = {
+    state: state,
+    startDate: formatDateToHyphenDate(startDate),
+    endDate: formatDateToHyphenDate(endDate),
+  }
+
+  const res = await fetch('/server' + backendRoute.url, {
+    method: backendRoute.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+    credentials: 'include',
+  })
+
+  if (!res.ok) {
+    const error = new Error('계획 생성 실패')
+    error.message = await res.json()
+    throw error
+  }
+
+  const data = await res.json()
+
+  return data
+  // setPlanData({
+  //   id: data.planId,
+  //   userId: session.data.userId,
+  //   startDate: selected.from,
+  //   endDate: selected.to,
+  //   state: body.state,
+  //   schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
+  //   imgSrc: PLAN_DEFAULT_IMAGE,
+  // })
+
+  // backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
+  // return
+}
 
 /**
  * Plan Update (DB 반영하기) 함수입니다.

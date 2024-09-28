@@ -72,7 +72,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
       </div>
 
       {/* 정보 */}
-      <div className={cn('flex h-fit w-fit flex-grow origin-left flex-col items-start justify-start gap-3')}>
+      <div className={cn('flex h-fit min-h-full w-fit flex-grow origin-left flex-col items-start justify-start gap-3')}>
         {/* 유저정보 */}
         <div className='flex items-center justify-start gap-2'>
           <UserAvatar
@@ -93,20 +93,20 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
           <span className='font-medium'>{`${formatKoreanDate(startDate)} ~ ${formatKoreanDate(endDate)}`}</span>
         </div>
 
-        <div className='flex w-full items-center justify-start gap-3 text-sm font-medium'>
+        <div className='flex w-full items-center justify-start gap-3 text-base font-medium'>
           <span>{memberCnt}명</span>
           <span>{budget}원</span>
         </div>
         <div className='flex items-center justify-start gap-3'>
-          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+          <div className='flex w-fit items-center justify-start gap-1 text-base'>
             <LucideIcon name='Heart' fill={isLiked ? 'tbRed' : undefined} strokeWidth={0} />
             <span>{likeCnt}</span>
           </div>
-          <div onClick={likeHandler} className='flex w-fit items-center justify-start gap-1 text-sm'>
+          <div onClick={likeHandler} className='flex w-fit items-center justify-start gap-1 text-base'>
             <LucideIcon name='MessageCircle' />
             <span>{comments?.length}</span>
           </div>
-          <div onClick={scrapHandler} className='flex w-fit items-center justify-start gap-1 text-sm'>
+          <div onClick={scrapHandler} className='flex w-fit items-center justify-start gap-1 text-base'>
             <LucideIcon name='Bookmark' fill={isScraped ? 'tbRed' : undefined} />
             <span>{scrapCnt}</span>
           </div>

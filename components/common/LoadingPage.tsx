@@ -26,7 +26,7 @@ const MobileLoading = ({ className }: LoadingPageProps) => {
   return (
     <div className={cn('flex h-screen w-screen flex-col items-center justify-center gap-4', className)}>
       <div className='flex flex-col items-center justify-center'>
-        <Image src={LogoImage} alt='TraBook Logo' width={94} height={69} />
+        <Image src={LogoImage} alt='TraBook Logo' width={200} height={180} />
         <Slogan subTitleClassName='text-xs' />
       </div>
       <div className='sm:gap- flex flex-col items-center justify-center text-lg font-semibold sm:flex-row'>

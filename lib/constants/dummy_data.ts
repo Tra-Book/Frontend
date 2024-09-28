@@ -1,6 +1,7 @@
 import { CommentResponse } from '../types/Entity/comment'
 import { Place } from '../types/Entity/place'
 import { Plan, Schedule } from '../types/Entity/plan'
+import { StateType } from './regions'
 
 export const USER_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/profilePhoto/default.png'
 export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumbnail.png'
@@ -83,7 +84,7 @@ export const INITIAL_PLAN: Plan = {
   id: -1, // 백엔드 값으로 대체
   userId: -1, //세션 값
 
-  state: '서울특별시', // 초기 값으로 대체됨
+  state: '' as StateType, // 초기 값으로 대체됨
   startDate: new Date(),
   endDate: new Date(),
 
