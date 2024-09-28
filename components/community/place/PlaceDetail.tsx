@@ -2,8 +2,8 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import React, { ReactNode } from 'react'
-import Slider from 'react-slick'
+import React, { ReactNode, useState } from 'react'
+import ItemsCarousel from 'react-items-carousel'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
@@ -16,27 +16,18 @@ interface PlaceDetailProps {
   place: DetailPlace
 }
 
-// UI
-// 뒤로 가기 - 완
-// 리뷰 슬라이드 기능
-// 주소 복사
-
-const dummyComments = [
-  'faewfwafawf',
-  'jydtfjtjt',
-  '12233445',
-  'ㄹㅁㄷㅈㄹㄹㅁㄹㅁㄷㅈㄹㄹㅁㅈㄹㅁㄷㅈㄹㄹㅁㅈㄹㅁㄷㅈㄹㄹㅁㅈㄹㅁㄷㅈㄹㄹㅁㅈㄹㅁㄷㅈㄹㄹㅁㅈㄹㅁㄷㅈㄹㄹㅁㅈㅈ',
-]
-
 const PlaceDetail = ({ place }: PlaceDetailProps): ReactNode => {
   console.log(place)
   useKakaoLoader() // 카카오 지도 로딩
   const router = useRouter()
 
+  const [activeItemIndex, setActiveItemIndex] = useState(0)
+
   const settings = {
     variableWidth: true,
     dots: true,
     speed: 500,
+    infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
@@ -72,26 +63,36 @@ const PlaceDetail = ({ place }: PlaceDetailProps): ReactNode => {
             <p className='text-lg'>{place.comments.length}</p>
           </div>
 
-          <div className='h-[100px] w-full'>
-            {/* {place.comments.length === 0 && (
+          <div className='mt-4 grow'>
+            {place.comments.length === 0 && (
               <div className='flex h-full w-full items-center justify-center'>리뷰가 없습니다...</div>
-            )} */}
-            <Slider {...settings}>
-              {dummyComments.map(comment => (
-                <div key={comment + comment} style={{ width: 400 }} className='h-[70px]'>
-                  <div className='h-full w-[90%] overflow-scroll rounded-lg bg-tbPlaceholder p-3 shadow-tb-shadow scrollbar-hide hover:scale-105'>
-                    {comment}
+            )}
+            <ItemsCarousel
+              requestToChangeActive={setActiveItemIndex}
+              activeItemIndex={activeItemIndex}
+              numberOfCards={1}
+              gutter={20}
+              slidesToScroll={1}
+              infiniteLoop={true}
+              rightChevron={<LucideIcon name='ChevronRight' size={30} className='hover:scale-105' />}
+              leftChevron={<LucideIcon name='ChevronLeft' size={30} className='hover:scale-105' />}
+              chevronWidth={50}
+            >
+              {place.comments.map(comment => (
+                <div key={comment.date + comment.date} className='flex h-full items-center justify-center'>
+                  <div className='h-[72px] w-[80%] overflow-scroll rounded-lg bg-tbPlaceholder p-3 shadow-tb-shadow scrollbar-hide'>
+                    {comment.content}
                   </div>
                 </div>
               ))}
-            </Slider>
+            </ItemsCarousel>
           </div>
         </div>
         <div className='flex h-[100%] w-[40%] flex-col justify-center gap-1'>
           <div className='h-[85%] w-full'>
-            <KakaoMap />
+            <KakaoMap modalLat={place.place.latitude} modalLng={place.place.longitude} />
           </div>
-          <p className='mt-1'>{place.place.address}</p>
+          <p className='mt-1'>주소 : {place.place.address}</p>
         </div>
       </div>
       <LucideIcon name='X' className='absolute right-3 top-3' size={35} onClick={onClickBack} />
