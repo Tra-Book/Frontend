@@ -180,6 +180,10 @@ export const BACKEND_ROUTES = {
       method: HttpMethod.GET,
       url: '/places/general',
     },
+    POPULAR: {
+      method: HttpMethod.GET,
+      url: '/places/popular',
+    },
   },
   PLACE: {
     SCRAP: {

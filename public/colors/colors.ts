@@ -24,6 +24,7 @@ export const colorSet = {
   tbOrange: config.theme.extend.colors.tbOrange,
 
   tbWhite: config.theme.extend.colors.tbWhite,
+  tbBlack: config.theme.extend.colors.tbBlack,
   tbMappin6: config.theme.extend.colors.tbMappin6,
   tbMappin7: config.theme.extend.colors.tbMappin7,
   tbMappin8: config.theme.extend.colors.tbMappin8,

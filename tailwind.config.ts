@@ -86,6 +86,7 @@ const config = {
         tbOrange: '#FF8710',
 
         tbWhite: '#FFFFFF',
+        tbBlack: '#000000',
         tbMappin6: '#D544F2',
         tbMappin7: '#3EFFD2',
         tbMappin8: '#9D5618',
