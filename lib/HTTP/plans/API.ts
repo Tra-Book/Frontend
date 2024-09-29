@@ -1,17 +1,20 @@
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { Plan } from '@/lib/types/Entity/plan'
+import { parseHypenDateToDate } from '@/lib/utils/dateUtils'
+import { ArrangeChoiceType, StateChoicesType } from '@/lib/utils/hooks/useFilters'
 
 import { attachQuery, Queries } from '../http'
+import { SCROLL_SIZE } from '../places/API'
 
 interface FetchUserPlansProps {
   type: 'user' | 'scrap'
   accessToken: string
   signal: AbortSignal
 }
-export type PlanCardType = Omit<Plan, 'memberCnt' | 'budget' | 'schedule' | 'comments'>
+export type PlanCardType = Omit<Plan, 'userId' | 'memberCnt' | 'budget' | 'schedule' | 'comments'>
 
 /**
- * 특정 유저와 관련된 여행 계획을 가져오는 함수
+ * 특정 유저와 관련된 여행 계획을 가져오는 함수 (메인페이지, 내 계획)
  * @param planId: Params로 입력된 Id
  */
 export const GET_userPlans = async ({ type, accessToken, signal }: FetchUserPlansProps) => {
@@ -86,35 +89,49 @@ interface fetchPlansParams {
   accessToken?: string
 }
 
-export type PlaceResponse = {
-  placeId: number
-  cityId: number
-  address: string
-  category: string
+export type PlanResponse = {
+  planId: number
+  planTitle: string
   description: string
-  imageSrc: string
-  latitude: number
+  state: string
   likes: number
-  longitude: number
-  numOfAdded: number
-  placeName: string
-  ratingScore: number
   scraps: number
-  star: number
-  subcategory: string
-  tel: string
-  zipcode: string
-  isScraped: boolean
+  numOfComment: number
+  imgSrc: string
+  startDate: string
+  endDate: string
+  isLiked: boolean
+  isScrapped: boolean
+
+  public: boolean
+  finished: boolean
 }
-export type PlnCardType = Omit<Plan, 'duration' | 'order'>
 
-export const SCROLL_SIZE = 12
-
+const get_arrange = (arrange: ArrangeChoiceType): string => {
+  switch (arrange) {
+    case '댓글순':
+      return ''
+    case '스크랩순':
+      return 'numOfPeople'
+    case '좋아요순':
+      return 'likes'
+    case '최신순':
+      return ''
+    default:
+      return ''
+  }
+}
 /**
- *
+ * 임의의 여행계획, 유저가 스크랩한 여행계획 페칭
  */
-export const fetchPlans = async (params: fetchPlansProps) => {
+export const fetchPlans = async (
+  params: fetchPlansParams,
+): Promise<{
+  datas: PlanCardType[]
+  totalPages: any
+}> => {
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
+
   const queries: Queries = [
     {
       key: 'search',
@@ -145,12 +162,12 @@ export const fetchPlans = async (params: fetchPlansProps) => {
     }),
   )
 
-  const API = BACKEND_ROUTES.PLACES.GENERAL
+  const API = BACKEND_ROUTES.PLANS.GENERAL
 
   const API_ROUTE = attachQuery(`/server${API.url}`, queries)
 
   let res: Response
-  // #1. 유저가 스크랩한 여행지
+  // #1. 유저가 스크랩한 여행 계획
   if (isScrap) {
     res = await fetch(API_ROUTE, {
       method: API.method,
@@ -161,7 +178,7 @@ export const fetchPlans = async (params: fetchPlansProps) => {
       credentials: 'include',
     })
   }
-  // #2. 그냥 여행지
+  // #2. 그냥 여행 계획
   else {
     res = await fetch(API_ROUTE, {
       method: API.method,
@@ -171,30 +188,35 @@ export const fetchPlans = async (params: fetchPlansProps) => {
     })
   }
   if (!res.ok) {
-    const error = new Error('An error occurred while fetching places')
+    const error = new Error('An error occurred while fetching plans')
     error.message = await res.json()
     throw error
   }
-  const { places, totalPages } = await res.json()
-  const datas: PlaceCardType[] = places.map((place: PlaceResponse) => ({
-    id: place.placeId,
-    name: place.placeName,
-    imgSrc: place.imageSrc,
-    address: place.address,
-    geo: {
-      latitude: place.latitude,
-      longitude: place.longitude,
-    },
-    tag: place.subcategory,
-    // duration 필요 없음(선택한 여행지에서 필요)
-    stars: place.star,
-    visitCnt: place.numOfAdded,
-    // TODO: reviews 백엔드 로직 아직 없음
-    reviews: ['여기 너무 좋아요~ 데이트 장소', '핫플핫플 핫핫'], // Dummy
-    reviewCnt: 200, // Dummy
+  const { plans, totalPages } = await res.json()
 
-    isScraped: place.isScraped, // Todo: 실제 데이터 받아오기
-    // order 필요없음 (선택한 여행지에서 필요)
-  }))
+  const datas: PlanCardType[] = plans.map(
+    (plan: PlanResponse) =>
+      ({
+        id: plan.planId,
+
+        state: plan.state,
+        startDate: parseHypenDateToDate(plan.startDate),
+        endDate: parseHypenDateToDate(plan.endDate),
+
+        imgSrc: plan.imgSrc as string,
+
+        title: plan.planTitle,
+        description: plan.description,
+        isDone: plan.finished,
+        isPublic: plan.public,
+
+        commentCnt: plan.numOfComment,
+        likeCnt: plan.likes,
+        scrapCnt: plan.scraps,
+
+        isScraped: plan.isScrapped,
+        isLiked: plan.isLiked,
+      }) as PlanCardType,
+  )
   return { datas, totalPages }
 }

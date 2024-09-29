@@ -29,25 +29,25 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
       </div>
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>
-          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{title}</h2>
+          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{title || '계획 제목'}</h2>
           <span className='text-xs'>{state}</span>
         </div>
 
-        <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{description}</p>
+        <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{description || '계획 설명을 입력해주세요!'}</p>
 
         <div className='flex items-center justify-between text-xs lg:text-sm'>
           <div className='flex items-center gap-2'>
             <div className='flex items-center gap-1'>
               <LucideIcon color='tbRed' name='Heart' strokeWidth={3} />
-              <span>{likeCnt}</span>
+              <span>{likeCnt || 0}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='MessageCircle' strokeWidth={3} />
-              <span>{commentCnt}</span>
+              <span>{commentCnt || 0}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Bookmark' strokeWidth={3} />
-              <span>{scrapCnt}</span>
+              <span>{scrapCnt || 0}</span>
             </div>
           </div>
           <span>

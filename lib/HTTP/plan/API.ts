@@ -7,6 +7,7 @@ import { formatDateToHyphenDate, parseHypenDateToDate } from '@/lib/utils/dateUt
 import { Nullable } from '@/lib/utils/typeUtils'
 
 import { attachQuery, Queries } from '../http'
+import { PlaceCardType } from '../places/API'
 
 /**
  * Plan Create > 새로운 여행 계획 만들기 함수입니다.
@@ -236,6 +237,7 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     likeCnt: plan.likes, // default: 0
     scrapCnt: plan.scraps, // default: 0
     comments: planComments, // default: null
+    commentCnt: 0, // 쓰지 않는 데이터 (백엔드에서 보내질 않음)
 
     // #4. 요청 유저관련 정보
     isScraped: scrapped,
@@ -289,7 +291,7 @@ export const addComment = async ({ newComment, accessToken }: AddCommentProps) =
 /**
  * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
  */
-export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: number): Plan => {
+export const addPlaceToPlan = (originPlan: Plan, place: PlaceCardType, currentDay: number): Plan => {
   // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
   const updatedSchedule = originPlan.schedule.map(schedule => {
     if (schedule.day === currentDay) {
@@ -297,8 +299,9 @@ export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: numbe
 
       const newPlace: Place = {
         ...place,
-        order: schedule.places ? schedule.places.length + 1 : 1,
         duration: 60,
+        order: schedule.places ? schedule.places.length + 1 : 1,
+        reviews: place.reviews,
       }
       const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
       return {

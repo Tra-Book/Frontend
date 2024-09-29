@@ -11,23 +11,14 @@ import { attachQuery, Queries } from '../http'
 
 const get_arrange = (arrange: ArrangeChoiceType): string => {
   switch (arrange) {
-    case '댓글순':
-      return '' // TODO: 추가해야함 (여행 계획)
-
     case '리뷰순':
       return 'reviews'
-
     case '방문자순':
       return 'numOfAdded'
-
-    case '스크랩순':
-      return '' // TODO: 추가해야함 (여행 계획)
-    case '좋아요순':
-      return '' // TODO: 추가해야함 (여행 계획)
-    case '최신순':
-      return '' // TODO: 추가해야함 (여행 계획)
     case '평점순':
       return 'star'
+    default:
+      return ''
   }
 }
 interface fetchPlacesParams {
@@ -70,6 +61,8 @@ export const fetchPlaces = async (
   datas: PlaceCardType[]
   totalPages: number
 }> => {
+  console.log('Entered Place')
+
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
 
   const queries: Queries = [
@@ -101,6 +94,7 @@ export const fetchPlaces = async (
       value: state,
     }),
   )
+  console.log(queries)
 
   const API = BACKEND_ROUTES.PLACES.GENERAL
 

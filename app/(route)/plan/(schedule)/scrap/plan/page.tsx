@@ -5,13 +5,12 @@ import React, { ReactNode, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
-import PlanSchedule from '@/components/plan/PlanSchedule'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
-import { Plan } from '@/lib/types/Entity/plan'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
 interface PlanStorePageProps {}
@@ -21,14 +20,14 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
 
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
 
-  const [focusedPlanCard, setFocusPlanCard] = useState<Plan>()
+  const [focusedPlanCard, setFocusPlanCard] = useState<PlanCardType>()
 
   const openSearchBar = () => {
     setIsReduced(true)
     setIsSearching(true)
   }
 
-  const handleClickCard = (card: Plan) => {
+  const handleClickCard = (card: PlanCardType) => {
     setFocusPlanCard(card)
   }
 
@@ -60,13 +59,14 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                 </div>
                 <SearchArea
                   name='Plan'
-                  handleClickCard={handleClickCard as (card: PlaceCardType | Plan) => void}
+                  handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType | undefined) => void}
                   focusCard={focusedPlanCard}
                   className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
                 />
               </>
             ) : (
-              <PlanSchedule id='scrap' plan={focusedPlanCard} setFocusPlanCard={setFocusPlanCard} />
+              <></>
+              // <PlanSchedule id='scrap' plan={focusedPlanCard} setFocusPlanCard={setFocusPlanCard} />
             )}
           </Motion>
         )}

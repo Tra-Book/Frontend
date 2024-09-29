@@ -4,14 +4,14 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
-import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
 import { placeAddScrap } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
-import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import { toast } from '@/lib/utils/hooks/useToast'
 
@@ -79,7 +79,7 @@ export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }:
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
-            <span>{stars}</span>
+            <span>{stars || 0}</span>
           </div>
           {!isReduced && <span className='w-fit text-sm'>방문자 {visitCnt}+</span>}
         </div>
@@ -90,7 +90,7 @@ export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }:
 
 interface PlaceCardProps {
   data: PlaceCardType
-  focusedPlaceCard: Place | undefined
+  focusedPlaceCard: PlaceCardType | undefined
   handleClickCard: (card: PlaceCardType) => void
 }
 
@@ -129,7 +129,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
     <div
       onClick={focusHandler}
       className={cn(
-        'relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
+        'relative flex min-h-48 w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
         focusedPlaceCard?.id === id && 'bg-tbGreen hover:bg-tbGreenHover',
       )}
     >
@@ -146,21 +146,25 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
       </div>
 
       {/* 정보 */}
-      <div className={cn('flex h-fit w-fit min-w-32 flex-grow origin-left flex-col items-start justify-start gap-2')}>
-        <div className='group flex w-fit items-center justify-start'>
+      <div
+        className={cn('flex h-full w-fit min-w-32 flex-grow origin-left flex-col items-start justify-between gap-2')}
+      >
+        <div className='group flex w-full flex-col items-start justify-start gap-1'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
-          <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
-          <LucideIcon
-            name='Bookmark'
-            className={cn('absolute right-2', tmpIsScrap ? 'hover:fill-none' : 'hover:fill-tbRed')}
-            fill={tmpIsScrap ? 'tbRed' : undefined}
-            onClick={scrapHandler}
-          />
+          <div className='relative flex w-full items-center justify-start'>
+            <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
+            <LucideIcon
+              name='Bookmark'
+              className={cn('absolute right-2 top-1', tmpIsScrap ? 'hover:fill-none' : 'hover:fill-tbRed')}
+              fill={tmpIsScrap ? 'tbRed' : undefined}
+              onClick={scrapHandler}
+            />
+          </div>
+          <div className='relative flex w-full items-center justify-between text-sm'>
+            <p># {tag}</p>
+          </div>
         </div>
 
-        <div className='flex w-full items-center justify-between text-sm'>
-          <p># {tag}</p>
-        </div>
         <div className='flex items-center justify-start gap-2'>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
@@ -169,9 +173,10 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
           <span className='w-fit text-sm'>리뷰 {reviewCnt}+</span>
           <span className='w-fit text-sm'>방문자 {visitCnt}+</span>
         </div>
+
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
           <div className='line-clamp-2 w-full break-words text-sm'>
-            {reviews.length !== 0 ? reviews[0].content : '리뷰를 작성해주세요!'}
+            {reviews.length !== 0 ? reviews[0].content : '리뷰 준비중입니다...'}
           </div>
         </div>
       </div>
@@ -180,22 +185,22 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
 }
 
 interface PlanCardProps {
-  data: Plan
-  handleClickCard: (card: Plan) => void
+  data: PlanCardType
+  handleClickCard: (card: PlanCardType) => void
 }
 
 export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
-  const { imgSrc, title, likeCnt, scrapCnt, comments, description, isScraped } = data
+  const { imgSrc, title, likeCnt, scrapCnt, description, isScraped, commentCnt } = data
   return (
     <div
       className={cn(
-        'relative flex min-h-min w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
+        'relative flex min-h-48 w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
       )}
       onClick={() => handleClickCard(data)}
     >
       <div className='group relative aspect-square h-full origin-left'>
         <Image
-          src={imgSrc as string}
+          src={(imgSrc as string) || PLAN_DEFAULT_IMAGE}
           alt='Place Image'
           width={124}
           height={124}
@@ -205,7 +210,7 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       </div>
 
       {/* 정보 */}
-      <div className={cn('flex h-fit w-fit min-w-32 flex-grow origin-left flex-col items-start justify-start gap-2')}>
+      <div className={cn('h- flex w-fit min-w-32 flex-grow origin-left flex-col items-start justify-start gap-2')}>
         <div className='group flex w-fit items-center justify-start'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
           <span className='text-base font-semibold group-hover:text-tbBlue'>{title}</span>
@@ -221,7 +226,7 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='MessageCircle' strokeWidth={2.5} />
-            <span>{comments?.length}</span>
+            <span>{commentCnt}</span>
           </div>
           <div className='flex w-fit items-center justify-start gap-1 text-sm'>
             <LucideIcon name='Bookmark' strokeWidth={2.5} />

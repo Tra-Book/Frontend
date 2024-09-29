@@ -179,6 +179,10 @@ export const BACKEND_ROUTES = {
       method: HttpMethod.GET,
       url: '/plans',
     },
+    GENERAL: {
+      method: HttpMethod.GET,
+      url: '/plans/general',
+    },
   },
 
   PLACE: {

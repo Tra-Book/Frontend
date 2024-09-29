@@ -11,7 +11,9 @@ import { ROUTES } from '@/lib/constants/routes'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -77,7 +79,7 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
             </div>
             <SearchArea
               name='Place'
-              handleClickCard={handleClickCard as (card: Place | Plan) => void}
+              handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType | undefined) => void}
               focusCard={focusedPlaceCard}
               className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
             />
