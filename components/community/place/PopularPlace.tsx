@@ -3,16 +3,18 @@
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
-import Image from 'next/image'
 import React, { ReactNode, useEffect, useState } from 'react'
 import Slider from 'react-slick'
 
-import BusanImg from '@/public/images/busan.jpg'
+import { BACKEND_ROUTES } from '@/lib/constants/routes'
+
+import PlaceCard from './PlaceCard'
+import { CommunityPlace, DetailPlace } from './placeType'
 
 interface PopularPlaceProps {}
 
 const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
-  const [popular, setPopular] = useState<any>([])
+  const [popular, setPopular] = useState<DetailPlace[]>()
   const setting = {
     variableWidth: true,
     dots: true,
@@ -20,26 +22,27 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    pauseOnHover: true,
+    arrows: false,
   }
 
   const getPopularPlace = async () => {
+    const URL = BACKEND_ROUTES.PLACES.POPULAR
     try {
-      const res = await fetch(`/server/places/popular`, {
-        method: 'GET',
+      const res = await fetch(`/server${URL.url}`, {
+        method: URL.method,
       })
 
       if (res.ok) {
         const data = await res.json()
-        // console.log(data)
         return data
       }
-
-      console.log(res)
 
       const status = res.status
       switch (status) {
         default:
-          // alert('오류입니다.')
           return
       }
     } catch (error) {
@@ -49,40 +52,25 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
 
   useEffect(() => {
     const getPlace = async () => {
-      const data = await getPopularPlace()
+      const data: DetailPlace[] = await getPopularPlace()
       setPopular(data)
     }
     getPlace()
-
-    console.log('popular', popular)
   }, [])
 
-  const render = (item: any) => (
-    <div className='h-52' style={{ width: 240 }}>
-      <div className='h-[90%] w-[90%] rounded-lg bg-tbSecondary p-3 hover:scale-105 hover:cursor-pointer'>
-        <Image
-          src={item.imageSrc || BusanImg}
-          alt='BusanImg'
-          width={200}
-          height={200}
-          quality={100}
-          className='mb-2 h-2/3 w-full rounded-lg'
-        />
-        <h2 className='text-lg font-medium'>{item.placeName}</h2>
-        <p># {item.category}</p>
-      </div>
-    </div>
-  )
+  const render = (item: CommunityPlace, commentsNum: number) => <PlaceCard place={item} commentsNum={commentsNum} />
 
   return (
     <div className='mb-7'>
-      <p className='mb-7 mt-10 text-3xl'>🔥 TraBook 인기 여행지 Top 10</p>
-      <div className='h-56'>
+      <p className='mb-7 mt-10 text-3xl'>TraBook 인기 여행지 Top 10</p>
+      <div className='h-[320px]'>
         <Slider {...setting}>
           {popular &&
-            popular.map((item: any) => {
-              return render(item)
-            })}
+            popular.map(item => (
+              <div key={item.place.placeId} className='h-[320px]' style={{ width: 400 }}>
+                {render(item.place, item.comments.length)}
+              </div>
+            ))}
         </Slider>
       </div>
     </div>
