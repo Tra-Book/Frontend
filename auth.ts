@@ -27,6 +27,7 @@ const LOGIN_API_KEYS: { [key: string]: LoginApiKey } = {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [
     credentials({
       authorize: async credentials => {

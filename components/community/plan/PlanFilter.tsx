@@ -1,7 +1,7 @@
 'use client'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import React, { Fragment,MouseEvent, ReactNode, useEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import Loading from '@/components/common/Loading'
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils/cn'
 
 import PlanCard from './PlanCard'
 import { FILTERS, FilterType, Plan } from './planType'
-import { DURATION_FILTERS,DurationFilterType, MEMBER_FILTERS, MemberFilterType } from './planType'
+import { DURATION_FILTERS, DurationFilterType, MEMBER_FILTERS, MemberFilterType } from './planType'
 
 interface PlanFilterProps {}
 
@@ -73,7 +73,7 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
     }
   }
 
-  const onClickFilterDetail = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onClickFilterDetail = (e: React.MouseEvent<HTMLDivElement>) => {
     const text = e.currentTarget.textContent as StateType | MemberFilterType | DurationFilterType
     setFilterDetail(text)
   }

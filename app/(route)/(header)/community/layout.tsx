@@ -7,15 +7,14 @@ import { queryClient } from '@/lib/HTTP/http'
 
 interface CommunityLayoutProps {
   children: React.ReactNode
-  modal: React.ReactNode
 }
 
-const CommunityLayout = ({ children, modal }: CommunityLayoutProps): ReactNode => {
+const CommunityLayout = ({ children }: CommunityLayoutProps): ReactNode => {
   return (
     <div className='mt-24'>
       <QueryClientProvider client={queryClient}>
         {children}
-        {modal}
+        {/* {modal} */}
       </QueryClientProvider>
     </div>
   )
