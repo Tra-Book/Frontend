@@ -3,50 +3,60 @@
 import Image from 'next/image'
 import React, { ReactNode } from 'react'
 
-import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
+import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { NO_REVIEW_TEXT } from '@/lib/constants/no_data'
+import { PlaceCardType } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
 
 import Backdrop from '../common/Backdrop'
 
 interface PlaceCardProps {
-  data: DummyPlaceType
+  data: PlaceCardType
 }
 
 // Todo: data props type 지정
 const MainPlaceCard = ({ data }: PlaceCardProps): ReactNode => {
+  const { imgSrc, name, tag, stars, visitCnt, reviews, reviewCnt } = data
   return (
-    <div className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
+    <div className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-2 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow'>
       <div className='group relative w-full overflow-hidden rounded-md'>
-        <Image src={data.imageSrc} alt='Plan Image' className='aspect-video w-full rounded-md object-cover' />
+        <Image
+          width={300}
+          height={200}
+          src={imgSrc || PLAN_DEFAULT_IMAGE}
+          alt='Plan Image'
+          className='aspect-video w-full rounded-md object-cover'
+        />
         <Backdrop className='hidden aspect-video w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
-      <div className='relative flex flex-col justify-start gap-2'>
+      <div className='relative flex flex-col justify-start gap-4'>
         <div className='relative flex items-end justify-start gap-3'>
-          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{data.name}</h2>
-          <span className='text-xs'>&#35;{data.tag}</span>
+          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{name}</h2>
+          <span className='text-sm'>&#35;{tag}</span>
           <Menu />
         </div>
 
-        <div className='flex items-center justify-between text-xs lg:text-sm'>
-          <div className='flex items-center gap-2'>
+        <div className='flex w-full flex-col items-start justify-between gap-2 text-sm lg:text-sm'>
+          <div className='flex items-center gap-3'>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
-              <span>{data.star}</span>
+              <span>{stars}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Plane' strokeWidth={2} />
-              <span>{data.usedCnt}</span>
+              <span>{visitCnt}</span>
             </div>
             <div className='flex items-center gap-1'>
               <span>리뷰</span>
-              <span>{data.reviewCnt}+</span>
+              <span>{reviewCnt}+</span>
             </div>
           </div>
-        </div>
-
-        <div className='flex items-center text-wrap break-words rounded-md bg-tbPlaceholder px-1 py-2 text-xs hover:bg-tbPlaceHolderHover lg:text-sm'>
-          {data.reviews[0]}
+          <div className='flex min-h-16 w-full items-center text-wrap break-words rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover lg:text-sm'>
+            <div className='line-clamp-2 w-full break-words text-sm'>
+              {reviews.length === 0 ? NO_REVIEW_TEXT : reviews[0].content}
+            </div>
+          </div>
         </div>
       </div>
     </div>

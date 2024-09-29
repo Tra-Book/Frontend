@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { NO_REVIEW_TEXT } from '@/lib/constants/no_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
 import { placeAddScrap } from '@/lib/HTTP/place/API'
@@ -176,7 +177,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
 
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
           <div className='line-clamp-2 w-full break-words text-sm'>
-            {reviews.length !== 0 ? reviews[0].content : '리뷰 준비중입니다...'}
+            {reviews.length !== 0 ? reviews[0].content : NO_REVIEW_TEXT}
           </div>
         </div>
       </div>

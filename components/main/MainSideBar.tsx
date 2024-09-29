@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
@@ -19,7 +20,7 @@ const MainSideBar = ({}: SideBarProps): ReactNode => {
 
   return (
     // md부터 보임
-    <div className='relative hidden h-auto min-h-screen-header w-1/6 min-w-[140px] max-w-[200px] flex-col items-center justify-start md:flex'>
+    <div className='relative hidden h-auto min-h-screen-header min-w-[210px] flex-col items-center justify-start md:flex'>
       {/* 프로필 */}
       <div className='flex w-full flex-col items-center justify-start border-b border-solid border-tbGray py-7'>
         <Image
@@ -29,8 +30,10 @@ const MainSideBar = ({}: SideBarProps): ReactNode => {
           width={80}
           height={80}
         />
-        <div className='py-3 text-lg font-semibold'>{session.data?.nickname}</div>
-        <div className='text-pretty text-center text-sm font-medium'>{session.data?.status_message}</div>
+        <div className='py-3 text-lg font-semibold'>{session.data?.nickname || NO_USER_NAME}</div>
+        <div className='text-pretty text-center text-sm font-medium'>
+          {session.data?.status_message || NO_USER_DESCRIPTION}
+        </div>
       </div>
       {/* 링크 */}
       <div className='flex w-3/4 flex-col items-start justify-start gap-8 py-10 text-xl font-medium 2xl:text-2xl'>

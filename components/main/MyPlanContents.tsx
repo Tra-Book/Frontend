@@ -55,6 +55,7 @@ const MainPlanContents = ({ plans }: MainPlanContentsProps): ReactNode => {
     setCurrentPage(pageNumber)
     scrollToTop()
   }
+  // Reset Filter
   const resetHandler = () => {
     setSearchInput('')
     filterHandler('all', 'reset')

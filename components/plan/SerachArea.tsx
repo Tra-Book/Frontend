@@ -56,9 +56,6 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
         accessToken: session.data.accessToken,
       }
 
-      console.log('Page Param:', pageParam)
-      console.log('Params:', commonParams)
-
       // 조건에 따라 다른 함수 호출
       if (name === 'Place') {
         const response = await fetchPlaces({
@@ -169,8 +166,6 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
           }),
         )
     } else {
-      console.log(data)
-
       contents =
         data &&
         data.pages.map((page, scrollIndex) =>
