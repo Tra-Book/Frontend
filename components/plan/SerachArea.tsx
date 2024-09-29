@@ -8,7 +8,7 @@ import { useInView } from 'react-intersection-observer'
 import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
 import { queryClient } from '@/lib/HTTP/http'
-import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/places/API'
+import { fetchPlaces, PlaceCardType, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
@@ -22,14 +22,14 @@ import { Input } from '../ui/input'
 import { PlaceCard, PlanCard } from './Cards'
 
 interface SearchAreaProps {
-  className?: string
   name: 'Plan' | 'Place'
-  handleClickCard: (card: Place | Plan) => void
-  focusCard: Place | Plan | undefined
+  focusCard: PlaceCardType | Plan | undefined
+  handleClickCard: (card: PlaceCardType | Plan) => void
+  className?: string
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
 
-const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
+const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaProps): ReactNode => {
   const pathname = usePathname()
   const session: any = useSession()
 
@@ -142,7 +142,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
                 <PlaceCard
                   data={place}
                   focusedPlaceCard={focusCard as Place | undefined}
-                  handleClickCard={handleClickCard as (card: Place) => void}
+                  handleClickCard={handleClickCard as (card: PlaceCardType) => void}
                 />
                 {/* 무한스크롤 경계(중간에 위치) */}
                 {isBoundary && <div ref={ref} />}

@@ -12,7 +12,9 @@ export interface CommentRequest {
   time: string
   refOrder: number
 }
-
+/**
+ * 여행계획 댓글
+ */
 export interface CommentResponse extends CommentRequest {
   id: number
 
@@ -20,4 +22,14 @@ export interface CommentResponse extends CommentRequest {
   userName: string
   userImgsrc: string
   userStatusMessage: string
+}
+
+/**
+ * 여행지 리뷰
+ */
+export type Review = {
+  commentId: number
+  placeId: number
+  content: string
+  date: string
 }

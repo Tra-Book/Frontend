@@ -4,8 +4,8 @@ export const queryClient = new QueryClient({
     queries: {
       retry: 1,
       retryDelay: 0,
-      // 1분으로 staleTime 지정하기
-      staleTime: 1 * 60 * 1000,
+      // 10분으로 staleTime 지정하기
+      staleTime: 1 * 60 * 1000 * 10,
     },
     mutations: {
       retry: 1,

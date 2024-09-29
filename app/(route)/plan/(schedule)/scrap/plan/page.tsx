@@ -10,7 +10,7 @@ import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
-import { Place } from '@/lib/types/Entity/place'
+import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { Plan } from '@/lib/types/Entity/plan'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
@@ -60,7 +60,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                 </div>
                 <SearchArea
                   name='Plan'
-                  handleClickCard={handleClickCard as (card: Place | Plan) => void}
+                  handleClickCard={handleClickCard as (card: PlaceCardType | Plan) => void}
                   focusCard={focusedPlanCard}
                   className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
                 />

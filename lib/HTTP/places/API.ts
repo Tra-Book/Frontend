@@ -3,6 +3,7 @@
  * 필터값이 적용된 여행지를 가져오는 API입니다.
  */
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
+import { Review } from '@/lib/types/Entity/comment'
 import { Place } from '@/lib/types/Entity/place'
 import { ArrangeChoiceType, StateChoicesType } from '@/lib/utils/hooks/useFilters'
 
@@ -39,25 +40,27 @@ interface fetchPlacesParams {
 }
 
 export type PlaceResponse = {
-  placeId: number
-  cityId: number
-  address: string
-  description: string
-  imageSrc: string
-  latitude: number
-  likes: number
-  longitude: number
-  numOfAdded: number
-  placeName: string
-  ratingScore: number
-  scraps: number
-  star: number
-  category: string
-  subcategory: string
-  tel: string
-  zipcode: string
-  scrapped: boolean
+  place: {
+    placeId: number
+    cityId: number
+    address: string
+    placeName: string
+    description: string
+    latitude: number
+    longitude: number
+    star: number
+    category: string
+    imgSrc: string
+    subcategory: string
+    ratingScore: number
+    scraps: number
+    numOfAdded: number
+    numOfReview: number
+    isScrapped: boolean
+  }
+  comments: Array<Review>
 }
+
 export type PlaceCardType = Omit<Place, 'duration' | 'order'>
 
 export const SCROLL_SIZE = 12
@@ -120,26 +123,30 @@ export const fetchPlaces = async (
     throw error
   }
   const { places, totalPages } = await res.json()
-  const datas: PlaceCardType[] = places.map((place: PlaceResponse) => ({
-    id: place.placeId,
-    name: place.placeName,
-    imgSrc: place.imageSrc,
-    address: place.address,
-    geo: {
-      latitude: place.latitude,
-      longitude: place.longitude,
-    },
-    tag: place.category,
-    // duration 필요 없음(선택한 여행지에서 필요)
-    stars: place.star,
-    visitCnt: place.numOfAdded,
-    // TODO: reviews 백엔드 로직 아직 없음
-    reviews: ['여기 너무 좋아요~ 데이트 장소', '핫플핫플 핫핫'], // Dummy
-    reviewCnt: 200, // Dummy
+  const datas: PlaceCardType[] = places.map(
+    (data: PlaceResponse) =>
+      ({
+        id: data.place.placeId,
+        name: data.place.placeName,
+        imgSrc: data.place.imgSrc,
+        address: data.place.address,
+        geo: {
+          latitude: data.place.latitude,
+          longitude: data.place.longitude,
+        },
+        tag: data.place.category,
+        // duration: 필요 없음(선택한 여행지에서 필요)
+        // order: 필요 없음(선택한 여행지에서 필요)
+        stars: data.place.star,
+        visitCnt: data.place.numOfAdded,
 
-    isScraped: place.scrapped,
-  }))
-  console.log('FEtched datas', datas)
+        reviewCnt: data.place.numOfReview,
+        reviews: data.comments,
+
+        isScraped: data.place.isScrapped,
+      }) as PlaceCardType,
+  )
+  console.log('Fetched datas', datas)
   console.log('Fetched totalPages', totalPages)
 
   return { datas, totalPages }

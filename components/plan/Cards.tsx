@@ -8,6 +8,7 @@ import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
 import { placeAddScrap } from '@/lib/HTTP/place/API'
+import { PlaceCardType } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -88,13 +89,13 @@ export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }:
 }
 
 interface PlaceCardProps {
-  data: Place
+  data: PlaceCardType
   focusedPlaceCard: Place | undefined
-  handleClickCard: (card: Place) => void
+  handleClickCard: (card: PlaceCardType) => void
 }
 
 export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCardProps) => {
-  const { id, imgSrc, order, name, address, tag, reviews, reviewCnt, stars, visitCnt, duration, isScraped } = data
+  const { id, imgSrc, name, address, tag, reviews, reviewCnt, stars, visitCnt, isScraped } = data
   const session: any = useSession()
 
   const [tmpIsScrap, setTmpIsScrap] = useState<boolean>(isScraped)
@@ -170,7 +171,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
         </div>
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
           <div className='line-clamp-2 w-full break-words text-sm'>
-            {reviews ? reviews[0].content : '리뷰를 작성해주세요!'}
+            {reviews.length !== 0 ? reviews[0].content : '리뷰를 작성해주세요!'}
           </div>
         </div>
       </div>

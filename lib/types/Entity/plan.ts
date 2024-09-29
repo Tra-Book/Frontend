@@ -26,7 +26,7 @@ export interface Plan {
   schedule: Array<Schedule>
 
   // #3. 커뮤니티 정보
-  comments: Nullable<Array<CommentResponse>> // default: null
+  comments: Nullable<Array<CommentResponse>> // 댓글
   likeCnt: number // default: 0
   scrapCnt: number // default: 0
   commentCnt: number

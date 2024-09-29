@@ -8,18 +8,16 @@ import { Button } from '@/components/ui/button'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
 import { bounce } from '@/lib/types/animation'
-import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
-
-interface PlanSchedulePageProps {}
 
 const PlanSchedulePage = (): ReactNode => {
   const { planData, setPlanData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { setCenter, setFocusedPlacePin } = useMapStore()
   const { day } = useDropdownStore()
-  const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
+  const [focusedPlaceCard, setFocusedPlaceCard] = useState<PlaceCardType>() // 유저가 클릭한 카드
 
   const handleSearchBtn = () => {
     setIsReduced(true)
@@ -37,7 +35,7 @@ const PlanSchedulePage = (): ReactNode => {
     setFocusedPlacePin(null)
   }
 
-  const handleClickCard = (card: Place) => {
+  const handleClickCard = (card: PlaceCardType) => {
     setFocusedPlaceCard(card)
     setFocusedPlacePin(card.geo)
     setCenter(card.geo)
@@ -54,7 +52,7 @@ const PlanSchedulePage = (): ReactNode => {
         <SearchArea
           name='Place'
           focusCard={focusedPlaceCard}
-          handleClickCard={handleClickCard as (card: Place | Plan) => void}
+          handleClickCard={handleClickCard as (card: PlaceCardType | Plan) => void}
           className='h-dvh w-[23dvw] min-w-[280px]'
         />
       )}
