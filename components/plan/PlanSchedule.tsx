@@ -112,7 +112,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
       const len = schedule.places.length
       contents = schedule.places.map((place, index) => (
         <React.Fragment key={place.order}>
-          <SchedulePlaceCard id={id} data={place} isReduced={isReduced} />
+          <SchedulePlaceCard id={id} data={place} fillIndex={1} isReduced={isReduced} />
           {index + 1 !== schedule.places?.length && (
             <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
               <LucideIcon name='CarFront' size={26} />

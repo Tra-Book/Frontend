@@ -9,13 +9,14 @@ import Slider from 'react-slick'
 import Loading from '@/components/common/Loading'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 
-import PlaceCard from './PlaceCard'
-import { CommunityPlace, DetailPlace } from './placeType'
+import PlanCard from './PlanCard'
+import { Plan } from './planType'
 
-interface PopularPlaceProps {}
+interface PopularPlanProps {}
 
-const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
-  const [popular, setPopular] = useState<DetailPlace[]>()
+const PopularPlan = ({}: PopularPlanProps): ReactNode => {
+  const [popular, setPopular] = useState<Plan[]>()
+
   const setting = {
     variableWidth: true,
     dots: true,
@@ -29,8 +30,8 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
     arrows: false,
   }
 
-  const getPopularPlace = async () => {
-    const URL = BACKEND_ROUTES.PLACES.POPULAR
+  const getPopularPlan = async () => {
+    const URL = BACKEND_ROUTES.PLANS.POPULAR
     try {
       const res = await fetch(`/server${URL.url}`, {
         method: URL.method,
@@ -53,34 +54,33 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
 
   useEffect(() => {
     const getPlace = async () => {
-      const data: DetailPlace[] = await getPopularPlace()
+      const data: Plan[] = await getPopularPlan()
       setPopular(data)
     }
     getPlace()
   }, [])
 
-  const render = (item: CommunityPlace, commentsNum: number) => <PlaceCard place={item} commentsNum={commentsNum} />
-
   return (
     <div className='mb-7'>
-      <p className='mb-7 mt-10 text-3xl'>TraBook 인기 여행지 Top 10</p>
+      <p className='mb-7 mt-10 text-3xl'>TraBook 인기 여행계획</p>
       {!popular && (
         <div className='flex h-[320px] items-center justify-center'>
           <Loading size={30} />
         </div>
       )}
       <div className='h-[320px]'>
-        <Slider {...setting}>
-          {popular &&
-            popular.map(item => (
-              <div key={item.place.placeId} className='h-[320px]' style={{ width: 400 }}>
-                {render(item.place, item.comments.length)}
+        {popular && (
+          <Slider {...setting}>
+            {popular.map(item => (
+              <div key={item.description} className='h-[320px]' style={{ width: 400 }}>
+                <PlanCard plan={item} />
               </div>
             ))}
-        </Slider>
+          </Slider>
+        )}
       </div>
     </div>
   )
 }
 
-export default PopularPlace
+export default PopularPlan
