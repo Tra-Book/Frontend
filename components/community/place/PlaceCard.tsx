@@ -11,9 +11,10 @@ import { CommunityPlace } from './placeType'
 
 interface PlaceCardProps {
   place: CommunityPlace
+  commentsNum: number
 }
 
-const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
+const PlaceCard = ({ place, commentsNum }: PlaceCardProps): ReactNode => {
   return (
     <Link
       href={`/community/place/detail/${place.placeId}`}
@@ -21,7 +22,7 @@ const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
       className='block h-[95%] w-[90%] rounded-lg p-3 shadow-tb-shadow hover:scale-105 hover:cursor-pointer'
     >
       <Image
-        src={place.imageSrc || PLACE_DEFAULT_IMAGE || BusanImg}
+        src={place.imgSrc || PLACE_DEFAULT_IMAGE || BusanImg}
         alt='BusanImg'
         width={200}
         height={200}
@@ -39,6 +40,10 @@ const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
           <div className='flex items-center gap-1'>
             <LucideIcon name='Bookmark' strokeWidth={3} />
             <p>{place.scrapped || 0}</p>
+          </div>
+          <div className='flex items-center gap-1'>
+            <LucideIcon name='MessageCircle' strokeWidth={3} />
+            <p>{commentsNum || 0}</p>
           </div>
         </div>
       </div>

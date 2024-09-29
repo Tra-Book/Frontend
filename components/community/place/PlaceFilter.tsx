@@ -11,7 +11,7 @@ import { PLACE_TAG, PlaceTagType } from '@/lib/constants/tag'
 import { cn } from '@/lib/utils/cn'
 
 import PlaceCard from './PlaceCard'
-import { CommunityPlace } from './placeType'
+import { DetailPlace } from './placeType'
 
 type Query = {
   filterDetail: StateType | PlaceTagType
@@ -155,13 +155,13 @@ const PlaceFilter = ({}: PlaceFilterProps): ReactNode => {
         {data?.pages.map((group, scrollIndex) => {
           return (
             <Fragment key={`${scrollIndex}-${group.places[0]?.placeId}`}>
-              {group?.places.map((place: CommunityPlace, index: number) => (
+              {group?.places.map((place: DetailPlace, index: number) => (
                 <>
                   <div
                     key={`${scrollIndex}-${index}-${place.placeId}`}
                     className='flex h-[288px] w-[330px] items-center justify-center'
                   >
-                    <PlaceCard place={place} />
+                    <PlaceCard place={place.place} commentsNum={place.comments.length} />
                   </div>
                   {scrollIndex === data.pages.length - 1 && index === 8 && <div ref={ref} />}
                 </>

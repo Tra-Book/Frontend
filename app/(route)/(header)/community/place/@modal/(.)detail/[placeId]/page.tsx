@@ -11,7 +11,7 @@ interface CommunityPlaceDetailProps {
 
 const getPlace = async (placeId: string) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/place/?placeId=${placeId}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/place?placeId=${placeId}`)
 
     if (!res.ok) {
       const error = new Error('An error occurred while fetching places')

@@ -2,7 +2,7 @@ export interface CommunityPlace {
   address: string
   category: string
   cityId: number
-  imageSrc: string | null
+  imgSrc: string | null
   latitude: number
   longitude: number
   numOfAdded: string
@@ -15,6 +15,7 @@ export interface CommunityPlace {
   placeName: string
   description?: null
   subcategory?: string
+  isScrapped?: boolean | null
 }
 
 type Comment = {

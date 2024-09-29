@@ -9,12 +9,12 @@ import Slider from 'react-slick'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 
 import PlaceCard from './PlaceCard'
-import { CommunityPlace } from './placeType'
+import { CommunityPlace, DetailPlace } from './placeType'
 
 interface PopularPlaceProps {}
 
 const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
-  const [popular, setPopular] = useState<CommunityPlace[]>()
+  const [popular, setPopular] = useState<DetailPlace[]>()
   const setting = {
     variableWidth: true,
     dots: true,
@@ -52,13 +52,13 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
 
   useEffect(() => {
     const getPlace = async () => {
-      const data: CommunityPlace[] = await getPopularPlace()
+      const data: DetailPlace[] = await getPopularPlace()
       setPopular(data)
     }
     getPlace()
   }, [])
 
-  const render = (item: any) => <PlaceCard place={item} />
+  const render = (item: CommunityPlace, commentsNum: number) => <PlaceCard place={item} commentsNum={commentsNum} />
 
   return (
     <div className='mb-7'>
@@ -67,8 +67,8 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
         <Slider {...setting}>
           {popular &&
             popular.map(item => (
-              <div key={item.placeId} className='h-[320px]' style={{ width: 400 }}>
-                {render(item)}
+              <div key={item.place.placeId} className='h-[320px]' style={{ width: 400 }}>
+                {render(item.place, item.comments.length)}
               </div>
             ))}
         </Slider>
