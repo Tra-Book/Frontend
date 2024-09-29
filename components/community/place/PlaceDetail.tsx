@@ -17,24 +17,10 @@ interface PlaceDetailProps {
 }
 
 const PlaceDetail = ({ place }: PlaceDetailProps): ReactNode => {
-  console.log(place)
   useKakaoLoader() // 카카오 지도 로딩
   const router = useRouter()
 
   const [activeItemIndex, setActiveItemIndex] = useState(0)
-
-  const settings = {
-    variableWidth: true,
-    dots: true,
-    speed: 500,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    pauseOnHover: true,
-    arrows: false,
-  }
 
   const onClickBack = () => {
     router.back()
@@ -44,7 +30,7 @@ const PlaceDetail = ({ place }: PlaceDetailProps): ReactNode => {
     <div className='relative flex h-full w-full flex-col rounded-[30px] p-2'>
       <div className='relative mb-1 grow rounded-[30px]'>
         <Image
-          src={place.place.imageSrc || PLACE_DEFAULT_IMAGE}
+          src={place.place.imgSrc || PLACE_DEFAULT_IMAGE}
           alt={place.place.placeName}
           fill
           className='object-contain'
