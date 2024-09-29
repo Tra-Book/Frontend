@@ -158,7 +158,7 @@ const PlaceFilter = ({}: PlaceFilterProps): ReactNode => {
               {group?.places.map((place: DetailPlace, index: number) => (
                 <>
                   <div
-                    key={`${scrollIndex}-${index}-${place.placeId}`}
+                    key={`${scrollIndex}-${index}-${place.place.placeId}`}
                     className='flex h-[288px] w-[330px] items-center justify-center'
                   >
                     <PlaceCard place={place.place} commentsNum={place.comments.length} />
