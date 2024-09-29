@@ -174,7 +174,16 @@ export const BACKEND_ROUTES = {
       },
     },
   },
-
+  PLANS: {
+    POPULAR: {
+      method: HttpMethod.GET,
+      url: '/plans/popular',
+    },
+    GENERAL: {
+      method: HttpMethod.GET,
+      url: '/plans/general',
+    },
+  },
   PLACES: {
     GENERAL: {
       method: HttpMethod.GET,

@@ -6,6 +6,7 @@ import 'slick-carousel/slick/slick-theme.css'
 import React, { ReactNode, useEffect, useState } from 'react'
 import Slider from 'react-slick'
 
+import Loading from '@/components/common/Loading'
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 
 import PlaceCard from './PlaceCard'
@@ -63,6 +64,11 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
   return (
     <div className='mb-7'>
       <p className='mb-7 mt-10 text-3xl'>TraBook 인기 여행지 Top 10</p>
+      {!popular && (
+        <div className='flex h-[320px] items-center justify-center'>
+          <Loading size={30} />
+        </div>
+      )}
       <div className='h-[320px]'>
         <Slider {...setting}>
           {popular &&

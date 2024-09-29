@@ -11,7 +11,7 @@ const PlanBanner = ({}: PlanBannerProps): ReactNode => {
     <>
       <p className='my-5'>{`홈 > 커뮤니티 > 여행지`}</p>
       <div className='flex items-center justify-center gap-16 max-[1200px]:flex-col max-[1200px]:items-center max-[1200px]:gap-10'>
-        <div className='flex flex-col justify-center gap-20 text-xl max-[1200px]:gap-10'>
+        <div className='flex flex-col justify-center gap-14 text-xl max-[1200px]:gap-10'>
           <p className='text-3xl font-semibold'>
             다양한 <span className='text-tbPrimaryHover'>여행 계획</span>를 둘러보세요
           </p>
