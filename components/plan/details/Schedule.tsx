@@ -22,6 +22,7 @@ interface PlanDetailScheduleProps {
 
 const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): ReactNode => {
   const { startDate, schedule } = plan
+  console.log('schedule fetched: ', schedule)
 
   const { DayDropdown } = useDayDropdown(schedule.length)
   const { setDay } = useDropdownStore()

@@ -17,6 +17,7 @@ import { PlanCardType } from '@/lib/HTTP/plans/API'
 import { bounce } from '@/lib/types/animation'
 import { Place } from '@/lib/types/Entity/place'
 import { Plan } from '@/lib/types/Entity/plan'
+import { cn } from '@/lib/utils/cn'
 
 interface PlaceStorePageProps {}
 
@@ -25,6 +26,7 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
   const { setCenter, setFocusedPlacePin } = useMapStore()
   const { day } = useDropdownStore()
 
+  const [isLeftOverHovered, setIsLeftOverHovered] = useState(false)
   const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
 
   const openSearchBar = () => {
@@ -69,10 +71,19 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
             className='relative flex h-dvh min-w-[280px] flex-col items-center justify-start'
           >
             <div className='relative flex h-[7dvh] w-full shrink-0 items-center justify-center font-semibold'>
-              <div className='flex h-full w-1/2 cursor-pointer items-center justify-center bg-tbPrimary'>여행지</div>
+              <div
+                className={cn(
+                  'flex h-full w-1/2 cursor-pointer items-center justify-center bg-tbPrimary hover:bg-tbPrimaryHover',
+                  isLeftOverHovered && 'bg-white',
+                )}
+              >
+                여행지
+              </div>
               <Link
                 href={ROUTES.PLAN.SCRAP.PLAN.url}
-                className='flex h-full w-1/2 cursor-pointer items-center justify-center'
+                onMouseEnter={() => setIsLeftOverHovered(true)} // 마우스가 올라왔을 때
+                onMouseLeave={() => setIsLeftOverHovered(false)} // 마우스가 떠났을 때
+                className='flex h-full w-1/2 cursor-pointer items-center justify-center hover:bg-tbPrimary'
               >
                 여행계획
               </Link>

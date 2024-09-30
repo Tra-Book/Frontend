@@ -165,7 +165,7 @@ const Contents = ({ name }: ContentsProps): ReactNode => {
     else {
       contents = (
         <>
-          <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-1 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
+          <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-4 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
             {filteredData.map((data, index) =>
               name === 'Plan' ? (
                 //TODO: PlanCardType으로 바꿔야함

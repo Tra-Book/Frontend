@@ -80,9 +80,9 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     startTime: item.startTime,
     endTime: item.endTime,
     scheduleList: item.places?.map(place => ({
-      placeId: place.id,
       order: place.order,
       time: place.duration,
+      placeId: place.id,
       imageSrc: place.imgSrc,
       placeName: place.name,
       latitude: place.geo.latitude,
@@ -106,6 +106,8 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     isPublic: isPublic,
     isFinished: isDone,
   }
+  console.log('bodyPlan: ', bodyPlan)
+  console.log('imgrsc:', imgSrc)
 
   const formData = new FormData()
   formData.append('plan', JSON.stringify(bodyPlan))
@@ -251,6 +253,9 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     status_message: user.status_message as string,
     image: user.image as string,
   }
+  console.log('planData:', planData)
+  console.log('PlanUser:', planUser)
+  console.log('Tags:', tags)
 
   return { planData, planUser, tags }
 }

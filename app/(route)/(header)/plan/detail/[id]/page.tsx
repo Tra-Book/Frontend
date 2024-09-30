@@ -49,10 +49,10 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     content = <LoadingPage />
   }
   if (data) {
+    console.log('Fetched from ID:', data)
+
     content = (
       <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
-        {/* 설명 */}
-        {/* TODO: 글쓴이의 정보로 user바꾸기 */}
         <Description
           plan={data?.planData as Plan}
           planUser={data?.planUser}

@@ -22,6 +22,12 @@ const nextConfig = {
     ],
     minimumCacheTTL: 1500000,
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb',
+    },
+  },
+
   async rewrites() {
     return [
       {

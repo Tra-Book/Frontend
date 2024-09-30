@@ -18,6 +18,7 @@ interface InfoModalProps {
 }
 
 export type ModalData = {
+  id: 'info' | 'confirm'
   title: string
   description: string
   isError: boolean // True: Red text False: Black Text

@@ -263,7 +263,7 @@ const PostComment = ({
           </Button>
         }
       </div>
-      <Modal id='confirm' onConfirm={() => router.push(ROUTES.AUTH.LOGIN.url)} />
+      <Modal onConfirm={() => router.push(ROUTES.AUTH.LOGIN.url)} />
     </div>
   )
 }

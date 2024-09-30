@@ -61,8 +61,6 @@ export const fetchPlaces = async (
   datas: PlaceCardType[]
   totalPages: number
 }> => {
-  console.log('Entered Place')
-
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
 
   const queries: Queries = [
@@ -94,7 +92,6 @@ export const fetchPlaces = async (
       value: state,
     }),
   )
-  console.log(queries)
 
   const API = BACKEND_ROUTES.PLACES.GENERAL
 

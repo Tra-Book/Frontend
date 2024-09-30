@@ -1,7 +1,7 @@
 'use client'
 import { AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
@@ -11,6 +11,7 @@ import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
+import { cn } from '@/lib/utils/cn'
 import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
 interface PlanStorePageProps {}
@@ -18,9 +19,9 @@ interface PlanStorePageProps {}
 const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
   useKakaoLoader() // 카카오 지도 로딩
 
-  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
-
   const [focusedPlanCard, setFocusPlanCard] = useState<PlanCardType>()
+  const [isLeftOverHovered, setIsLeftOverHovered] = useState(false)
+  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
 
   const openSearchBar = () => {
     setIsReduced(true)
@@ -31,6 +32,9 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
     setFocusPlanCard(card)
   }
 
+  useEffect(() => {
+    console.log(isLeftOverHovered)
+  }, [])
   return (
     <>
       <AnimatePresence initial={false}>
@@ -49,11 +53,22 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                 <div className='relative flex h-[7dvh] w-full shrink-0 items-center justify-center font-semibold'>
                   <Link
                     href={ROUTES.PLAN.SCRAP.PLACE.url}
-                    className='flex h-full w-1/2 cursor-pointer items-center justify-center'
+                    onMouseEnter={() => {
+                      console.log('Entered hovered')
+
+                      setIsLeftOverHovered(true)
+                    }} // 마우스가 올라왔을 때
+                    onMouseLeave={() => setIsLeftOverHovered(false)} // 마우스가 떠났을 때
+                    className={cn('flex h-full w-1/2 cursor-pointer items-center justify-center hover:bg-tbPrimary')}
                   >
                     여행지
                   </Link>
-                  <div className='flex h-full w-1/2 cursor-pointer items-center justify-center bg-tbPrimary'>
+                  <div
+                    className={cn(
+                      'flex h-full w-1/2 cursor-pointer items-center justify-center bg-tbPrimary hover:bg-tbPrimaryHover',
+                      isLeftOverHovered && 'bg-white',
+                    )}
+                  >
                     여행계획
                   </div>
                 </div>

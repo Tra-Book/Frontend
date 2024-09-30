@@ -2,10 +2,11 @@
 
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
+import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
@@ -27,6 +28,8 @@ const iconSize: number = 24
 
 const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const pathname = usePathname()
+  const router = useRouter()
+
   const session: any = useSession()
 
   const { planData, setPlanData } = usePlanStore()
@@ -49,12 +52,67 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   })
 
   const savePlanHandler = () => {
+    if (isPending) {
+      toast({ title: '다른 작업 수행중입니다' })
+      return
+    }
     mutate({ plan: planData, userId: session.data.userId })
   }
 
   // TODO: 저장 로직 만들기
   const openModalHandler = () => {
     handleModalStates(ClientModalData.serviceOnReady, 'open')
+  }
+
+  /**
+   * 계획 작성을 마무리하고, Post로 만드는 함수
+   */
+  const writePostHandler = () => {
+    // #0. 필수 필드 확인
+    if (planData.imgSrc === PLAN_DEFAULT_IMAGE) {
+      handleModalStates(ClientModalData.checkImageError, 'open')
+      return
+    }
+    if (!planData.title) {
+      handleModalStates(ClientModalData.checkTitleError, 'open')
+      return
+    }
+    if (!planData.description) {
+      handleModalStates(ClientModalData.checkDescriptionError, 'open')
+      return
+    }
+    if (!planData.memberCnt || planData.memberCnt === 0) {
+      handleModalStates(ClientModalData.checkMemberCntError, 'open')
+      return
+    }
+    if (!planData.budget) {
+      handleModalStates(ClientModalData.checkBudgetError, 'open')
+      return
+    }
+    // #1. 제출 확인 모달 열기
+    handleModalStates(ClientModalData.submitPlan, 'open')
+  }
+
+  /**
+   * 모달 Confirm시 수행할 작업
+   */
+  const onConfirm = () => {
+    if (modalData.id === 'confirm') {
+      switch (modalData) {
+        case ClientModalData.submitPlan:
+          // #0. 저장 > onSuccess
+          mutate(
+            { plan: planData, userId: session.data.userId },
+            {
+              onSuccess(data) {
+                // #1. 여행계획 디테일 페이지로 Redirect
+                router.push(`${ROUTES.PLAN.DETAIL.url}/${data.planId}`)
+              },
+            },
+          )
+          break
+      }
+    }
   }
   return (
     <div className={className}>
@@ -107,11 +165,15 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
           </>
         )}
       </div>
+      <div className={cn(style)} onClick={writePostHandler}>
+        <LucideIcon name='PencilLine' size={iconSize} />
+        계획 개시
+      </div>
       <div className={cn(style)} onClick={openModalHandler}>
         <LucideIcon name='Settings' size={iconSize} />
         설정
       </div>
-      <Modal id='info' onConfirm={() => {}} />
+      <Modal onConfirm={onConfirm} />
     </div>
   )
 }
