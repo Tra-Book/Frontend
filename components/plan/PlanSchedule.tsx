@@ -30,11 +30,6 @@ interface PlanScheduleProps {
 }
 
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
-  if (id === 'schedule') {
-    plan = plan as Plan
-  } else {
-    plan = plan as PlanCardType
-  }
   const { isReduced, isSearching, setIsReduced } = usePlanStore()
   const { setPins, clearPins } = useMapStore()
   const session: any = useSession()
@@ -56,10 +51,18 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   }
 
   // #1. 컴포넌트에서 사용할 Data 정의
+
   const [fetchedData, setFetchedData] = useState<Plan>(id === 'schedule' ? (plan as Plan) : INITIAL_PLAN)
+
   useEffect(() => {
-    if (data) setFetchedData(data.planData)
+    if (data) {
+      setFetchedData(data.planData)
+    }
   }, [data])
+
+  useEffect(() => {
+    setFetchedData(plan as Plan)
+  }, [plan])
 
   if (!fetchedData || !fetchedData.schedule) {
     contents = <div>No schedule data available</div>
@@ -90,6 +93,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   }
 
   // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
+
   const schedule: Schedule | undefined = fetchedData.schedule?.find(item => item.day === day)
 
   // #2.1 거리계산 함수

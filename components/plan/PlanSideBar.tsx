@@ -32,7 +32,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
 
   const session: any = useSession()
 
-  const { planData, setPlanData } = usePlanStore()
+  const { planData, setPlanData, setIsReduced, setIsSearching } = usePlanStore()
   const { modalData, handleModalStates, Modal } = useModal()
 
   const { mutate, isPending } = useMutation({
@@ -112,7 +112,10 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
       switch (modalData) {
         // Case1 메인으로 이동하기
         case ClientModalData.routeWithoutSave:
+          // 초기화
           setPlanData(INITIAL_PLAN)
+          setIsSearching(false)
+          setIsReduced(false)
           router.push(ROUTES.HOME.url)
           break
         // Case2 계획 개시하기
