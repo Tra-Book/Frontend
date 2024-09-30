@@ -29,6 +29,7 @@ const get_dummy_place = (idx: number): Place => {
     isScraped: Math.random() < 0.5, // 스크랩 여부
 
     order: 1 + idx, // 계획세우기에 담긴 순서}
+    reviews: [],
   }
 }
 export const DUMMY_PLACES: Array<Place> = Array.from({ length: 6 }, (_, idx) => get_dummy_place(idx))

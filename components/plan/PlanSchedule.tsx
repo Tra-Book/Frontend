@@ -10,7 +10,7 @@ import { fetchPlan } from '@/lib/HTTP/plan/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
-import { Geo } from '@/lib/types/Entity/place'
+import { Geo, Place } from '@/lib/types/Entity/place'
 import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import { calculateLeftTIme } from '@/lib/utils/dateUtils'
@@ -30,7 +30,7 @@ interface PlanScheduleProps {
 }
 
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
-  const { isReduced, isSearching, setIsReduced } = usePlanStore()
+  const { planData, setPlanData, isReduced, isSearching, setIsReduced } = usePlanStore()
   const { setPins, clearPins } = useMapStore()
   const session: any = useSession()
 
@@ -92,8 +92,32 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     }
   }
 
-  // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
+  const deletePlaceHandler = (placeId: number) => {
+    // #1. 스케쥴 돌며 업데이트
+    const newSchedule = fetchedData.schedule.map(daySchedule => {
+      // 날짜 찾기
+      if (daySchedule.day === day) {
+        const newPlaces: Place[] = daySchedule.places
+          .filter(place => place.id !== placeId)
+          .map((place, index) => ({
+            ...place,
+            order: index + 1,
+          }))
 
+        return {
+          ...daySchedule,
+          places: newPlaces,
+        }
+      }
+      return daySchedule
+    })
+    // #2. 전역변수 변경
+    setPlanData({
+      schedule: newSchedule, // schedule만 변경
+    })
+  }
+
+  // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
   const schedule: Schedule | undefined = fetchedData.schedule?.find(item => item.day === day)
 
   // #2.1 거리계산 함수
@@ -156,7 +180,13 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     } else {
       contents = schedule.places.map((place, index) => (
         <React.Fragment key={place.order}>
-          <SchedulePlaceCard id={id} data={place} fillIndex={1} isReduced={isReduced} />
+          <SchedulePlaceCard
+            id={id}
+            data={place}
+            deletePlaceHandler={deletePlaceHandler}
+            fillIndex={1}
+            isReduced={isReduced}
+          />
           {index + 1 !== schedule.places?.length && (
             <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
               <LucideIcon name='CarFront' size={26} />

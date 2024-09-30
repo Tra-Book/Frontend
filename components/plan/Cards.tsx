@@ -22,27 +22,32 @@ import { MapPin } from '../common/MapPin'
 interface SchedulePlaceCardProps {
   id: 'schedule' | 'scrap' | 'dummy'
   data: Place
+  deletePlaceHandler?: (placeId: number) => void
   fillIndex: number
   isReduced: boolean
   className?: string
 }
 
-export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }: SchedulePlaceCardProps): ReactNode => {
+export const SchedulePlaceCard = ({
+  id,
+  data,
+  deletePlaceHandler,
+  fillIndex,
+  isReduced,
+  className,
+}: SchedulePlaceCardProps): ReactNode => {
   const { imgSrc, order, name, address, tag, stars, visitCnt, duration, geo } = data
   const { setCenter } = useMapStore()
 
-  // const addressArr = address
-  //   .split(' ')
-  //   .filter((val, index) => index === 0 || index === 1)
-  //   .join(' ')
-  // console.log('schedulePalceCArd Data:', data)
-
+  const deleteHandler = () => {
+    if (deletePlaceHandler) deletePlaceHandler(data.id)
+  }
   return (
     <>
       <div
         onClick={() => setCenter(geo)}
         className={cn(
-          'relative flex min-h-min w-full cursor-pointer items-start justify-start gap-3 border-b-[0.5px] border-tbPlaceholder px-3 py-4',
+          'relative flex min-h-min w-full cursor-pointer items-start justify-start gap-3 border-b-[0.5px] border-tbPlaceholder px-3 py-4 hover:bg-tbPlaceHolderHover',
           id === 'dummy' && 'pointer-events-none invisible opacity-0',
           className,
         )}
@@ -63,11 +68,11 @@ export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }:
         {/* 정보 */}
         <div
           className={cn(
-            'flex flex-grow origin-left flex-col items-start justify-start gap-2',
+            'relative flex flex-grow origin-left flex-col items-start justify-start gap-2',
             !isReduced && 'w-fit min-w-[170px]',
           )}
         >
-          <div className='group flex w-fit items-center justify-start'>
+          <div className='group relative flex w-fit items-center justify-start'>
             <MapPin num={order as number} size={22} fillIndex={fillIndex} className='group-hover:scale-125' />
             <span className='line-clamp-1 text-base font-semibold group-hover:text-tbBlue'>{name}</span>
           </div>
@@ -84,6 +89,12 @@ export const SchedulePlaceCard = ({ id, data, fillIndex, isReduced, className }:
           </div>
           {!isReduced && <span className='w-fit text-sm'>방문자 {visitCnt}+</span>}
         </div>
+        <LucideIcon
+          onClick={deleteHandler}
+          name='X'
+          className='absolute right-3 top-3 hover:text-tbRed'
+          strokeWidth={3}
+        />
       </div>
     </>
   )

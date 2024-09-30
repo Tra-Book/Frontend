@@ -283,8 +283,6 @@ export const addComment = async ({ newComment, accessToken }: AddCommentProps) =
     const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
     const error = new Error('Error oucurred in adding comment')
     error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
-    console.log(error.message)
-
     throw error
   }
   const data = await res.json()
@@ -321,4 +319,128 @@ export const addPlaceToPlan = (originPlan: Plan, place: PlaceCardType, currentDa
     ...originPlan,
     schedule: updatedSchedule, // 업데이트된 스케줄 반영
   }
+}
+
+/**
+ * 여행계획 스크랩하기 POST
+ */
+interface PlanAddScrapType {
+  planId: number
+  accessToken: string
+}
+export const planAddScrap = async ({ planId, accessToken }: PlanAddScrapType) => {
+  const Route = BACKEND_ROUTES.PLAN.SCRAP.ADD
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while adding scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
+}
+
+/**
+ * 여행계획 스크립 삭제하기 POST
+ */
+interface PlanDeleteScrapType {
+  planId: number
+  accessToken: string
+}
+export const planDeleteScrap = async ({ planId, accessToken }: PlanDeleteScrapType) => {
+  const Route = BACKEND_ROUTES.PLAN.SCRAP.DELETE
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while deleting scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
+}
+
+/**
+ * 여행계획 좋아요 추가하기 POST
+ */
+interface PlanAddLikesType {
+  planId: number
+  accessToken: string
+}
+export const planAddLikes = async ({ planId, accessToken }: PlanAddLikesType) => {
+  const Route = BACKEND_ROUTES.PLAN.LIKE.ADD
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while adding scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
+}
+
+/**
+ * 여행계획 좋아요 삭제하기 POST
+ */
+interface PlanDeleteLikesType {
+  planId: number
+  accessToken: string
+}
+export const planDeleteLikes = async ({ planId, accessToken }: PlanDeleteLikesType) => {
+  const Route = BACKEND_ROUTES.PLAN.LIKE.DELETE
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while deleting scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
 }

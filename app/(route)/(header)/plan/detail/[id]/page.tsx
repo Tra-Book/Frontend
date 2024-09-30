@@ -1,6 +1,5 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect } from 'react'
 
@@ -22,8 +21,6 @@ interface PlanDetailsPageProps {
 }
 
 const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
-  const router = useRouter()
-
   const planId = parseInt(params.id) // PlanId
   const session: any = useSession() // 해당 Plan의 User 정보 받기
 
@@ -34,7 +31,6 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     return () => setDay(1)
   }, [])
 
-  // const data = DUMMY_PLAN
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['plan', planId],

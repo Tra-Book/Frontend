@@ -173,6 +173,26 @@ export const BACKEND_ROUTES = {
         url: '/plan/comment/add',
       },
     },
+    SCRAP: {
+      ADD: {
+        method: HttpMethod.POST,
+        url: '/plan/scrap',
+      },
+      DELETE: {
+        method: HttpMethod.DELETE,
+        url: '/plan/scrap',
+      },
+    },
+    LIKE: {
+      ADD: {
+        method: HttpMethod.POST,
+        url: '/plan/like',
+      },
+      DELETE: {
+        method: HttpMethod.DELETE,
+        url: '/plan/like',
+      },
+    },
   },
   PLANS: {
     GET: {
