@@ -5,6 +5,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
+import PlanSchedule from '@/components/plan/PlanSchedule'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
@@ -12,13 +13,10 @@ import usePlanStore from '@/lib/context/planStore'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import { cn } from '@/lib/utils/cn'
-import useKakaoLoader from '@/lib/utils/hooks/useKakaoLoader'
 
 interface PlanStorePageProps {}
 
 const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
-  useKakaoLoader() // 카카오 지도 로딩
-
   const [focusedPlanCard, setFocusPlanCard] = useState<PlanCardType>()
   const [isLeftOverHovered, setIsLeftOverHovered] = useState(false)
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
@@ -80,8 +78,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                 />
               </>
             ) : (
-              <></>
-              // <PlanSchedule id='scrap' plan={focusedPlanCard} setFocusPlanCard={setFocusPlanCard} />
+              <PlanSchedule id='scrap' plan={focusedPlanCard} setFocusPlanCard={setFocusPlanCard} />
             )}
           </Motion>
         )}
