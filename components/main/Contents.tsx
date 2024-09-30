@@ -171,7 +171,7 @@ const Contents = ({ name }: ContentsProps): ReactNode => {
                 //TODO: PlanCardType으로 바꿔야함
                 <MainPlanCard key={index} data={data as PlanCardType} />
               ) : (
-                <MainPlaceCard key={index} data={data as PlaceCardType} />
+                <MainPlaceCard key={index} data={data as PlaceCardType} user={session.data} />
               ),
             )}
           </div>

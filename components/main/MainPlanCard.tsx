@@ -39,6 +39,7 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
     isLiked,
     isPublic,
     isScraped,
+    tags,
   } = data
 
   const handleClick = () => {

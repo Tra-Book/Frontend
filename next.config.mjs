@@ -7,7 +7,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
-        pathname: '/trabook-20240822/**',
+        pathname: '/**',
       },
       {
         protocol: 'http',

@@ -73,7 +73,7 @@ export const ConfirmModal = ({ isOpen, data, onClose, onConfirm }: ConfirmModalP
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className='relative flex w-full items-center justify-between gap-4'>
-          <Button onClick={() => onClose()} variant='tbSecondary' className='w-full'>
+          <Button onClick={onClose} variant='tbSecondary' className='w-full'>
             취소
           </Button>
           <Button onClick={handleConfirm} variant='tbPrimary' className='w-full'>

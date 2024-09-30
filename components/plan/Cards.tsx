@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
-import { NO_REVIEW_TEXT } from '@/lib/constants/no_data'
+import { NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
 import { placeAddScrap } from '@/lib/HTTP/place/API'
@@ -113,7 +113,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
    * 스크랩하기
    */
   const { mutate } = useMutation({
-    mutationKey: ['place', 'scrap', { planId: data.id }],
+    mutationKey: ['place', 'scrap', { placeId: data.id }],
     mutationFn: placeAddScrap,
     onSuccess: () => {
       toast({ title: '보관함에 추가되었습니다!' })
@@ -191,7 +191,7 @@ interface PlanCardProps {
 }
 
 export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
-  const { imgSrc, title, likeCnt, scrapCnt, description, isScraped, commentCnt } = data
+  const { imgSrc, title, likeCnt, scrapCnt, description, isScraped, commentCnt, tags } = data
   return (
     <div
       className={cn(
@@ -211,31 +211,41 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       </div>
 
       {/* 정보 */}
-      <div className={cn('h- flex w-fit min-w-32 flex-grow origin-left flex-col items-start justify-start gap-2')}>
-        <div className='group flex w-fit items-center justify-start'>
+      <div
+        className={cn('flex h-full w-fit min-w-32 flex-grow origin-left flex-col items-start justify-between gap-2')}
+      >
+        <div className='group flex w-fit flex-col items-start justify-start gap-1'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
           <span className='text-base font-semibold group-hover:text-tbBlue'>{title}</span>
+          {tags ? (
+            tags.map((tag, index) => (
+              <span className='text-sm' key={index}>
+                # {tag}
+              </span>
+            ))
+          ) : (
+            <span>{NO_TAGS}</span>
+          )}
         </div>
 
-        <div className='flex w-full items-center justify-between text-sm'>
-          <p># 태그</p>
-        </div>
-        <div className='flex items-center justify-start gap-2'>
-          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-            <LucideIcon name='Heart' fill='tbRed' strokeWidth={0} />
-            <span>{likeCnt}</span>
+        <div className='relative flex w-full flex-col items-start justify-start gap-2'>
+          <div className='flex w-full items-center justify-start gap-2'>
+            <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+              <LucideIcon name='Heart' fill='tbRed' strokeWidth={0} />
+              <span>{likeCnt}</span>
+            </div>
+            <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+              <LucideIcon name='MessageCircle' strokeWidth={2.5} />
+              <span>{commentCnt}</span>
+            </div>
+            <div className='flex w-fit items-center justify-start gap-1 text-sm'>
+              <LucideIcon name='Bookmark' strokeWidth={2.5} />
+              <span>{scrapCnt}</span>
+            </div>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-            <LucideIcon name='MessageCircle' strokeWidth={2.5} />
-            <span>{commentCnt}</span>
+          <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
+            <div className='line-clamp-2 w-full break-words text-sm'>{description || NO_USER_DESCRIPTION}</div>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-            <LucideIcon name='Bookmark' strokeWidth={2.5} />
-            <span>{scrapCnt}</span>
-          </div>
-        </div>
-        <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
-          <div className='line-clamp-2 w-full break-words text-sm'>{description}</div>
         </div>
       </div>
     </div>

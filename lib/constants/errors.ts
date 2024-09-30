@@ -115,4 +115,10 @@ export const ClientModalData = {
     description: '이동하기 전에 꼭 저장해주세요!',
     isError: true,
   },
+  deleteScrap: {
+    id: 'confirm',
+    title: '여행지 보관함 삭제',
+    description: '선택하신 여행지를 보관함에서 삭제하시겠습니까?',
+    isError: false,
+  },
 } as const

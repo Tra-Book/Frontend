@@ -11,7 +11,6 @@ import { fetchPlaces, PlaceCardType, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
-import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import useFilters, { initArrange } from '@/lib/utils/hooks/useFilters'
 
@@ -23,7 +22,7 @@ import { PlaceCard, PlanCard } from './Cards'
 interface SearchAreaProps {
   name: 'Plan' | 'Place'
   focusCard: PlaceCardType | PlanCardType | undefined
-  handleClickCard: (card: PlaceCardType | Plan) => void
+  handleClickCard: (card: PlaceCardType | PlanCardType) => void
   className?: string
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }

@@ -46,4 +46,27 @@ interface PlaceDeleteScrapType {
   placeId: number
   accessToken: string
 }
-export const placeDeleteScrap = async ({ placeId, accessToken }: PlaceDeleteScrapType) => {}
+export const placeDeleteScrap = async ({ placeId, accessToken }: PlaceDeleteScrapType) => {
+  const Route = BACKEND_ROUTES.PLACE.SCRAP.DELETE
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      placeId: placeId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const error = new Error('An error occurred while fetching places')
+    toast({ title: '보관함 삭제 실패' })
+
+    error.message = await res.json()
+    throw error
+  }
+
+  return
+}

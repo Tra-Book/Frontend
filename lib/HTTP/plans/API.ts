@@ -1,7 +1,7 @@
 import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { Plan } from '@/lib/types/Entity/plan'
-import { parseHypenDateToDate } from '@/lib/utils/dateUtils'
 import { ArrangeChoiceType, StateChoicesType } from '@/lib/utils/hooks/useFilters'
+import { Nullable } from '@/lib/utils/typeUtils'
 
 import { attachQuery, Queries } from '../http'
 import { SCROLL_SIZE } from '../places/API'
@@ -11,7 +11,9 @@ interface FetchUserPlansProps {
   accessToken: string
   signal: AbortSignal
 }
-export type PlanCardType = Omit<Plan, 'userId' | 'memberCnt' | 'budget' | 'schedule' | 'comments'>
+export type PlanCardType = Omit<Plan, 'userId' | 'memberCnt' | 'budget' | 'schedule' | 'comments'> & {
+  tags: string[]
+}
 
 /**
  * 특정 유저와 관련된 여행 계획을 가져오는 함수 (메인페이지, 내 계획)
@@ -90,33 +92,46 @@ interface fetchPlansParams {
 }
 
 export type PlanResponse = {
-  planId: number
-  planTitle: string
-  description: string
-  state: string
-  likes: number
-  scraps: number
-  numOfComment: number
-  imgSrc: string
-  startDate: string
-  endDate: string
-  isLiked: boolean
-  isScrapped: boolean
+  plan: {
+    planId: number
+    planTitle: string
+    description: string
+    state: string
+    likes: number
+    scraps: number
+    numOfComment: number
+    imgSrc: string
+    startDate: string
+    endDate: string
+    isLiked: boolean
+    isScrapped: boolean
 
-  public: boolean
-  finished: boolean
+    numOfPeople: number
+    tags: Nullable<string[]>
+
+    public: boolean
+    finished: boolean
+  }
+  comments: Array<{
+    commentId: number
+    userId: number
+    planId: number
+    content: string
+    refOrder: number
+    time: string // Date를 string으로 바꾼 값
+  }>
 }
 
 const get_arrange = (arrange: ArrangeChoiceType): string => {
   switch (arrange) {
     case '댓글순':
-      return ''
+      return 'numOfComment'
     case '스크랩순':
       return 'numOfPeople'
     case '좋아요순':
       return 'likes'
     case '최신순':
-      return ''
+      return 'startDate'
     default:
       return ''
   }
@@ -131,6 +146,7 @@ export const fetchPlans = async (
   totalPages: any
 }> => {
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
+  console.log('Exectued fetch plans')
 
   const queries: Queries = [
     {
@@ -195,28 +211,32 @@ export const fetchPlans = async (
   const { plans, totalPages } = await res.json()
 
   const datas: PlanCardType[] = plans.map(
-    (plan: PlanResponse) =>
+    (data: PlanResponse) =>
       ({
-        id: plan.planId,
+        id: data.plan.planId,
 
-        state: plan.state,
-        startDate: parseHypenDateToDate(plan.startDate),
-        endDate: parseHypenDateToDate(plan.endDate),
+        state: data.plan.state,
+        startDate: new Date(data.plan.startDate),
+        endDate: new Date(data.plan.endDate),
 
-        imgSrc: plan.imgSrc as string,
+        imgSrc: data.plan.imgSrc,
 
-        title: plan.planTitle,
-        description: plan.description,
-        isDone: plan.finished,
-        isPublic: plan.public,
+        title: data.plan.planTitle,
+        description: data.plan.description,
+        isDone: data.plan.finished,
+        isPublic: data.plan.public,
 
-        commentCnt: plan.numOfComment,
-        likeCnt: plan.likes,
-        scrapCnt: plan.scraps,
+        commentCnt: data.plan.numOfComment,
+        likeCnt: data.plan.likes,
+        scrapCnt: data.plan.scraps,
 
-        isScraped: plan.isScrapped,
-        isLiked: plan.isLiked,
+        isScraped: data.plan.isScrapped,
+        isLiked: data.plan.isLiked,
+        tags: data.plan.tags,
       }) as PlanCardType,
   )
+  console.log('FetchedPlans:', datas)
+  console.log('totalPages:', totalPages)
+
   return { datas, totalPages }
 }

@@ -43,6 +43,8 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
 
       toast({ title: '저장되었습니다' }) // 성공 메세지
       // 이미지 업데이트
+      console.log('Received image: ', imgSrc)
+
       imgSrc &&
         setPlanData({
           imgSrc,
@@ -61,7 +63,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     mutate({ plan: planData, userId: session.data.userId })
   }
 
-  // TODO: 저장 로직 만들기
+  // TODO: 설정 기획 / 로직 만들기
   const openModalHandler = () => {
     handleModalStates(ClientModalData.serviceOnReady, 'open')
   }

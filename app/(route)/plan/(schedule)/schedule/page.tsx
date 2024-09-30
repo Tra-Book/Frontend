@@ -10,6 +10,7 @@ import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import { bounce } from '@/lib/types/animation'
 import { Plan } from '@/lib/types/Entity/plan'
 
@@ -52,7 +53,7 @@ const PlanSchedulePage = (): ReactNode => {
         <SearchArea
           name='Place'
           focusCard={focusedPlaceCard}
-          handleClickCard={handleClickCard as (card: PlaceCardType | Plan) => void}
+          handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType) => void}
           className='h-dvh w-[23dvw] min-w-[280px]'
         />
       )}
