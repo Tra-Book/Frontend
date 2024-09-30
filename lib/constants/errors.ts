@@ -107,4 +107,12 @@ export const ClientModalData = {
     description: '더 좋은 서비스로 돌아오겠습니다',
     isError: false,
   },
+
+  //Confirm
+  routeWithoutSave: {
+    id: 'confirm',
+    title: '변경사항 저장',
+    description: '이동하기 전에 꼭 저장해주세요!',
+    isError: true,
+  },
 } as const

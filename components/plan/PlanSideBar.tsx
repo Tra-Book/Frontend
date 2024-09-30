@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
-import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { INITIAL_PLAN, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
@@ -40,11 +40,13 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     mutationFn: updatePlan,
     onSuccess: data => {
       const { imgSrc } = data
+
       toast({ title: '저장되었습니다' }) // 성공 메세지
       // 이미지 업데이트
-      setPlanData({
-        imgSrc,
-      })
+      imgSrc &&
+        setPlanData({
+          imgSrc,
+        })
     },
     onError: () => {
       toast({ title: 'Error occured on Saving...' })
@@ -53,7 +55,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
 
   const savePlanHandler = () => {
     if (isPending) {
-      toast({ title: '다른 작업 수행중입니다' })
+      toast({ title: '이미 저장중입니다.' })
       return
     }
     mutate({ plan: planData, userId: session.data.userId })
@@ -62,6 +64,13 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   // TODO: 저장 로직 만들기
   const openModalHandler = () => {
     handleModalStates(ClientModalData.serviceOnReady, 'open')
+  }
+
+  /**
+   * 홈으로 가기
+   */
+  const backHandler = () => {
+    handleModalStates(ClientModalData.routeWithoutSave, 'open')
   }
 
   /**
@@ -99,6 +108,12 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const onConfirm = () => {
     if (modalData.id === 'confirm') {
       switch (modalData) {
+        // Case1 메인으로 이동하기
+        case ClientModalData.routeWithoutSave:
+          setPlanData(INITIAL_PLAN)
+          router.push(ROUTES.HOME.url)
+          break
+        // Case2 계획 개시하기
         case ClientModalData.submitPlan:
           // #0. 저장 > onSuccess
           mutate(
@@ -116,9 +131,9 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   }
   return (
     <div className={className}>
-      <Link href={ROUTES.HOME.url} className={cn(style, 'font- text-center font-mono text-xl font-bold')}>
+      <div onClick={backHandler} className={cn(style, 'font- text-center font-mono text-xl font-bold')}>
         TRABOOK
-      </Link>
+      </div>
 
       <Link
         href={ROUTES.PLAN.PlAN.url}
