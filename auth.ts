@@ -41,6 +41,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     kakao(LOGIN_API_KEYS.kakao),
     naver(LOGIN_API_KEYS.naver),
   ],
+  session: {
+    maxAge: 60 * 60 * 24 - 10,
+  },
   callbacks: {
     signIn: async ({ user, account }: { user: any; account: any }) => {
       // console.log('account', account)
