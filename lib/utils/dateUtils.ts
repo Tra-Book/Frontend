@@ -5,7 +5,8 @@ import { ko } from 'date-fns/locale'
 export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 export const formatDateToShortHyphenDate = (date: Date): string => format(date, 'yy.MM.dd')
 
-export const formatToKoreanShortDate = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
+export const formatToKoreanShortDateDay = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
+export const formatToKoreanShortDate = (date: Date) => format(date, 'yyyy년 M월', { locale: ko })
 
 export const parseHypenDateToDate = (dateString: string): Date => parse(dateString, 'yyyy-MM-dd', new Date())
 

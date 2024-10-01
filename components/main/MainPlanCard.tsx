@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { NO_PLAN_DESCRIPTION, NO_PLAN_TITLE } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import { attachQuery, Queries } from '@/lib/HTTP/http'
@@ -53,6 +54,7 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
 
     router.push(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
   }
+
   // Fc: 계획보기 클릭
   const handleMovePostClick = () => {
     router.push(`${ROUTES.PLAN.DETAIL.url}/${id}`)
@@ -86,11 +88,15 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
       </div>
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>
-          <h2 className='text-lg font-bold hover:text-tbBlueHover lg:text-xl'>{title || '계획 제목'}</h2>
+          <h2 className='text-lg font-semibold hover:text-tbBlueHover lg:text-xl'>
+            {title?.trim() ? title : NO_PLAN_TITLE}
+          </h2>
           <span className='text-xs'>{state}</span>
         </div>
 
-        <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>{description || '계획 설명을 입력해주세요!'}</p>
+        <p className='flex items-center pb-5 pt-2 text-xs lg:text-sm'>
+          {description?.trim() ? description : NO_PLAN_DESCRIPTION}
+        </p>
 
         <div className='flex items-center justify-between text-xs lg:text-sm'>
           <div className='flex items-center gap-2'>

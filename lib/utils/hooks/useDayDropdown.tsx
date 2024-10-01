@@ -10,7 +10,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { ColorType } from '@/public/colors/colors'
 
 import { cn } from '../cn'
-import { formatToKoreanShortDate } from '../dateUtils'
+import { formatToKoreanShortDateDay } from '../dateUtils'
 export interface DayDropdownProps {
   id: 'days' | 'showAll'
   startDate: Date
@@ -29,7 +29,7 @@ const useDayDropdown = (totalDays: number) => {
   const DayDropdown = ({ id, startDate, handleDayChange, color = 'tbPrimary', className }: DayDropdownProps) => {
     const { isReduced } = usePlanStore()
 
-    const selectedDate = formatToKoreanShortDate(addDays(startDate, day - 1))
+    const selectedDate = formatToKoreanShortDateDay(addDays(startDate, day - 1))
 
     const dropdownItemHandler = (day: number) => {
       handleDayChange(day)
