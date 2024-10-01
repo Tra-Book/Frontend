@@ -199,12 +199,26 @@ export const BACKEND_ROUTES = {
       method: HttpMethod.GET,
       url: '/plans',
     },
+    POPULAR: {
+      method: HttpMethod.GET,
+      url: '/plans/popular',
+    },
     GENERAL: {
       method: HttpMethod.GET,
       url: '/plans/general',
     },
   },
+  PLACES: {
 
+    GENERAL: {
+      method: HttpMethod.GET,
+      url: '/plans/general',
+    },
+    POPULAR: {
+      method: HttpMethod.GET,
+      url: '/places/popular',
+    },
+  },
   PLACE: {
     SCRAP: {
       ADD: {

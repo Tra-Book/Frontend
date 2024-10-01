@@ -9,7 +9,7 @@ interface CommunityPlacePageProps {}
 const CommunityPlacePage = ({}: CommunityPlacePageProps): ReactNode => {
   return (
     <div className='flex h-screen w-full justify-center'>
-      <div className='flex h-screen w-[80%] flex-col'>
+      <div className='flex h-screen w-[80%] max-w-[1400px] flex-col'>
         <PlaceBanner />
         <PopularPlace />
         <PlaceFilter />
