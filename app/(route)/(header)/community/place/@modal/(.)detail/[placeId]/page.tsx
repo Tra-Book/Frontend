@@ -31,7 +31,7 @@ const CommunityPlaceDetail = async ({ params }: CommunityPlaceDetailProps): Prom
 
   return (
     <div className='fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-40'>
-      <div className='relative flex h-4/5 w-3/5 min-w-[600px] flex-col rounded-[30px] border-[1px] border-black bg-white'>
+      <div className='relative flex h-[95%] w-[90%] min-w-[600px] flex-col rounded-[30px] border-[1px] border-black bg-white'>
         <PlaceDetail place={detailPlace} />
       </div>
     </div>

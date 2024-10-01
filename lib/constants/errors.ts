@@ -6,6 +6,12 @@ export const ClientModalData = {
     description: 'TRABOOK의 회원이 되신것을 진심으로 환영합니다!',
     isError: false,
   },
+  logOutSuccess: {
+    id: 'info',
+    title: '로그아웃 성공',
+    description: 'TRABOOK 로그아웃을 완료했습니다.',
+    isError: false,
+  },
   signOutSuccess: {
     id: 'info',
     title: '회원탈퇴 완료',
@@ -121,6 +127,7 @@ export const ClientModalData = {
     description: '선택하신 여행지를 보관함에서 삭제하시겠습니까?',
     isError: false,
   },
+
   deletePlan: {
     id: 'confirm',
     title: '여행 삭제',
@@ -134,5 +141,12 @@ export const ClientModalData = {
     title: '권한 없음',
     description: '해당 행동에 대한 권한이 없습니다.',
     isError: true,
+  },
+  // naver login 금지
+  naverLoginDenied: {
+    id: 'info',
+    title: '네이버 로그인',
+    description: '서비스 준비 중입니다.',
+    isError: false,
   },
 } as const

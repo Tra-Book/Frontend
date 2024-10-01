@@ -67,8 +67,6 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
   }
 
   const onClickButton = async () => {
-    toast({ title: '변경 내용 저장 완료!' })
-
     // 닉네임 validation
     const username: string = nickname.trim()
     if (username.length < 2) {
@@ -112,6 +110,8 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
         await update({ nickname: nickname, status_message: message, image: data.profilePhoto })
 
         router.refresh()
+        toast({ title: '변경 내용 저장 완료!' })
+
         return
       }
       switch (status) {
