@@ -11,3 +11,7 @@ export const formatNumOfReview = (num: number) => {
     return '999+'
   }
 }
+
+export const formatBudget = (budget: number) => {
+  return `${budget.toLocaleString()}`
+}

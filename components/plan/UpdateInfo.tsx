@@ -80,6 +80,20 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
   //   mutate({ plan: updatedPlan, userId: session.data.userId })
   // }
 
+  const budgetChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/,/g, '') // 쉼표 제거
+    const numericValue = parseInt(rawValue, 10) // 숫자로 변환
+    if (!isNaN(numericValue)) {
+      setPlanData({
+        budget: numericValue,
+      })
+    } else {
+      setPlanData({
+        budget: 0,
+      })
+    }
+  }
+
   return (
     <section className='mt-2 flex h-full w-full flex-col gap-5 border-t-[1px] border-tbPlaceholder p-10'>
       <div className='flex items-end gap-5'>
@@ -138,10 +152,10 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
             <Label className='mb-2 flex text-base'>예산</Label>
             <Input
               className='h-13'
-              type='number'
+              type='text'
               placeholder='예산을 입력해주세요?'
-              value={planData.budget ? planData.budget : ''}
-              onChange={e => saveChanges('budget', e.target.value ? parseInt(e.target.value, 10) : null)}
+              value={planData.budget ? planData.budget.toLocaleString() : ''}
+              onChange={budgetChangeHandler}
             />
           </div>
           {/* <Button onClick={addPostHandler} variant='tbPrimary' className='col-span-2 mt-2 w-40 justify-self-end'>

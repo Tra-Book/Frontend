@@ -437,6 +437,7 @@ interface PlanDeleteLikesType {
 }
 export const planDeleteLikes = async ({ planId, accessToken }: PlanDeleteLikesType) => {
   const Route = BACKEND_ROUTES.PLAN.LIKE.DELETE
+  console.log('planDElete lieks')
 
   const queries: Queries = [
     {

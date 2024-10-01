@@ -12,6 +12,7 @@ import useDropdownStore from '@/lib/context/dropdownStore'
 import { fetchPlan } from '@/lib/HTTP/plan/API'
 import { CommentResponse } from '@/lib/types/Entity/comment'
 import { Plan } from '@/lib/types/Entity/plan'
+import { scrollToTop } from '@/lib/utils/scroll'
 import { Nullable } from '@/lib/utils/typeUtils'
 
 interface PlanDetailsPageProps {
@@ -28,6 +29,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
   const { setDay } = useDropdownStore()
   useEffect(() => {
     setDay(0)
+    scrollToTop()
     return () => setDay(1)
   }, [])
 
