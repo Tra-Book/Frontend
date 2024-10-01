@@ -4,17 +4,16 @@ import React, { ReactNode } from 'react'
 
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { removeTagsAndParentheses } from '@/lib/utils/stringUtils'
+import { formatNumOfReview, removeTagsAndParentheses } from '@/lib/utils/stringUtils'
 import BusanImg from '@/public/images/busan.jpg'
 
 import { CommunityPlace } from './placeType'
 
 interface PlaceCardProps {
   place: CommunityPlace
-  commentsNum: number
 }
 
-const PlaceCard = ({ place, commentsNum }: PlaceCardProps): ReactNode => {
+const PlaceCard = ({ place }: PlaceCardProps): ReactNode => {
   return (
     <Link
       href={`/community/place/detail/${place.placeId}`}
@@ -31,19 +30,21 @@ const PlaceCard = ({ place, commentsNum }: PlaceCardProps): ReactNode => {
       />
       <div className='flex flex-col justify-between pl-2'>
         <h2 className='truncate text-lg font-medium'>{removeTagsAndParentheses(place.placeName)}</h2>
-        <p># {place.category}</p>
+        <p>
+          #{place.category} #{place.subcategory}
+        </p>
         <div className='flex gap-3'>
           <div className='flex items-center gap-1'>
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
-            <p>{place.star}</p>
+            <p>{place.star || 5}</p>
           </div>
           <div className='flex items-center gap-1'>
             <LucideIcon name='Bookmark' strokeWidth={3} />
-            <p>{place.scrapped || 0}</p>
+            <p>{place.scraps || 0}</p>
           </div>
           <div className='flex items-center gap-1'>
             <LucideIcon name='MessageCircle' strokeWidth={3} />
-            <p>{commentsNum || 0}</p>
+            <p>{formatNumOfReview(place.numOfReview || 0)}</p>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ const useModal = () => {
   }
 
   useEffect(() => {
-    console.log('ISOpen: ', isOpen)
+    // console.log('ISOpen: ', isOpen)
   }, [isOpen])
   // 실제 모달 컴포넌트
   const Modal = ({ onConfirm }: ModalProps) => {

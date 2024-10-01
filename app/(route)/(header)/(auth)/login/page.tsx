@@ -9,7 +9,9 @@ import React, { ReactNode } from 'react'
 import EmailLink from '@/components/auth/EmailLink'
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
+import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
+import useModal from '@/lib/utils/hooks/useModal'
 
 type SocialLoginButton = {
   variant: 'kakao' | 'naver' | 'google' | 'tbPrimary'
@@ -46,8 +48,14 @@ const LOGIN_BUTTONS: Array<SocialLoginButton> = [
 
 const LoginPage = (): ReactNode => {
   const router = useRouter()
+  const { modalData, handleModalStates, Modal } = useModal()
 
   const onClickLoginBtn = async (provider: string): Promise<void> => {
+    if (provider === 'naver') {
+      handleModalStates(ClientModalData.naverLoginDenied, 'open') // router.refresh()
+      return
+    }
+
     if (provider === 'credentials') {
       router.push(ROUTES.AUTH.EMAIL_LOGIN.url)
     } else {
@@ -62,23 +70,26 @@ const LoginPage = (): ReactNode => {
       </div>
 
       <div className='flex flex-col items-center gap-5'>
-        {LOGIN_BUTTONS.map(button => (
-          <Button
-            key={button.name}
-            variant={button.variant}
-            className='flex h-13 w-full items-center justify-center gap-14 pl-4'
-            onClick={() => onClickLoginBtn(button.auth)}
-          >
-            {button.ImageSrc ? (
-              <Image src={button.ImageSrc} width={24} height={24} alt={button.name} />
-            ) : (
-              <Mail size={24} />
-            )}
-            {button.name}
-          </Button>
-        ))}
+        {LOGIN_BUTTONS.map(button => {
+          return (
+            <Button
+              key={button.name}
+              variant={button.variant}
+              className='flex h-13 w-full items-center justify-center gap-14 pl-4'
+              onClick={() => onClickLoginBtn(button.auth)}
+            >
+              {button.ImageSrc ? (
+                <Image src={button.ImageSrc} width={24} height={24} alt={button.name} />
+              ) : (
+                <Mail size={24} />
+              )}
+              {button.name}
+            </Button>
+          )
+        })}
       </div>
       <EmailLink className='mt-12 w-full text-center' />
+      <Modal onConfirm={() => {}} />
     </div>
   )
 }

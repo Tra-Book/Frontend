@@ -16,6 +16,18 @@ export interface Plan {
   finished: boolean
 }
 
+export type Comment = {
+  commentId: number
+  placeId: number
+  content: string
+  date: string
+}
+
+export interface FilterPlan {
+  plan: Plan
+  comments: Comment[]
+}
+
 // Filter Type
 export const FILTERS: string[] = ['지역별', '인원수', '기간']
 export const MEMBER_FILTERS: string[] = ['1명', '2명', '3명', '4명', '5명', '6명', '7명', '8명', '9명', '10명']

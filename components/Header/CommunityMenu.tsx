@@ -47,7 +47,7 @@ const CommunityMenu = ({ className }: CommunityMenuProps): ReactNode => {
         <ToggleWrapper
           isOpen={isOpen}
           ref={ref}
-          className='absolute right-[-140%] top-3/4 flex items-center justify-evenly gap-2 rounded-lg bg-tbPrimary px-4 py-2'
+          className='absolute right-[-140%] top-3/4 flex items-center justify-center gap-2 rounded-lg bg-tbSecondaryHover px-2 py-2'
         >
           {NavSections.map(section => (
             <Link

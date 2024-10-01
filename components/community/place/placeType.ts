@@ -9,7 +9,7 @@ export interface CommunityPlace {
   numOfReview: number | null
   placeId: number
   ratingScore: number | null
-  scrapped: boolean
+  isscrapped: boolean
   scraps: number
   star: number
   placeName: string

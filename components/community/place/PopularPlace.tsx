@@ -59,7 +59,7 @@ const PopularPlace = ({}: PopularPlaceProps): ReactNode => {
     getPlace()
   }, [])
 
-  const render = (item: CommunityPlace, commentsNum: number) => <PlaceCard place={item} commentsNum={commentsNum} />
+  const render = (item: CommunityPlace, commentsNum: number) => <PlaceCard place={item} />
 
   return (
     <div className='mb-7'>

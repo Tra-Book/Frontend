@@ -17,6 +17,7 @@ export const variant = {
   google: 'bg-white text-black hover:bg-[#F5F5F5]',
   // TraBook Custom Buttons
   tbPrimary: 'bg-tbPrimary text-black hover:bg-tbPrimaryHover',
+  tbRed: 'bg-tbRed text-white hover:bg-[#FF0000]',
   tbSecondary: 'bg-tbSecondary hover:bg-tbSecondaryHover',
   tbGreen: 'bg-tbGreen hover:bg-tbGreenHover',
   tbGray: 'text-tbGray border-none bg-tbPlaceholder hover:text-black hover:border-black',

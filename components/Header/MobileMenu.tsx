@@ -1,12 +1,16 @@
 'use client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Session } from 'next-auth'
+import { signOut } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { ClientModalData } from '@/lib/constants/errors'
 import { Route, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import useModal from '@/lib/utils/hooks/useModal'
 import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
 import { Nullable } from '@/lib/utils/typeUtils'
 
@@ -60,8 +64,15 @@ const MY_SECTION_CREDENTIALS: NavSection = {
 }
 
 const MobileMenu = ({ session, className }: MobileMenuProps): ReactNode => {
+  const { modalData, handleModalStates, Modal } = useModal()
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
   const s: any = session
+  const router = useRouter()
+
+  const onClickLogOut = () => {
+    toggleDropdown()
+    handleModalStates(ClientModalData.logOutSuccess, 'open')
+  }
 
   /**
    * 각 Session 상수에 대한 Link를 렌더링합니다
@@ -110,7 +121,25 @@ const MobileMenu = ({ session, className }: MobileMenuProps): ReactNode => {
         {renderNavLinks(COMMUNITY_SECTION)}
         <Divider />
         {s?.provider === 'credentials' ? renderNavLinks(MY_SECTION_CREDENTIALS) : renderNavLinks(MY_SECTION_SOCIAL)}
+        {s && (
+          <>
+            <Divider />
+            <div className='w-full p-4 hover:cursor-pointer' onClick={onClickLogOut}>
+              <div className='flex h-8 items-center justify-between'>
+                <span>로그아웃</span>
+
+                <LucideIcon name='ChevronRight' />
+              </div>
+            </div>
+          </>
+        )}
       </ToggleWrapper>
+      <Modal
+        onConfirm={async () => {
+          await signOut()
+          router.push('/')
+        }}
+      />
     </>
   )
 }
