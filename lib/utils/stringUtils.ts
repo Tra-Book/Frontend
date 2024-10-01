@@ -3,7 +3,9 @@ export const removeTagsAndParentheses = (text: string) => {
 }
 
 export const formatNumOfReview = (num: number) => {
-  if (num <= 999) {
+  if (num === undefined) {
+    return 0
+  } else if (num <= 999) {
     return num.toString()
   } else {
     return '999+'
