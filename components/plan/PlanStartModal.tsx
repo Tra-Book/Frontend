@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
-import { generate_initial_schedule, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { generate_initial_schedule } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
@@ -58,7 +58,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
         endDate: variables.endDate,
         state: variables.state,
         schedule: generate_initial_schedule(getTripDuration(variables.startDate, variables.endDate)), // Default Schedule
-        imgSrc: PLAN_DEFAULT_IMAGE,
+        imgSrc: data.imgSrc,
       })
       const params: Queries = [
         {

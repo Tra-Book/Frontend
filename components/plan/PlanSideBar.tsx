@@ -40,16 +40,8 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     mutationKey: ['plan', 'update', planData.id],
     mutationFn: updatePlan,
     onSuccess: data => {
-      const { imgSrc } = data
-
       toast({ title: '저장되었습니다' }) // 성공 메세지
       queryClient.invalidateQueries({ queryKey: ['plan', planData.id] })
-
-      // 이미지 업데이트
-      imgSrc &&
-        setPlanData({
-          imgSrc,
-        })
     },
     onError: () => {
       toast({ title: 'Error occured on Saving...' })
