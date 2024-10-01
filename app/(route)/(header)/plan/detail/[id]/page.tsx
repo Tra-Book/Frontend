@@ -48,6 +48,8 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     content = <LoadingPage />
   }
   if (data) {
+    console.log('Fetched Data from fetchPlan: ', data)
+
     content = (
       <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
         <Description

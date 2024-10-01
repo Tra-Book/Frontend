@@ -105,15 +105,15 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
         <div className='flex items-center justify-between text-xs lg:text-sm'>
           <div className='flex items-center gap-2'>
             <div className='flex items-center gap-1'>
-              <LucideIcon color='tbRed' name='Heart' strokeWidth={3} />
+              <LucideIcon color='tbRed' name='Heart' strokeWidth={2} />
               <span>{formatNumOfReview(likeCnt) || 0}</span>
             </div>
             <div className='flex items-center gap-1'>
-              <LucideIcon name='MessageCircle' strokeWidth={3} />
+              <LucideIcon name='MessageCircle' strokeWidth={2} />
               <span>{formatNumOfReview(commentCnt) || 0}</span>
             </div>
             <div className='flex items-center gap-1'>
-              <LucideIcon name='Bookmark' strokeWidth={3} />
+              <LucideIcon name='Bookmark' strokeWidth={2} />
               <span>{formatNumOfReview(scrapCnt) || 0}</span>
             </div>
           </div>

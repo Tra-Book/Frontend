@@ -201,6 +201,8 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
         }) as Place,
     ),
   }))
+  console.log('API에서의 shcedule:', schedule)
+
   const planComments: Nullable<Array<CommentResponse>> = comments.map((comment: any) => ({
     id: comment.commentId,
 

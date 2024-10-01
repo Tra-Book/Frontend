@@ -52,15 +52,15 @@ const PlanCard = ({ plan }: PlanCardProps): ReactNode => {
         <div className='flex gap-3'>
           <h2 className='ml-1 mt-1 grow truncate text-[20px] font-medium'>{plan.planTitle}</h2>
           <div className='flex items-center gap-1'>
-            <LucideIcon name='Heart' strokeWidth={3} />
+            <LucideIcon name='Heart' strokeWidth={2} />
             <p>{plan.likes || 0}</p>
           </div>
           <div className='flex items-center gap-1'>
-            <LucideIcon name='Bookmark' strokeWidth={3} />
+            <LucideIcon name='Bookmark' strokeWidth={2} />
             <p>{plan.scraps || 0}</p>
           </div>
           <div className='mr-3 flex items-center gap-1'>
-            <LucideIcon name='MessageCircle' strokeWidth={3} />
+            <LucideIcon name='MessageCircle' strokeWidth={2} />
             <p>{plan.numOfComment || 0}</p>
           </div>
         </div>

@@ -166,6 +166,8 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
   }
   // 원래 카드
   else {
+    console.log('schedule: ', schedule)
+
     contents = places.map((place, index) => (
       <React.Fragment key={place.order}>
         <SchedulePlaceCard id='schedule' data={place} fillIndex={fillIndex} isReduced={false} className='h-[200px]' />
