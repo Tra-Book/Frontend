@@ -49,7 +49,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
     id,
   } = plan
   const [tmpIsLiked, setTmpIsLiked] = useState<boolean>(isLiked)
-  const [tmpIsScrap, setTmpIsScrap] = useState<boolean>(isScraped)
+  const [tmpIsScraped, setTmpIsScraped] = useState<boolean>(isScraped)
 
   const onConfirm = () => {
     if (modalData.id === 'confirm') {
@@ -92,13 +92,13 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
   // #1. Plan Scrap Mutations
   const { mutate: scrapMutate } = useMutation({
     mutationKey: ['plan', 'scrap', { planId: id }],
-    mutationFn: !tmpIsScrap ? planAddScrap : planDeleteScrap,
+    mutationFn: !tmpIsScraped ? planAddScrap : planDeleteScrap,
     onSuccess: () => {
-      setTmpIsScrap(prev => !prev)
+      setTmpIsScraped(prev => !prev)
       toast({ title: '변경 완료!' })
     },
     onError: () => {
-      setTmpIsScrap(prev => !prev)
+      setTmpIsScraped(prev => !prev)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['plan', 'scrap', { planId: id }] })
@@ -160,7 +160,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
               fill={tmpIsLiked ? 'tbRed' : undefined}
               // strokeWidth={tmpIsLiked ? 0 : 2}
               size={20}
-              className={cn(tmpIsScrap ? 'hover:fill-none' : 'hover:fill-tbRed')}
+              // className={cn(tmpIsScraped ? 'hover:fill-none' : 'hover:fill-tbRed')}
             />
             <span>{likeCnt}</span>
           </div>
@@ -168,8 +168,8 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
             <LucideIcon
               onClick={scrapHandler}
               name='Bookmark'
-              className={cn(tmpIsScrap ? 'hover:fill-none' : 'hover:fill-tbPrimaryHover')}
-              fill={isScraped ? 'tbPrimaryHover' : undefined}
+              // className={cn(tmpIsScraped ? 'hover:fill-none' : 'hover:fill-tbPrimaryHover')}
+              fill={tmpIsScraped ? 'tbPrimaryHover' : undefined}
               size={20}
             />
             <span>{scrapCnt}</span>

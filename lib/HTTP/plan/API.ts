@@ -361,6 +361,7 @@ interface PlanDeleteScrapType {
 }
 export const planDeleteScrap = async ({ planId, accessToken }: PlanDeleteScrapType) => {
   const Route = BACKEND_ROUTES.PLAN.SCRAP.DELETE
+  console.log('Plan Delete scrap')
 
   const queries: Queries = [
     {

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
+import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import { queryClient } from '@/lib/HTTP/http'
 import { addComment } from '@/lib/HTTP/plan/API'
@@ -301,7 +302,7 @@ const PlanComment = ({ id, comment, handleAddChildComment }: PlanCommentProps): 
 
         <div className='flex flex-grow flex-col items-start justify-start'>
           <div className='relative flex w-full items-center justify-start gap-2 text-lg font-semibold'>
-            <span>{userName}</span>
+            <span>{userName || NO_USER_NAME}</span>
             <span className='text-xs text-tbGray'>{getRelativeTimeString(new Date(time))}</span>
             <div className='absolute right-0 top-0 flex flex-row items-center justify-end gap-2'>
               {id === 'parentComment' && (
@@ -311,7 +312,7 @@ const PlanComment = ({ id, comment, handleAddChildComment }: PlanCommentProps): 
               <LucideIcon name='EllipsisVertical' size={18} className='cursor-pointer' />
             </div>
           </div>
-          <p className='text-sm text-tbGray'>{userStatusMessage}</p>
+          <p className='text-sm text-tbGray'>{userStatusMessage || NO_USER_DESCRIPTION}</p>
         </div>
       </div>
       <div className='line-clamp-2 flex w-full items-end justify-start gap-4'>{content}</div>
