@@ -9,6 +9,7 @@ import React, { ReactNode, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { BACKEND_ROUTES, ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -136,7 +137,7 @@ const ProfileChange = ({ session }: ProfileChangeProps): ReactNode => {
           <Label htmlFor='image' className='hover:cursor-pointer'>
             <Image
               alt='프로필 이미지'
-              src={previewUrl || session.image || ProfileImage}
+              src={previewUrl || session.image || USER_DEFAULT_IMAGE || ProfileImage}
               className='aspect-square h-[120px] w-[120px] rounded-full lg:h-[150px] lg:w-[150px]'
               width={150}
               height={150}
