@@ -110,10 +110,12 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
   })
 
   const deleteScrapHandler = () => {
+    toggleDropdown() // 드롭다운 닫기
     handleModalStates(ClientModalData.deleteScrap, 'open')
   }
 
   const addReviewHandler = () => {
+    toggleDropdown() // 드롭다운 닫기
     handleModalStates(ClientModalData.serviceOnReady, 'open')
   }
   const onConfirmHandler = () => {
@@ -129,7 +131,7 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
               },
             },
           )
-          toggleDropdown() // 드롭다운 닫기
+
           break
       }
     }
@@ -138,28 +140,26 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
   return (
     <>
       <LucideIcon name='EllipsisVertical' className='absolute right-0' onClick={toggleDropdown} />
-      {isOpen && (
-        <ToggleWrapper
-          ref={ref}
-          isOpen={isOpen}
-          className='absolute bottom-[-260%] right-0 z-10 rounded-md border border-solid border-black bg-white text-xs'
+      <ToggleWrapper
+        ref={ref}
+        isOpen={isOpen}
+        className='absolute bottom-[-260%] right-0 z-10 rounded-md border border-solid border-black bg-white text-xs'
+      >
+        <div
+          onClick={addReviewHandler}
+          className='flex items-center justify-center gap-2 border-b border-solid border-black px-2 py-2 hover:bg-tbPrimary'
         >
-          <div
-            onClick={addReviewHandler}
-            className='flex items-center justify-center gap-2 border-b border-solid border-black px-2 py-2 hover:bg-tbPrimary'
-          >
-            <span>{options[0].name}</span>
-            <LucideIcon name='PencilLine' size={16} />
-          </div>
-          <div
-            onClick={deleteScrapHandler}
-            className='flex items-center justify-center gap-2 px-2 py-2 hover:bg-tbPrimary'
-          >
-            <span>{options[1].name}</span>
-            <LucideIcon name='Trash2' size={16} />
-          </div>
-        </ToggleWrapper>
-      )}
+          <span>{options[0].name}</span>
+          <LucideIcon name='PencilLine' size={16} />
+        </div>
+        <div
+          onClick={deleteScrapHandler}
+          className='flex items-center justify-center gap-2 px-2 py-2 hover:bg-tbPrimary'
+        >
+          <span>{options[1].name}</span>
+          <LucideIcon name='Trash2' size={16} />
+        </div>
+      </ToggleWrapper>
       <Modal onConfirm={onConfirmHandler} />
     </>
   )

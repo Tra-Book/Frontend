@@ -52,6 +52,11 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
     setCenter(card.geo)
   }
 
+  const handleSetFocusedCard = (val: Place | undefined) => {
+    setFocusedPlaceCard(val)
+    setFocusedPlacePin(null)
+  }
+
   useEffect(() => {
     return () => setFocusedPlacePin(null)
   }, [])
@@ -92,6 +97,7 @@ const PlaceStorePage = ({}: PlaceStorePageProps): ReactNode => {
               name='Place'
               handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType | undefined) => void}
               focusCard={focusedPlaceCard}
+              handleSetFocusedCard={handleSetFocusedCard as (val: PlaceCardType | PlanCardType | undefined) => void}
               className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
             />
           </Motion>

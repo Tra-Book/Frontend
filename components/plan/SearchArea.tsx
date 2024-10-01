@@ -6,7 +6,6 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import usePlanStore from '@/lib/context/planStore'
-import { queryClient } from '@/lib/HTTP/http'
 import { fetchPlaces, PlaceCardType, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -22,14 +21,19 @@ import { PlaceCard, PlanCard } from './Cards'
 interface SearchAreaProps {
   name: 'Plan' | 'Place'
   focusCard: PlaceCardType | PlanCardType | undefined
+  handleSetFocusedCard: (val: PlaceCardType | PlanCardType | undefined) => void
   handleClickCard: (card: PlaceCardType | PlanCardType) => void
   className?: string
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
 
-const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaProps): ReactNode => {
-  console.log('SearchArea name:', name)
-
+const SearchArea = ({
+  name,
+  focusCard,
+  handleSetFocusedCard,
+  handleClickCard,
+  className,
+}: SearchAreaProps): ReactNode => {
   const pathname = usePathname()
   const session: any = useSession()
 
@@ -93,17 +97,17 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
   }, [inView])
 
   // #0-2. New Data Fetching
-  useEffect(() => {
-    queryClient.refetchQueries({
-      queryKey:
-        name === 'Plan'
-          ? ['plans', 'scrap']
-          : pathname.includes('scrap')
-            ? ['places', 'scrap']
-            : ['places', 'schedule'],
-    })
-    refetch() // 첫 페이지부터 refetch하도록 설정
-  }, [filter, arrange])
+  // useEffect(() => {
+  //   queryClient.refetchQueries({
+  //     queryKey:
+  //       name === 'Plan'
+  //         ? ['plans', 'scrap']
+  //         : pathname.includes('scrap')
+  //           ? ['places', 'scrap']
+  //           : ['places', 'schedule'],
+  //   })
+  //   refetch() // 첫 페이지부터 refetch하도록 설정
+  // }, [filter, arrange])
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault()
@@ -192,6 +196,12 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
   }
 
   const movePageHandler = () => {}
+
+  // Fc: 축소 버튼 실행 함수수
+  const reduceHandler = () => {
+    handleSetFocusedCard(undefined)
+    setIsSearching(prev => !prev)
+  }
   return (
     <div className={cn('relative flex flex-col items-start justify-start', className)}>
       {/* 유저 입력 */}
@@ -219,7 +229,7 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
       {/* 축소 확대 버튼 */}
       {isSearching && (
         <div
-          onClick={() => setIsSearching(prev => !prev)}
+          onClick={reduceHandler}
           className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
         >
           <LucideIcon name={isSearching ? 'ChevronsLeft' : 'ChevronsRight'} size={28} />
