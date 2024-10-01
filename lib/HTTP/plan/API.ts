@@ -169,6 +169,7 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     throw error
   }
   const { plan, user, tags, comments, liked, scrapped } = await res.json()
+  console.log('FetchedPlan:', plan)
 
   const schedule: Array<Schedule> = plan.dayPlanList.map((dayPlan: any) => ({
     day: dayPlan.day,
