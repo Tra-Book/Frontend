@@ -35,7 +35,7 @@ const getPlaces = async (query: Query) => {
 
   try {
     const res = await fetch(
-      `/server${URL.url}?search=&sorts=numOfAdded&pageSize=100&pageNum=${scrollNum}&userScrapOnly=false&${key}=${filterDetail}`,
+      `/server${URL.url}?search=&sorts=numOfReview&pageSize=100&pageNum=${scrollNum}&userScrapOnly=false&${key}=${filterDetail}`,
       {
         method: URL.method,
         headers: {
@@ -161,7 +161,7 @@ const PlaceFilter = ({}: PlaceFilterProps): ReactNode => {
                     key={`${scrollIndex}-${index}-${place.place.placeId}`}
                     className='flex h-[288px] w-[330px] items-center justify-center'
                   >
-                    <PlaceCard place={place.place} commentsNum={place.comments.length} />
+                    <PlaceCard place={place.place} />
                   </div>
                   {scrollIndex === data.pages.length - 1 && index === 8 && <div ref={ref} />}
                 </>

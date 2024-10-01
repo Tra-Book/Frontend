@@ -1,20 +1,28 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { usePathname, useRouter } from 'next/navigation'
+import { signOut, useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
 import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
+import useModal from '@/lib/utils/hooks/useModal'
 
 interface SideBarProps {}
 
 const MainSideBar = ({}: SideBarProps): ReactNode => {
+  const { handleModalStates, Modal } = useModal()
   const session: any = useSession()
+  const router = useRouter()
+
+  const onClickLogOut = () => {
+    handleModalStates(ClientModalData.logOutSuccess, 'open')
+  }
 
   const pathname = usePathname()
 
@@ -101,8 +109,17 @@ const MainSideBar = ({}: SideBarProps): ReactNode => {
               비밀번호 변경
             </Link>
           )}
+          <div onClick={onClickLogOut} className={cn('text-base hover:cursor-pointer hover:text-tbRed 2xl:text-lg')}>
+            로그아웃
+          </div>
         </div>
       </div>
+      <Modal
+        onConfirm={async () => {
+          await signOut()
+          router.push('/')
+        }}
+      />
     </div>
   )
 }

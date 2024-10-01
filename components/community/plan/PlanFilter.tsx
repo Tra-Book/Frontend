@@ -10,7 +10,7 @@ import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { cn } from '@/lib/utils/cn'
 
 import PlanCard from './PlanCard'
-import { FILTERS, FilterType, Plan } from './planType'
+import { FilterPlan, FILTERS, FilterType } from './planType'
 import { DURATION_FILTERS, DurationFilterType, MEMBER_FILTERS, MemberFilterType } from './planType'
 
 interface PlanFilterProps {}
@@ -153,14 +153,14 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
       <div className='flex flex-wrap items-center justify-evenly gap-5'>
         {data?.pages.map((group, scrollIndex) => {
           return (
-            <Fragment key={`${group.plans[0]?.planId}${group.plans[1]?.planId}`}>
-              {group?.plans.map((plan: Plan, index: number) => (
+            <Fragment key={`${group.plans[0]?.planId}${group.plans[1]?.planId}${Math.random()}`}>
+              {group?.plans.map((plan: FilterPlan, index: number) => (
                 <>
                   <div
-                    key={`${plan.planTitle}${plan.description}`}
+                    key={`${plan.plan.planTitle}${plan.plan.description}`}
                     className='flex h-[288px] w-[330px] items-center justify-center'
                   >
-                    <PlanCard plan={plan} />
+                    <PlanCard plan={plan.plan} />
                   </div>
                   {scrollIndex === data.pages.length - 1 && index === 8 && <div ref={ref} />}
                 </>
