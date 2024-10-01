@@ -121,4 +121,12 @@ export const ClientModalData = {
     description: '선택하신 여행지를 보관함에서 삭제하시겠습니까?',
     isError: false,
   },
+
+  // naver login 금지
+  naverLoginDenied: {
+    id: 'info',
+    title: '네이버 로그인',
+    description: '서비스 준비 중입니다.',
+    isError: false,
+  },
 } as const
