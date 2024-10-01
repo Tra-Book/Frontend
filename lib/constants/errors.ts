@@ -6,6 +6,12 @@ export const ClientModalData = {
     description: 'TRABOOK의 회원이 되신것을 진심으로 환영합니다!',
     isError: false,
   },
+  logOutSuccess: {
+    id: 'info',
+    title: '로그아웃 성공',
+    description: 'TRABOOK 로그아웃을 완료했습니다.',
+    isError: false,
+  },
   signOutSuccess: {
     id: 'info',
     title: '회원탈퇴 완료',
