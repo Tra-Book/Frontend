@@ -1,12 +1,10 @@
 'use client'
 import { useMutation } from '@tanstack/react-query'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 
-import Backdrop from '@/components/common/Backdrop'
 import UserAvatar from '@/components/common/UserAvatar'
-import { PLAN_DEFAULT_IMAGE, USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
@@ -114,23 +112,23 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
   }
 
   return (
-    <div className={cn('relative flex cursor-pointer items-start justify-start gap-6 px-3 py-6', className)}>
-      <div className='group relative aspect-video h-full origin-left'>
+    <div className={cn('relative flex-col items-start justify-start gap-6 px-3 pb-2 pt-6', className)}>
+      {/* <div className='group relative h-48 min-h-min'>
         <Image
           src={(imgSrc as string) || PLAN_DEFAULT_IMAGE}
           alt='Plan Image'
           width={320}
           height={200}
-          className='h-full w-full origin-center rounded-md'
+          className='h-full rounded-md object-contain'
         />
 
         <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
-      </div>
-
+      </div> */}
+      {/* <Title title='여행 설명' /> */}
       {/* 정보 */}
       <div className={cn('flex h-fit min-h-full w-fit flex-grow origin-left flex-col items-start justify-start gap-3')}>
         {/* 유저정보 */}
-        <div className='flex items-center justify-start gap-2'>
+        <div className='flex items-center justify-start gap-4'>
           <UserAvatar imgSrc={planUser.image || USER_DEFAULT_IMAGE} />
           <div>
             <p className='text-lg font-semibold'>{planUser.username || NO_USER_NAME}</p>
@@ -149,11 +147,11 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
           <span>{budget}원</span>
         </div>
         <div className='flex items-center justify-start gap-3'>
-          <div className='flex w-fit items-center justify-start gap-1 text-lg'>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon name='MessageCircle' size={20} />
             <span>{comments?.length}</span>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-lg'>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon
               onClick={likeHandler}
               name='Heart'
@@ -164,7 +162,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
             />
             <span>{likeCnt}</span>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-lg'>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon
               onClick={scrapHandler}
               name='Bookmark'

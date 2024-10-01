@@ -81,9 +81,9 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
 
 export default PlanDetailsPage
 
-const Title = ({ title }: { title: string }): ReactNode => {
+export const Title = ({ title }: { title: string }): ReactNode => {
   return (
-    <div className='mb-6 mt-10 w-full border-t-2 border-solid border-tbPlaceholder pt-5 text-3xl font-semibold'>
+    <div className='mb-6 mt-8 w-full border-t-2 border-solid border-tbPlaceholder pt-6 text-3xl font-semibold'>
       {title}
     </div>
   )

@@ -13,7 +13,7 @@ import { bounce } from '@/lib/types/animation'
 import { Geo, Place } from '@/lib/types/Entity/place'
 import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
-import { calculateLeftTIme } from '@/lib/utils/dateUtils'
+import { calculateLeftTIme, formatDurationTime } from '@/lib/utils/dateUtils'
 import { fetchDuration } from '@/lib/utils/duration'
 import useDayDropdown from '@/lib/utils/hooks/useDayDropdown'
 
@@ -69,7 +69,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   }
 
   const { day, DayDropdown } = useDayDropdown(fetchedData.schedule ? fetchedData.schedule.length : 1)
-  const [durations, setDurations] = useState<Array<number>>([])
+  const [durations, setDurations] = useState<Array<number>>([]) // 분 단위
 
   const handleReduceBtn = () => {
     setIsReduced(prev => !prev)
@@ -191,7 +191,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
             <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
               <LucideIcon name='CarFront' size={26} />
               <div className='absolute right-4 text-sm text-tbGray'>
-                {durations[index] !== null ? `${durations[index]}분` : 'Loading...'}
+                {durations[index] !== null ? `${formatDurationTime(durations[index])}` : 'Loading...'}
               </div>
             </div>
           )}
