@@ -1,7 +1,7 @@
 'use client'
 import { AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
@@ -37,9 +37,6 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
     setFocusedPlacePin(null)
   }
 
-  useEffect(() => {
-    console.log(isLeftOverHovered)
-  }, [])
   return (
     <>
       <AnimatePresence initial={false}>
@@ -58,11 +55,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                 <div className='relative flex h-[7dvh] w-full shrink-0 items-center justify-center font-semibold'>
                   <Link
                     href={ROUTES.PLAN.SCRAP.PLACE.url}
-                    onMouseEnter={() => {
-                      console.log('Entered hovered')
-
-                      setIsLeftOverHovered(true)
-                    }} // 마우스가 올라왔을 때
+                    onMouseEnter={() => setIsLeftOverHovered(true)} // 마우스가 올라왔을 때
                     onMouseLeave={() => setIsLeftOverHovered(false)} // 마우스가 떠났을 때
                     className={cn('flex h-full w-1/2 cursor-pointer items-center justify-center hover:bg-tbPrimary')}
                   >

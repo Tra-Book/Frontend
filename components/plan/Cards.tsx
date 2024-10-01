@@ -1,19 +1,24 @@
 'use client'
 import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
-import { NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
+import { ClientModalData } from '@/lib/constants/errors'
+import { NO_PLAN_TITLE, NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
+import { ROUTES } from '@/lib/constants/routes'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
 import { placeAddScrap, placeDeleteScrap } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
+import { planAddLikes, planAddScrap, planDeleteLikes, planDeleteScrap } from '@/lib/HTTP/plan/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
+import useModal from '@/lib/utils/hooks/useModal'
 import { toast } from '@/lib/utils/hooks/useToast'
 import { formatNumOfReview } from '@/lib/utils/stringUtils'
 
@@ -210,13 +215,101 @@ interface PlanCardProps {
 }
 
 export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
-  const { imgSrc, title, likeCnt, scrapCnt, description, isScraped, commentCnt, tags } = data
+  const router = useRouter()
+
+  const session: any = useSession()
+  const { modalData, handleModalStates, Modal } = useModal()
+
+  const { id, imgSrc, title, likeCnt, scrapCnt, description, commentCnt, tags, isScraped, isLiked } = data
+  const [tmpLikeData, setTmpLikeData] = useState({
+    likeCnt: likeCnt,
+    isLiked: isLiked,
+  })
+  const [tmpScrapData, setTmpScrapData] = useState({
+    scrapCnt: scrapCnt,
+    isScraped: isScraped,
+  })
+
+  // #1. Plan Likes Mutation
+  const { mutate: likesMutate, isPending: isLikesPending } = useMutation({
+    mutationKey: ['plan', { planId: id }],
+    mutationFn: !tmpLikeData.isLiked ? planAddLikes : planDeleteLikes,
+    onError: error => {
+      setTmpLikeData(prev => ({
+        likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt -= 1) : (prev.likeCnt += 1),
+        isLiked: !prev.isLiked,
+      }))
+      toast({ title: '서버 오류 다시 시도해주세요' })
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
+      queryClient.invalidateQueries({ queryKey: ['plans'] })
+    },
+  })
+
+  const likeHandler = () => {
+    if (isLikesPending) {
+      toast({ title: '다른 작업 수행중입니다.' })
+    }
+    // #1. 로그인X 상태 (좋아요 누르기, 스크랩 누르기)
+    if (!session.data) {
+      handleModalStates(ClientModalData.loginRequiredError, 'open')
+    }
+    // #2. 로그인 상태
+    setTmpLikeData(prev => ({
+      likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt += 1) : (prev.likeCnt -= 1),
+      isLiked: !prev.isLiked,
+    }))
+    likesMutate({ planId: id, accessToken: session.data.accessToken })
+  }
+
+  // #1. Plan Scrap Mutations
+  const { mutate: scrapMutate, isPending: isScrapPending } = useMutation({
+    mutationKey: ['plan', { planId: id }],
+    mutationFn: !tmpScrapData.isScraped ? planAddScrap : planDeleteScrap,
+    onError: () => {
+      setTmpScrapData(prev => ({
+        scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt -= 1) : (prev.scrapCnt += 1),
+        isScraped: !prev.isScraped,
+      }))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
+      queryClient.invalidateQueries({ queryKey: ['plans'] })
+    },
+  })
+  const scrapHandler = () => {
+    if (isScrapPending) {
+      toast({ title: '다른 작업 수행중입니다.' })
+    }
+    // #1. 로그인X 상태 (좋아요 누르기, 스크랩 누르기)
+    if (!session.data) {
+      handleModalStates(ClientModalData.loginRequiredError, 'open')
+    }
+    // #2. 로그인 상태
+    setTmpScrapData(prev => ({
+      scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
+      isScraped: !prev.isScraped,
+    }))
+    scrapMutate({ planId: id, accessToken: session.data.accessToken })
+  }
+
+  const onConfirm = () => {
+    if (modalData.id === 'confirm') {
+      switch (modalData) {
+        // Case: 로그인 필요
+        case ClientModalData.loginRequiredError:
+          router.push(ROUTES.AUTH.LOGIN.url)
+          break
+      }
+    }
+  }
   return (
     <div
       className={cn(
-        'relative flex min-h-48 w-full cursor-pointer items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
+        'group relative flex min-h-48 w-full items-center justify-start gap-3 border-t-[0.5px] border-tbPlaceholder px-3 py-4',
       )}
-      onClick={() => handleClickCard(data)}
     >
       <div className='group relative aspect-square h-full origin-left'>
         <Image
@@ -226,7 +319,16 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
           height={124}
           className='h-full w-full origin-center rounded-md'
         />
-        <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
+        <Backdrop className='hidden h-full w-full flex-col items-center justify-center rounded-md group-hover:flex'>
+          <div
+            onClick={() => handleClickCard(data)}
+            // onClick={handleMovePostClick}
+            className='flex w-fit cursor-pointer items-center justify-start gap-3 rounded-lg p-2 group-hover:text-tbWhite'
+          >
+            <LucideIcon name='Plane' />
+            <span className=''>계획보기</span>
+          </div>
+        </Backdrop>
       </div>
 
       {/* 정보 */}
@@ -235,7 +337,9 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       >
         <div className='group flex w-fit flex-col items-start justify-start gap-1'>
           {/* <MapPin num={order} size={22} className='group-hover:scale-125' /> */}
-          <span className='text-base font-semibold group-hover:text-tbBlue'>{title}</span>
+          <span className='text-base font-semibold hover:text-tbBlue group-hover:text-tbBlue'>
+            {title || NO_PLAN_TITLE}
+          </span>
           {tags ? (
             tags.map((tag, index) => (
               <span className='text-sm' key={index}>
@@ -249,17 +353,19 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
 
         <div className='relative flex w-full flex-col items-start justify-start gap-2'>
           <div className='flex w-full items-center justify-start gap-2'>
-            <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-              <LucideIcon name='Heart' fill='tbRed' strokeWidth={0} />
-              <span>{likeCnt}</span>
+            <div onClick={likeHandler} className='flex w-fit cursor-pointer items-center justify-start gap-1 text-sm'>
+              <LucideIcon name='Heart' fill={tmpLikeData.isLiked ? 'tbRed' : undefined} />
+              <span>{tmpLikeData.likeCnt}</span>
             </div>
-            <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-              <LucideIcon name='MessageCircle' strokeWidth={2.5} />
+
+            <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-sm'>
+              <LucideIcon name='MessageCircle' />
               <span>{formatNumOfReview(commentCnt)}</span>
             </div>
-            <div className='flex w-fit items-center justify-start gap-1 text-sm'>
-              <LucideIcon name='Bookmark' strokeWidth={2.5} />
-              <span>{formatNumOfReview(scrapCnt)}</span>
+
+            <div onClick={scrapHandler} className='flex w-fit cursor-pointer items-center justify-start gap-1 text-sm'>
+              <LucideIcon name='Bookmark' fill={tmpScrapData.isScraped ? 'tbPrimaryHover' : undefined} />
+              <span>{formatNumOfReview(tmpScrapData.scrapCnt)}</span>
             </div>
           </div>
           <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
@@ -267,6 +373,7 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
           </div>
         </div>
       </div>
+      <Modal onConfirm={onConfirm} />
     </div>
   )
 }

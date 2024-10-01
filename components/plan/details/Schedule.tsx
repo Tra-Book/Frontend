@@ -160,7 +160,9 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
           isReduced={false}
           className='h-[200px]'
         />
-        <div className='flex w-full items-center justify-center'>추가된 여행지가 없습니다!</div>
+        <div className='absolute top-1/2 flex w-full items-center justify-center font-medium'>
+          추가된 여행지가 없습니다!
+        </div>
       </>
     )
   }
@@ -189,13 +191,11 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
         <p className='text-lg font-semibold'>{day}일차</p>
         <p className='mr-3 text-xs text-tbGray'>{formatKoreanDate(date)}</p>
       </div>
-      <div className='flex w-full items-center justify-between text-sm text-tbGray'>
+      <div className='flex w-full items-center justify-between border-b border-solid border-tbGray pb-3 text-sm text-tbGray'>
         <span>{startTime}&nbsp;출발</span>
         <span className='mr-3'>{endTime}&nbsp;도착</span>
       </div>
-      <div className={cn('relative my-3 w-full', places.length && 'border-l border-t border-solid border-tbGray')}>
-        {contents}
-      </div>
+      <div className={cn('relative w-full', places.length && 'border-solid border-tbGray')}>{contents}</div>
     </div>
   )
 }
