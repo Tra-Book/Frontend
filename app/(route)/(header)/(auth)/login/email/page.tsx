@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react'
 import React, { ChangeEventHandler, FormEvent, ReactNode, useState } from 'react'
 
 import EmailLink from '@/components/auth/EmailLink'
+import PasswordFindLink from '@/components/auth/PasswordFindLink'
 import { TextDivider } from '@/components/common/Dividers'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -112,7 +113,10 @@ const EmailLoginPage = ({}: EmailLoginPageProps): ReactNode => {
           <Button type='submit' variant='tbPrimary' className='mt-2 h-13 w-full'>
             로그인
           </Button>
-          <EmailLink className='mt-2' />
+          <div>
+            <PasswordFindLink className='my-2' />
+            <EmailLink />
+          </div>
         </div>
       </form>
     </div>

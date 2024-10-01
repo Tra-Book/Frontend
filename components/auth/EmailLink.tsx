@@ -5,7 +5,7 @@ import { ROUTES } from '@/lib/constants/routes'
 import { cn } from '@/lib/utils/cn'
 
 interface EmailLinkProps {
-  className: string
+  className?: string
 }
 
 const EmailLink = ({ className }: EmailLinkProps): ReactNode => {
