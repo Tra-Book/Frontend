@@ -155,7 +155,7 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
           isReduced={false}
           className='h-[200px]'
         />
-        <div className='flex h-20 w-full items-center justify-center'>추가된 여행지가 없습니다!</div>
+        <div className='flex w-full items-center justify-center'>추가된 여행지가 없습니다!</div>
       </>
     )
   }

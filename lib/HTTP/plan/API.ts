@@ -149,6 +149,7 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
   ]
 
   const API = BACKEND_ROUTES.PLAN.GET
+  console.log('accessToken')
 
   const res = await fetch(`${attachQuery(`/server/${API.url}`, queries)}`, {
     method: API.method,
@@ -246,6 +247,8 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     isLiked: liked,
   }
 
+  console.log('PlanData from fetchplans: ', planData)
+
   // 계획을 만든 사람의 정보
   const planUser = {
     userId: user.userId as number,
@@ -253,9 +256,6 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     status_message: user.status_message as string,
     image: user.image as string,
   }
-  console.log('planData:', planData)
-  console.log('PlanUser:', planUser)
-  console.log('Tags:', tags)
 
   return { planData, planUser, tags }
 }
@@ -362,15 +362,18 @@ interface PlanDeleteScrapType {
 export const planDeleteScrap = async ({ planId, accessToken }: PlanDeleteScrapType) => {
   const Route = BACKEND_ROUTES.PLAN.SCRAP.DELETE
 
-  const res = await fetch(`/server/${Route.url}`, {
+  const queries: Queries = [
+    {
+      key: 'planId',
+      value: planId,
+    },
+  ]
+  const res = await fetch(`${attachQuery(`/server/${Route.url}`, queries)}`, {
     method: Route.method,
     headers: {
       Authorization: accessToken,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      planId: planId,
-    }),
     credentials: 'include',
   })
   if (!res.ok) {
@@ -391,6 +394,8 @@ interface PlanAddLikesType {
   accessToken: string
 }
 export const planAddLikes = async ({ planId, accessToken }: PlanAddLikesType) => {
+  console.log('planaddlikes executed')
+
   const Route = BACKEND_ROUTES.PLAN.LIKE.ADD
 
   const res = await fetch(`/server/${Route.url}`, {
@@ -424,15 +429,19 @@ interface PlanDeleteLikesType {
 export const planDeleteLikes = async ({ planId, accessToken }: PlanDeleteLikesType) => {
   const Route = BACKEND_ROUTES.PLAN.LIKE.DELETE
 
-  const res = await fetch(`/server/${Route.url}`, {
+  const queries: Queries = [
+    {
+      key: 'planId',
+      value: planId,
+    },
+  ]
+
+  const res = await fetch(`${attachQuery(`/server/${Route.url}`, queries)}`, {
     method: Route.method,
     headers: {
       Authorization: accessToken,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      planId: planId,
-    }),
     credentials: 'include',
   })
   if (!res.ok) {

@@ -43,8 +43,6 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
   } = data
 
   const handleClick = () => {
-    console.log('plancard Isdone: ', isDone)
-
     // Case1: 완성된 계획
     if (isDone) {
       router.push(`${ROUTES.PLAN.DETAIL.url}/${id}`)

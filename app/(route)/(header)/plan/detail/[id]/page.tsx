@@ -35,7 +35,10 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['plan', planId],
     queryFn: () => fetchPlan({ planId: planId, accessToken: session.data ? session.data.accessToken : null }),
+    enabled: session.data !== undefined,
   })
+
+  // #2. Add Likes
 
   let content
   if (isError) {
