@@ -5,7 +5,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
-import SearchArea from '@/components/plan/SerachArea'
+import SearchArea from '@/components/plan/SearchArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
 import useDropdownStore from '@/lib/context/dropdownStore'

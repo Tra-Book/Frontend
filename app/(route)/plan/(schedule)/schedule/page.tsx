@@ -3,7 +3,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
 import { Motion } from '@/components/common/MotionWrapper'
-import SearchArea from '@/components/plan/SerachArea'
+import SearchArea from '@/components/plan/SearchArea'
 import { Button } from '@/components/ui/button'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'

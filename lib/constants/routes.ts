@@ -208,10 +208,11 @@ export const BACKEND_ROUTES = {
       url: '/plans/general',
     },
   },
+
   PLACES: {
     GENERAL: {
       method: HttpMethod.GET,
-      url: '/plans/general',
+      url: '/places/general',
     },
     POPULAR: {
       method: HttpMethod.GET,

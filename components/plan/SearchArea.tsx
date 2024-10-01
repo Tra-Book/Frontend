@@ -28,6 +28,8 @@ interface SearchAreaProps {
 }
 
 const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaProps): ReactNode => {
+  console.log('SearchArea name:', name)
+
   const pathname = usePathname()
   const session: any = useSession()
 
@@ -57,6 +59,8 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
 
       // 조건에 따라 다른 함수 호출
       if (name === 'Place') {
+        console.log('Enetered fetchPlaces')
+
         const response = await fetchPlaces({
           ...commonParams,
           isScrap: pathname.includes('scrap'), // 일반 여행지 Fetching: False
