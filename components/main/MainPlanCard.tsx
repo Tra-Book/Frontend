@@ -42,29 +42,24 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
     tags,
   } = data
 
-  const handleClick = () => {
-    // Case1: 완성된 계획
-    if (isDone) {
-      router.push(`${ROUTES.PLAN.DETAIL.url}/${id}`)
-    }
-    // Case2: 완성되지 않은 계획 > 여행 계획 만들기 열기
-    else {
-      const params: Queries = [
-        {
-          key: 'planId',
-          value: id,
-        },
-      ]
+  // Fc: 수정하기 클릭
+  const handleUpdateClick = () => {
+    const params: Queries = [
+      {
+        key: 'planId',
+        value: id,
+      },
+    ]
 
-      router.push(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
-    }
+    router.push(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
+  }
+  // Fc: 계획보기 클릭
+  const handleMovePostClick = () => {
+    router.push(`${ROUTES.PLAN.DETAIL.url}/${id}`)
   }
   return (
-    <div
-      onClick={handleClick}
-      className='relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow hover:scale-105'
-    >
-      <div className='group relative w-full overflow-hidden rounded-md'>
+    <div className='group relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow hover:scale-105'>
+      <div className='relative w-full overflow-hidden rounded-md'>
         <Image
           width={300}
           height={200}
@@ -72,7 +67,22 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
           alt='Plan Image'
           className='aspect-video w-full rounded-md object-cover'
         />
-        <Backdrop className='hidden aspect-video w-full items-center justify-center rounded-md group-hover:flex' />
+        <Backdrop className='hidden aspect-video w-full flex-col items-center justify-center gap-4 rounded-md text-tbWhite group-hover:flex'>
+          <div
+            onClick={handleUpdateClick}
+            className='flex w-fit cursor-pointer items-center justify-start gap-3 rounded-lg p-2 hover:text-blue-200'
+          >
+            <LucideIcon name='PencilLine' size={24} />
+            <span className=''>수정하기</span>
+          </div>
+          <div
+            onClick={handleMovePostClick}
+            className='flex w-fit cursor-pointer items-center justify-start gap-3 rounded-lg p-2 hover:text-tbSecondary'
+          >
+            <LucideIcon name='Plane' size={24} />
+            <span className=''>계획보기</span>
+          </div>
+        </Backdrop>
       </div>
       <div className='relative'>
         <div className='flex items-end justify-start gap-3'>

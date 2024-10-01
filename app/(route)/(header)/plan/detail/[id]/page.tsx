@@ -56,7 +56,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
           plan={data?.planData as Plan}
           planUser={data?.planUser}
           user={session.data}
-          className='h-60 min-h-min w-full'
+          className='h-64 min-h-min w-full'
         />
         <Title title='여행도 ' />
         <div className='relative aspect-video w-full'>
