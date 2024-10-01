@@ -209,7 +209,6 @@ export const BACKEND_ROUTES = {
     },
   },
   PLACES: {
-
     GENERAL: {
       method: HttpMethod.GET,
       url: '/plans/general',
@@ -229,12 +228,6 @@ export const BACKEND_ROUTES = {
         method: HttpMethod.DELETE,
         url: '/place/scrap',
       },
-    },
-  },
-  PLACES: {
-    GENERAL: {
-      method: HttpMethod.GET,
-      url: '/places/general',
     },
   },
 }
