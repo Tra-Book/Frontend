@@ -128,6 +128,8 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     throw error
   }
   const data = await res.json()
+  console.log('update revceived:', data)
+
   return data
 }
 

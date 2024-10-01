@@ -12,6 +12,7 @@ import { attachQuery, Queries } from '@/lib/HTTP/http'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { formatDateToShortHyphenDate } from '@/lib/utils/dateUtils'
+import { formatNumOfReview } from '@/lib/utils/stringUtils'
 
 import Backdrop from '../common/Backdrop'
 
@@ -102,15 +103,15 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
           <div className='flex items-center gap-2'>
             <div className='flex items-center gap-1'>
               <LucideIcon color='tbRed' name='Heart' strokeWidth={3} />
-              <span>{likeCnt || 0}</span>
+              <span>{formatNumOfReview(likeCnt) || 0}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='MessageCircle' strokeWidth={3} />
-              <span>{commentCnt || 0}</span>
+              <span>{formatNumOfReview(commentCnt) || 0}</span>
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Bookmark' strokeWidth={3} />
-              <span>{scrapCnt || 0}</span>
+              <span>{formatNumOfReview(scrapCnt) || 0}</span>
             </div>
           </div>
           <span>

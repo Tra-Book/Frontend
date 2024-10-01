@@ -15,6 +15,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
 import { toast } from '@/lib/utils/hooks/useToast'
+import { formatNumOfReview } from '@/lib/utils/stringUtils'
 
 import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
@@ -87,7 +88,7 @@ export const SchedulePlaceCard = ({
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
             <span>{stars || 0}</span>
           </div>
-          {!isReduced && <span className='w-fit text-sm'>방문자 {visitCnt}+</span>}
+          {!isReduced && <span className='w-fit text-sm'>방문자 {formatNumOfReview(visitCnt)}</span>}
         </div>
         <LucideIcon
           onClick={deleteHandler}
@@ -182,8 +183,8 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
             <span>{stars}</span>
           </div>
-          <span className='w-fit text-sm'>리뷰 {reviewCnt}+</span>
-          <span className='w-fit text-sm'>방문자 {visitCnt}+</span>
+          <span className='w-fit text-sm'>리뷰 {formatNumOfReview(reviewCnt)}</span>
+          <span className='w-fit text-sm'>방문자 {formatNumOfReview(visitCnt)}</span>
         </div>
 
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
@@ -247,11 +248,11 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
             </div>
             <div className='flex w-fit items-center justify-start gap-1 text-sm'>
               <LucideIcon name='MessageCircle' strokeWidth={2.5} />
-              <span>{commentCnt}</span>
+              <span>{formatNumOfReview(commentCnt)}</span>
             </div>
             <div className='flex w-fit items-center justify-start gap-1 text-sm'>
               <LucideIcon name='Bookmark' strokeWidth={2.5} />
-              <span>{scrapCnt}</span>
+              <span>{formatNumOfReview(scrapCnt)}</span>
             </div>
           </div>
           <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>

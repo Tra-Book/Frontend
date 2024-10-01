@@ -13,6 +13,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import useModal from '@/lib/utils/hooks/useModal'
 import { toast } from '@/lib/utils/hooks/useToast'
 import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
+import { formatNumOfReview } from '@/lib/utils/stringUtils'
 
 import Backdrop from '../common/Backdrop'
 
@@ -53,11 +54,11 @@ const MainPlaceCard = ({ data, user }: PlaceCardProps): ReactNode => {
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Plane' strokeWidth={2} />
-              <span>{visitCnt}</span>
+              <span>{formatNumOfReview(visitCnt)}</span>
             </div>
             <div className='flex items-center gap-1'>
               <span>리뷰</span>
-              <span>{reviewCnt}+</span>
+              <span>{formatNumOfReview(reviewCnt)}</span>
             </div>
           </div>
           <div className='flex min-h-16 w-full items-center text-wrap break-words rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover lg:text-sm'>
