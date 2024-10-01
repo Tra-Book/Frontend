@@ -13,14 +13,19 @@ import { Plan } from './planType'
 
 interface PlanCardProps {
   plan: Plan
+  comments?: Comment[]
 }
 
 const formatPeriod = (date: string) => {
-  return formatKoreanDate(parseHypenDateToDate(date))
+  const d = date && parseHypenDateToDate(date)
+  const d1 = typeof d === 'object' && formatKoreanDate(d)
+
+  return d1
 }
 
 const PlanCard = ({ plan }: PlanCardProps): ReactNode => {
   const [isHovered, setIsHovered] = useState(false)
+  // console.log(plan)
 
   return (
     <div

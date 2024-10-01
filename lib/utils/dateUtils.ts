@@ -18,9 +18,9 @@ export const formatKoreanDate = (date: Date): string => {
 
     return `${formattedDate}(${dayOfWeek})`
   }
-  console.log(date)
+  // console.log(date)
 
-  console.log('date is not Date', typeof date)
+  // console.log('date is not Date', typeof date)
 
   return ''
 }
