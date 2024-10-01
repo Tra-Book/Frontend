@@ -28,6 +28,9 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
   const { setDay } = useDropdownStore()
   const { setCenter, pins, setPins, clearPins } = useMapStore()
 
+  useEffect(() => {
+    console.log(pins)
+  }, [pins])
   const handleDayChange = (day: number) => {
     setDay(day)
     // 해당하는 날짜의 Pin만 남기기
@@ -36,6 +39,8 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
       // 전체 pin 더하기
       schedule.map((item, index) => {
         const geoArray: Geo[] = item.places.map(place => place.geo)
+        console.log('geoArray:', geoArray)
+
         setPins(index + 1, geoArray)
         // 첫 위치로 Map Center 두기
         if (index === 0) {

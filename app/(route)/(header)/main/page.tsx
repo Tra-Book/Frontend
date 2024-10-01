@@ -9,6 +9,7 @@ import { GET_userPlans } from '@/lib/HTTP/plans/API'
 
 const MainPage = (): ReactNode => {
   const session: any = useSession()
+
   const user = session.data
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['plans', user?.userId, 'user'],

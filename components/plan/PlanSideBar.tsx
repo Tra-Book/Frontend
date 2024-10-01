@@ -41,7 +41,8 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     mutationFn: updatePlan,
     onSuccess: data => {
       toast({ title: '저장되었습니다' }) // 성공 메세지
-      queryClient.invalidateQueries({ queryKey: ['plan', planData.id] })
+      queryClient.invalidateQueries({ queryKey: ['plan', planData.id] }) // Post 내용
+      queryClient.invalidateQueries({ queryKey: ['plans', session.data?.userId, 'user'] })
     },
     onError: () => {
       toast({ title: 'Error occured on Saving...' })

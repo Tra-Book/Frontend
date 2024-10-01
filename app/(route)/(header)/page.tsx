@@ -1,12 +1,15 @@
+'use client'
 import { Plane } from 'lucide-react'
 import Link from 'next/link'
-import React, { ReactNode } from 'react'
+import { useSession } from 'next-auth/react'
+import React, { ReactNode, useEffect } from 'react'
 
-import { auth } from '@/auth'
 import { Motion } from '@/components/common/MotionWrapper'
 import { SLOGANS } from '@/components/common/Slogan'
 import { Button } from '@/components/ui/button'
+import { INITIAL_PLAN } from '@/lib/constants/dummy_data'
 import { ROUTES } from '@/lib/constants/routes'
+import usePlanStore from '@/lib/context/planStore'
 import { fadeIn } from '@/lib/types/animation'
 import { cn } from '@/lib/utils/cn'
 
@@ -27,8 +30,14 @@ const renderAnimatedText = (text: Array<string>, delay: number) => {
   ))
 }
 
-const Home = async (): Promise<ReactNode> => {
-  const session = await auth()
+const Home = (): ReactNode => {
+  const session: any = useSession()
+
+  const { setPlanData } = usePlanStore()
+
+  useEffect(() => {
+    setPlanData(INITIAL_PLAN)
+  }, [])
 
   return (
     <main className='relative flex min-h-screen flex-grow flex-col items-center justify-start'>
@@ -59,7 +68,7 @@ const Home = async (): Promise<ReactNode> => {
           </div>
 
           <Motion animation={fadeIn(0.5, 5)}>
-            <Link href={!session ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.INDEX.url}>
+            <Link href={!session.data ? ROUTES.AUTH.LOGIN.url : ROUTES.PLAN.INDEX.url}>
               <Button
                 variant='tbPrimary'
                 className='relative flex h-14 w-52 items-center justify-center gap-3 text-xl font-semibold'

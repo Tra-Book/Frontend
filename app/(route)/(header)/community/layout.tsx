@@ -1,8 +1,10 @@
 'use client'
 
 import { QueryClientProvider } from '@tanstack/react-query'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
+import { INITIAL_PLAN } from '@/lib/constants/dummy_data'
+import usePlanStore from '@/lib/context/planStore'
 import { queryClient } from '@/lib/HTTP/http'
 
 interface CommunityLayoutProps {
@@ -10,6 +12,11 @@ interface CommunityLayoutProps {
 }
 
 const CommunityLayout = ({ children }: CommunityLayoutProps): ReactNode => {
+  const { setPlanData } = usePlanStore()
+
+  useEffect(() => {
+    setPlanData(INITIAL_PLAN)
+  }, [])
   return (
     <div className='mt-24'>
       <QueryClientProvider client={queryClient}>
