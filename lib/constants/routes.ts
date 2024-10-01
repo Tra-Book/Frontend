@@ -173,6 +173,10 @@ export const BACKEND_ROUTES = {
         url: '/plan/comment/add',
       },
     },
+    DELETE: {
+      method: HttpMethod.DELETE,
+      url: '/plan',
+    },
     SCRAP: {
       ADD: {
         method: HttpMethod.POST,

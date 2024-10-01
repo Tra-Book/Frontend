@@ -9,6 +9,7 @@ import PlanSchedule from '@/components/plan/PlanSchedule'
 import SearchArea from '@/components/plan/SearchArea'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/lib/constants/routes'
+import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
@@ -17,9 +18,11 @@ import { cn } from '@/lib/utils/cn'
 interface PlanStorePageProps {}
 
 const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
-  const [focusedPlanCard, setFocusPlanCard] = useState<PlanCardType>()
-  const [isLeftOverHovered, setIsLeftOverHovered] = useState(false)
   const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { setFocusedPlacePin } = useMapStore()
+
+  const [isLeftOverHovered, setIsLeftOverHovered] = useState(false)
+  const [focusedPlanCard, setFocusPlanCard] = useState<PlanCardType>()
 
   const openSearchBar = () => {
     setIsReduced(true)
@@ -28,6 +31,10 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
 
   const handleClickCard = (card: PlanCardType) => {
     setFocusPlanCard(card)
+  }
+  const handleSetFocusedCard = (val: PlanCardType | undefined) => {
+    setFocusPlanCard(val)
+    setFocusedPlacePin(null)
   }
 
   useEffect(() => {
@@ -74,6 +81,7 @@ const PlanStorePage = ({}: PlanStorePageProps): ReactNode => {
                   name='Plan'
                   handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType | undefined) => void}
                   focusCard={focusedPlanCard}
+                  handleSetFocusedCard={handleSetFocusedCard as (val: PlaceCardType | PlanCardType | undefined) => void}
                   className='min-h-0 w-[23dvw] min-w-[280px] flex-grow'
                 />
               </>

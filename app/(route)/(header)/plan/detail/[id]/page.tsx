@@ -48,15 +48,13 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     content = <LoadingPage />
   }
   if (data) {
-    console.log('Fetched from ID:', data)
-
     content = (
       <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
         <Description
           plan={data?.planData as Plan}
           planUser={data?.planUser}
           user={session.data}
-          className='h-60 min-h-min w-full'
+          className='h-64 min-h-min w-full'
         />
         <Title title='여행도 ' />
         <div className='relative aspect-video w-full'>
@@ -83,7 +81,7 @@ export default PlanDetailsPage
 
 const Title = ({ title }: { title: string }): ReactNode => {
   return (
-    <div className='mb-6 mt-10 w-full border-t-2 border-solid border-tbPlaceholder pt-5 text-3xl font-semibold'>
+    <div className='mb-6 mt-8 w-full border-t-2 border-solid border-tbPlaceholder pt-6 text-3xl font-semibold'>
       {title}
     </div>
   )

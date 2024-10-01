@@ -2,19 +2,20 @@
 import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
-import { placeAddScrap } from '@/lib/HTTP/place/API'
+import { placeAddScrap, placeDeleteScrap } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
 import { cn } from '@/lib/utils/cn'
 import { toast } from '@/lib/utils/hooks/useToast'
+import { formatNumOfReview } from '@/lib/utils/stringUtils'
 
 import Backdrop from '../common/Backdrop'
 import { MapPin } from '../common/MapPin'
@@ -87,7 +88,7 @@ export const SchedulePlaceCard = ({
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
             <span>{stars || 0}</span>
           </div>
-          {!isReduced && <span className='w-fit text-sm'>방문자 {visitCnt}+</span>}
+          {!isReduced && <span className='w-fit text-sm'>방문자 {formatNumOfReview(visitCnt)}</span>}
         </div>
         <LucideIcon
           onClick={deleteHandler}
@@ -117,25 +118,30 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
   // scrap
   const scrapHandler = () => {
     mutate({ placeId: data.id, accessToken: session.data.accessToken })
-    setTmpIsScrap(prev => !prev)
   }
 
   /**
-   * 스크랩하기
+   * 스크랩하기 및 삭제하기
    */
   const { mutate } = useMutation({
     mutationKey: ['place', 'scrap', { placeId: data.id }],
-    mutationFn: placeAddScrap,
+    mutationFn: !tmpIsScrap ? placeAddScrap : placeDeleteScrap,
     onSuccess: () => {
-      toast({ title: '보관함에 추가되었습니다!' })
+      setTmpIsScrap(prev => !prev)
+      toast({ title: '변경되었습니다!' })
     },
     onError: () => {
+      toast({ title: '다시 시도해주세요!' })
       setTmpIsScrap(prev => !prev)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['places', 'search'] })
     },
   })
+
+  useEffect(() => {
+    console.log(tmpIsScrap)
+  }, [tmpIsScrap])
 
   return (
     <div
@@ -182,8 +188,8 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
             <LucideIcon name='Star' fill='tbPrimary' strokeWidth={0} />
             <span>{stars}</span>
           </div>
-          <span className='w-fit text-sm'>리뷰 {reviewCnt}+</span>
-          <span className='w-fit text-sm'>방문자 {visitCnt}+</span>
+          <span className='w-fit text-sm'>리뷰 {formatNumOfReview(reviewCnt)}</span>
+          <span className='w-fit text-sm'>방문자 {formatNumOfReview(visitCnt)}</span>
         </div>
 
         <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>
@@ -247,11 +253,11 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
             </div>
             <div className='flex w-fit items-center justify-start gap-1 text-sm'>
               <LucideIcon name='MessageCircle' strokeWidth={2.5} />
-              <span>{commentCnt}</span>
+              <span>{formatNumOfReview(commentCnt)}</span>
             </div>
             <div className='flex w-fit items-center justify-start gap-1 text-sm'>
               <LucideIcon name='Bookmark' strokeWidth={2.5} />
-              <span>{scrapCnt}</span>
+              <span>{formatNumOfReview(scrapCnt)}</span>
             </div>
           </div>
           <div className='flex w-full items-center rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover'>

@@ -5,7 +5,8 @@ import { ko } from 'date-fns/locale'
 export const formatDateToHyphenDate = (date: Date): string => format(date, 'yyyy-MM-dd')
 export const formatDateToShortHyphenDate = (date: Date): string => format(date, 'yy.MM.dd')
 
-export const formatToKoreanShortDate = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
+export const formatToKoreanShortDateDay = (date: Date): string => format(date, 'MM/dd(E)', { locale: ko })
+export const formatToKoreanShortDate = (date: Date) => format(date, 'yyyy년 M월', { locale: ko })
 
 export const parseHypenDateToDate = (dateString: string): Date => parse(dateString, 'yyyy-MM-dd', new Date())
 
@@ -18,10 +19,6 @@ export const formatKoreanDate = (date: Date): string => {
 
     return `${formattedDate}(${dayOfWeek})`
   }
-  // console.log(date)
-
-  // console.log('date is not Date', typeof date)
-
   return ''
 }
 
@@ -90,4 +87,30 @@ export const getRelativeTimeString = (date: Date): string => {
     const daysDifference = Math.floor(timeDiff / msInOneDay)
     return `${daysDifference}일 전`
   }
+}
+
+/**
+ * x분 > "x일x시간x분" 포맷바꾸기
+ */
+export const formatDurationTime = (minutes: number): string => {
+  const days = Math.floor(minutes / (24 * 60)) // 1일 = 1440분
+  const hours = Math.floor((minutes % (24 * 60)) / 60) // 나머지에서 시간 계산
+  const mins = minutes % 60 // 나머지 분 계산
+
+  let result = ''
+
+  if (days > 0) {
+    result += `${days}일 `
+  }
+
+  if (hours > 0) {
+    result += `${hours}시간 `
+  }
+
+  // 분이 0이 아닌 경우에만 추가
+  if (mins > 0) {
+    result += `${mins}분`
+  }
+
+  return result.trim() // 앞뒤 공백 제거
 }

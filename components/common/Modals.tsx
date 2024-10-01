@@ -29,6 +29,7 @@ export const InfoModal = ({ isOpen, data, onClose, onConfirm }: InfoModalProps) 
   const handleConfirm = () => {
     if (onConfirm) {
       onConfirm() // 확인 버튼 클릭 시 전달된 함수 실행
+      console.log('실행됨')
     }
     onClose() // 모달 닫기
   }

@@ -13,6 +13,7 @@ import LucideIcon from '@/lib/icons/LucideIcon'
 import useModal from '@/lib/utils/hooks/useModal'
 import { toast } from '@/lib/utils/hooks/useToast'
 import ToggleWrapper, { useDropdown } from '@/lib/utils/hooks/useToggle'
+import { formatNumOfReview } from '@/lib/utils/stringUtils'
 
 import Backdrop from '../common/Backdrop'
 
@@ -53,11 +54,11 @@ const MainPlaceCard = ({ data, user }: PlaceCardProps): ReactNode => {
             </div>
             <div className='flex items-center gap-1'>
               <LucideIcon name='Plane' strokeWidth={2} />
-              <span>{visitCnt}</span>
+              <span>{formatNumOfReview(visitCnt)}</span>
             </div>
             <div className='flex items-center gap-1'>
               <span>리뷰</span>
-              <span>{reviewCnt}+</span>
+              <span>{formatNumOfReview(reviewCnt)}</span>
             </div>
           </div>
           <div className='flex min-h-16 w-full items-center text-wrap break-words rounded-md bg-tbPlaceholder px-2 py-2 hover:bg-tbPlaceHolderHover lg:text-sm'>
@@ -103,16 +104,18 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
     mutationKey: ['place', 'scrap', { placeId: id }],
     mutationFn: placeDeleteScrap,
 
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['places', 'scrap'] })
     },
   })
 
   const deleteScrapHandler = () => {
+    toggleDropdown() // 드롭다운 닫기
     handleModalStates(ClientModalData.deleteScrap, 'open')
   }
 
   const addReviewHandler = () => {
+    toggleDropdown() // 드롭다운 닫기
     handleModalStates(ClientModalData.serviceOnReady, 'open')
   }
   const onConfirmHandler = () => {
@@ -128,7 +131,7 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
               },
             },
           )
-          toggleDropdown() // 드롭다운 닫기
+
           break
       }
     }
@@ -137,28 +140,26 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
   return (
     <>
       <LucideIcon name='EllipsisVertical' className='absolute right-0' onClick={toggleDropdown} />
-      {isOpen && (
-        <ToggleWrapper
-          ref={ref}
-          isOpen={isOpen}
-          className='absolute bottom-[-260%] right-0 z-10 rounded-md border border-solid border-black bg-white text-xs'
+      <ToggleWrapper
+        ref={ref}
+        isOpen={isOpen}
+        className='absolute bottom-[-260%] right-0 z-10 rounded-md border border-solid border-black bg-white text-xs'
+      >
+        <div
+          onClick={addReviewHandler}
+          className='flex items-center justify-center gap-2 border-b border-solid border-black px-2 py-2 hover:bg-tbPrimary'
         >
-          <div
-            onClick={addReviewHandler}
-            className='flex items-center justify-center gap-2 border-b border-solid border-black px-2 py-2 hover:bg-tbPrimary'
-          >
-            <span>{options[0].name}</span>
-            <LucideIcon name='PencilLine' size={16} />
-          </div>
-          <div
-            onClick={deleteScrapHandler}
-            className='flex items-center justify-center gap-2 px-2 py-2 hover:bg-tbPrimary'
-          >
-            <span>{options[1].name}</span>
-            <LucideIcon name='Trash2' size={16} />
-          </div>
-        </ToggleWrapper>
-      )}
+          <span>{options[0].name}</span>
+          <LucideIcon name='PencilLine' size={16} />
+        </div>
+        <div
+          onClick={deleteScrapHandler}
+          className='flex items-center justify-center gap-2 px-2 py-2 hover:bg-tbPrimary'
+        >
+          <span>{options[1].name}</span>
+          <LucideIcon name='Trash2' size={16} />
+        </div>
+      </ToggleWrapper>
       <Modal onConfirm={onConfirmHandler} />
     </>
   )

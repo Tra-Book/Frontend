@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
 
-import { generate_initial_schedule, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { generate_initial_schedule } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
@@ -58,7 +58,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
         endDate: variables.endDate,
         state: variables.state,
         schedule: generate_initial_schedule(getTripDuration(variables.startDate, variables.endDate)), // Default Schedule
-        imgSrc: PLAN_DEFAULT_IMAGE,
+        imgSrc: data.imgSrc,
       })
       const params: Queries = [
         {
@@ -73,7 +73,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     },
   })
 
-  const onClickFinish = async () => {
+  const onClickFinish = () => {
     if (!STATES.some(state => state === inputState)) {
       toast({ title: '도시를 입력해주세요.' })
       return
@@ -108,7 +108,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
         },
       ]
 
-      router.replace(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
+      router.back() // PlanId 붙여서 계획 세우기 열기
     }
   }
 
@@ -135,7 +135,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const PlanStartRegion = (
     <div className='mt-5 flex h-3/4 w-full flex-col items-center justify-start gap-1 overflow-y-scroll scrollbar-hide'>
       <p className='flex items-center justify-center text-xl'>
-        <span className='border-b-2 border-black text-2xl'>어디</span>로 떠나시나요?
+        <span className='border-b-2 border-tbPrimary text-2xl'>어디</span>로 떠나시나요?
       </p>
       <p className='mb-3 text-tbGray'>* 지역을 이동하는 경우, 첫 방문지로 설정해주세요.</p>
 
@@ -161,7 +161,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
   const PlanStartPeriod = (
     <div className='mt-5 flex h-3/4 w-full flex-col items-center justify-start gap-1 overflow-y-scroll scrollbar-hide'>
       <p className='flex items-center justify-center text-xl'>
-        <span className='border-b-2 border-black text-2xl'>언제</span>&nbsp;떠나시나요?
+        <span className='border-b-2 border-tbPrimary text-2xl'>언제</span>&nbsp;떠나시나요?
       </p>
       <p className='mb-5 text-tbGray'>* 출발 날짜와 도착 날짜를 차례대로 선택해주세요.</p>
 

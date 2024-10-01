@@ -128,6 +128,20 @@ export const ClientModalData = {
     isError: false,
   },
 
+  deletePlan: {
+    id: 'confirm',
+    title: '여행 삭제',
+    description: '해당 계획을 삭제하시겠습니까?(복원 불가)',
+    isError: true,
+  },
+
+  // Error
+  noAuthorizationError: {
+    id: 'info',
+    title: '권한 없음',
+    description: '해당 행동에 대한 권한이 없습니다.',
+    isError: true,
+  },
   // naver login 금지
   naverLoginDenied: {
     id: 'info',

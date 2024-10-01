@@ -4,12 +4,13 @@ import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 import { INITIAL_PLAN, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
+import { queryClient } from '@/lib/HTTP/http'
 import { updatePlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
@@ -39,16 +40,8 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     mutationKey: ['plan', 'update', planData.id],
     mutationFn: updatePlan,
     onSuccess: data => {
-      const { imgSrc } = data
-
       toast({ title: '저장되었습니다' }) // 성공 메세지
-      // 이미지 업데이트
-      console.log('Received image: ', imgSrc)
-
-      imgSrc &&
-        setPlanData({
-          imgSrc,
-        })
+      queryClient.invalidateQueries({ queryKey: ['plan', planData.id] })
     },
     onError: () => {
       toast({ title: 'Error occured on Saving...' })
@@ -104,6 +97,10 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     handleModalStates(ClientModalData.submitPlan, 'open')
   }
 
+  useEffect(() => {
+    console.log(modalData)
+  }, [modalData])
+
   /**
    * 모달 Confirm시 수행할 작업
    */
@@ -118,7 +115,8 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
           setIsReduced(false)
           router.push(ROUTES.HOME.url)
           break
-        // Case2 계획 개시하기
+
+        // Case2 포스팅
         case ClientModalData.submitPlan:
           // #0. 저장 > onSuccess
           mutate(
@@ -131,6 +129,9 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
             },
           )
           break
+        // #0. 필드 필드 확인
+        case ClientModalData.checkImageError:
+          router.push(ROUTES.PLAN.PlAN.url)
       }
     }
   }
@@ -187,7 +188,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
       </div>
       <div className={cn(style)} onClick={writePostHandler}>
         <LucideIcon name='PencilLine' size={iconSize} />
-        계획 개시
+        포스팅
       </div>
       <div className={cn(style)} onClick={openModalHandler}>
         <LucideIcon name='Settings' size={iconSize} />

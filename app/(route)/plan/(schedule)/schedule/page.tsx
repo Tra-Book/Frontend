@@ -43,6 +43,10 @@ const PlanSchedulePage = (): ReactNode => {
     setCenter(card.geo)
   }
 
+  const handleSetFocusedCard = (val: PlaceCardType | undefined) => {
+    setFocusedPlaceCard(val)
+    setFocusedPlacePin(null)
+  }
   useEffect(() => {
     return () => setFocusedPlacePin(null)
   }, [])
@@ -54,6 +58,7 @@ const PlanSchedulePage = (): ReactNode => {
         <SearchArea
           name='Place'
           focusCard={focusedPlaceCard}
+          handleSetFocusedCard={handleSetFocusedCard as (val: PlaceCardType | PlanCardType | undefined) => void}
           handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType) => void}
           className='h-dvh w-[23dvw] min-w-[280px]'
         />

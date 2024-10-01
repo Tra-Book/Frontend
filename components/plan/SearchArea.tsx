@@ -6,7 +6,6 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import usePlanStore from '@/lib/context/planStore'
-import { queryClient } from '@/lib/HTTP/http'
 import { fetchPlaces, PlaceCardType, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -22,14 +21,19 @@ import { PlaceCard, PlanCard } from './Cards'
 interface SearchAreaProps {
   name: 'Plan' | 'Place'
   focusCard: PlaceCardType | PlanCardType | undefined
+  handleSetFocusedCard: (val: PlaceCardType | PlanCardType | undefined) => void
   handleClickCard: (card: PlaceCardType | PlanCardType) => void
   className?: string
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
 
-const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaProps): ReactNode => {
-  console.log('SearchArea name:', name)
-
+const SearchArea = ({
+  name,
+  focusCard,
+  handleSetFocusedCard,
+  handleClickCard,
+  className,
+}: SearchAreaProps): ReactNode => {
   const pathname = usePathname()
   const session: any = useSession()
 
@@ -37,6 +41,9 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
   const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
+
+  const previousFilterRef = useRef(filter)
+  const previousArrangeRef = useRef(arrange)
 
   // # 처음 들어오면 설정한 지역으로 설정
   const [isFirstQueryDone, setIsFirstQueryDone] = useState(false)
@@ -83,6 +90,7 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
       return nextPage <= maxPage ? nextPage : undefined // 다음 데이터가 있는지 없는지 판단
     },
     enabled: session.data !== undefined,
+    refetchOnWindowFocus: false,
   })
 
   // #0-1. Scroll Event Data Fetching
@@ -94,15 +102,15 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
 
   // #0-2. New Data Fetching
   useEffect(() => {
-    queryClient.refetchQueries({
-      queryKey:
-        name === 'Plan'
-          ? ['plans', 'scrap']
-          : pathname.includes('scrap')
-            ? ['places', 'scrap']
-            : ['places', 'schedule'],
-    })
-    refetch() // 첫 페이지부터 refetch하도록 설정
+    if (
+      JSON.stringify(filter) !== JSON.stringify(previousFilterRef.current) ||
+      arrange !== previousArrangeRef.current
+    ) {
+      // 필터나 arrange 값이 변경된 경우에만 데이터를 다시 페칭
+      refetch()
+      previousFilterRef.current = filter // 최신 상태로 업데이트
+      previousArrangeRef.current = arrange
+    }
   }, [filter, arrange])
 
   const submitHandler = (event: React.FormEvent) => {
@@ -192,6 +200,12 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
   }
 
   const movePageHandler = () => {}
+
+  // Fc: 축소 버튼 실행 함수수
+  const reduceHandler = () => {
+    handleSetFocusedCard(undefined)
+    setIsSearching(prev => !prev)
+  }
   return (
     <div className={cn('relative flex flex-col items-start justify-start', className)}>
       {/* 유저 입력 */}
@@ -219,7 +233,7 @@ const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaP
       {/* 축소 확대 버튼 */}
       {isSearching && (
         <div
-          onClick={() => setIsSearching(prev => !prev)}
+          onClick={reduceHandler}
           className='absolute right-0 top-1/2 z-10 h-fit w-fit translate-x-full transform cursor-pointer rounded-r-md bg-tbWhite'
         >
           <LucideIcon name={isSearching ? 'ChevronsLeft' : 'ChevronsRight'} size={28} />

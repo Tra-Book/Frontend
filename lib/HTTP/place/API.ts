@@ -15,7 +15,7 @@ interface PlaceAddScrapType {
 }
 export const placeAddScrap = async ({ placeId, accessToken }: PlaceAddScrapType) => {
   const Route = BACKEND_ROUTES.PLACE.SCRAP.ADD
-  console.log('Scrap placeId:,', placeId)
+  console.log('여행지 스크랩 넣기 들어옴')
 
   const res = await fetch(`/server/${Route.url}`, {
     method: Route.method,
@@ -47,6 +47,8 @@ interface PlaceDeleteScrapType {
   accessToken: string
 }
 export const placeDeleteScrap = async ({ placeId, accessToken }: PlaceDeleteScrapType) => {
+  console.log('여행지 스크랩 삭제 들어옴')
+
   const Route = BACKEND_ROUTES.PLACE.SCRAP.DELETE
 
   const res = await fetch(`/server/${Route.url}`, {

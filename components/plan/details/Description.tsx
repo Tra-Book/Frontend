@@ -4,14 +4,13 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 
-import Backdrop from '@/components/common/Backdrop'
 import UserAvatar from '@/components/common/UserAvatar'
 import { PLAN_DEFAULT_IMAGE, USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
-import { queryClient } from '@/lib/HTTP/http'
-import { planAddLikes, planAddScrap, planDeleteLikes, planDeleteScrap } from '@/lib/HTTP/plan/API'
+import { attachQuery, Queries, queryClient } from '@/lib/HTTP/http'
+import { deletePlan, planAddLikes, planAddScrap, planDeleteLikes, planDeleteScrap } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
@@ -30,7 +29,6 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
   const router = useRouter()
   // Modal Values
   const { modalData, handleModalStates, Modal } = useModal()
-  console.log(plan)
 
   // #0. 계획 데이터
   const {
@@ -54,11 +52,13 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
   const onConfirm = () => {
     if (modalData.id === 'confirm') {
       switch (modalData) {
+        // Case: 로그인 필요
         case ClientModalData.loginRequiredError:
           router.push(ROUTES.AUTH.LOGIN.url)
           break
-
-        default:
+        // Case: 계획 삭제
+        case ClientModalData.deletePlan:
+          deletePlanMutate({ planId: id, accessToken: user.accessToken })
           break
       }
     }
@@ -113,30 +113,62 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
     scrapMutate({ planId: id, accessToken: user.accessToken })
   }
 
+  // #2. Plan Delete Mutation
+  const { mutate: deletePlanMutate } = useMutation({
+    mutationKey: ['plan', { planId: id }],
+    mutationFn: deletePlan,
+    onSuccess: () => {
+      router.push(ROUTES.MAIN.MY_PLAN.url) // 내 계획으로 이동
+      toast({ title: '삭제 완료!' })
+    },
+    onError: () => {
+      toast({ title: '다시 시도해주세요' })
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['plans', user?.userId, 'user'] })
+    },
+  })
+  const planDeleteHandler = () => {
+    // #1. 권한 없는 유저의 접근
+    if (planUser.userId !== plan.userId) {
+      handleModalStates(ClientModalData.noAuthorizationError, 'open')
+    }
+    // #2. 권한 있는 사람의 접근
+    handleModalStates(ClientModalData.deletePlan, 'open')
+  }
+  // Fc: 수정버튼 클릭시
+  const updateClickHandler = () => {
+    const params: Queries = [
+      {
+        key: 'planId',
+        value: id,
+      },
+    ]
+
+    router.push(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
+  }
   return (
-    <div className={cn('relative flex cursor-pointer items-start justify-start gap-6 px-3 py-6', className)}>
-      <div className='group relative aspect-video h-full origin-left'>
+    <div className={cn('relative flex items-start justify-start gap-6 px-3 pb-2 pt-6', className)}>
+      <div className='items-cente relative flex h-full w-80 justify-center'>
         <Image
           src={(imgSrc as string) || PLAN_DEFAULT_IMAGE}
           alt='Plan Image'
           width={320}
           height={200}
-          className='h-full w-full origin-center rounded-md'
+          className='aspect-video w-full rounded-md object-cover shadow-md'
         />
-
-        <Backdrop className='hidden h-full w-full items-center justify-center rounded-md group-hover:flex' />
       </div>
 
-      {/* 정보 */}
       <div className={cn('flex h-fit min-h-full w-fit flex-grow origin-left flex-col items-start justify-start gap-3')}>
         {/* 유저정보 */}
-        <div className='flex items-center justify-start gap-2'>
+        <div className='flex items-center justify-start gap-4'>
           <UserAvatar imgSrc={planUser.image || USER_DEFAULT_IMAGE} />
           <div>
             <p className='text-lg font-semibold'>{planUser.username || NO_USER_NAME}</p>
             <p className='text-sm text-tbGray'>{planUser.status_message || NO_USER_DESCRIPTION}</p>
           </div>
         </div>
+        {/* 정보 */}
         {/* 계획정보 */}
         <div className='flex w-fit flex-col items-start justify-start gap-3'>
           <span className='truncate text-3xl font-semibold'>{title}</span>
@@ -149,11 +181,11 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
           <span>{budget}원</span>
         </div>
         <div className='flex items-center justify-start gap-3'>
-          <div className='flex w-fit items-center justify-start gap-1 text-lg'>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon name='MessageCircle' size={20} />
             <span>{comments?.length}</span>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-lg'>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon
               onClick={likeHandler}
               name='Heart'
@@ -164,7 +196,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
             />
             <span>{likeCnt}</span>
           </div>
-          <div className='flex w-fit items-center justify-start gap-1 text-lg'>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon
               onClick={scrapHandler}
               name='Bookmark'
@@ -176,6 +208,18 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
           </div>
         </div>
       </div>
+      {/* 버튼들: 계획 소유자만 보임 */}
+      {planUser.userId === plan.userId && (
+        <div className='asbolute right-0 top-0 flex items-center justify-center gap-2 font-medium'>
+          <div onClick={updateClickHandler} className='cursor-pointer hover:text-tbBlueHover'>
+            수정
+          </div>
+          <div onClick={planDeleteHandler} className='cursor-pointer hover:text-tbRed'>
+            삭제
+          </div>
+        </div>
+      )}
+
       <Modal onConfirm={onConfirm} />
     </div>
   )

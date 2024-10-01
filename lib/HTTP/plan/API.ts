@@ -128,6 +128,8 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     throw error
   }
   const data = await res.json()
+  console.log('update revceived:', data)
+
   return data
 }
 
@@ -247,8 +249,6 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     isLiked: liked,
   }
 
-  console.log('PlanData from fetchplans: ', planData)
-
   // 계획을 만든 사람의 정보
   const planUser = {
     userId: user.userId as number,
@@ -292,33 +292,38 @@ export const addComment = async ({ newComment, accessToken }: AddCommentProps) =
 }
 
 /**
- * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
+ * 여행계획 삭제하기 DELTE
  */
-export const addPlaceToPlan = (originPlan: Plan, place: PlaceCardType, currentDay: number): Plan => {
-  // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
-  const updatedSchedule = originPlan.schedule.map(schedule => {
-    if (schedule.day === currentDay) {
-      // #2. Order (순서), Duration (머무는 시간) 필드 추가하기
+interface PlanDeleteType {
+  planId: number
+  accessToken: string
+}
+export const deletePlan = async ({ planId, accessToken }: PlanDeleteType) => {
+  const Route = BACKEND_ROUTES.PLAN.DELETE
+  console.log('Plan Delete API Entered')
 
-      const newPlace: Place = {
-        ...place,
-        duration: 60,
-        order: schedule.places ? schedule.places.length + 1 : 1,
-        reviews: place.reviews,
-      }
-      const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
-      return {
-        ...schedule,
-        places: updatedPlaces,
-      }
-    }
-    return schedule // 변경되지 않은 일정은 그대로 반환
+  const queries: Queries = [
+    {
+      key: 'planId',
+      value: planId,
+    },
+  ]
+  const res = await fetch(`${attachQuery(`/server/${Route.url}`, queries)}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
   })
-
-  return {
-    ...originPlan,
-    schedule: updatedSchedule, // 업데이트된 스케줄 반영
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while deleting scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
   }
+
+  return
 }
 
 /**
@@ -453,4 +458,34 @@ export const planDeleteLikes = async ({ planId, accessToken }: PlanDeleteLikesTy
   }
 
   return
+}
+
+/**
+ * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
+ */
+export const addPlaceToPlan = (originPlan: Plan, place: PlaceCardType, currentDay: number): Plan => {
+  // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
+  const updatedSchedule = originPlan.schedule.map(schedule => {
+    if (schedule.day === currentDay) {
+      // #2. Order (순서), Duration (머무는 시간) 필드 추가하기
+
+      const newPlace: Place = {
+        ...place,
+        duration: 60,
+        order: schedule.places ? schedule.places.length + 1 : 1,
+        reviews: place.reviews,
+      }
+      const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
+      return {
+        ...schedule,
+        places: updatedPlaces,
+      }
+    }
+    return schedule // 변경되지 않은 일정은 그대로 반환
+  })
+
+  return {
+    ...originPlan,
+    schedule: updatedSchedule, // 업데이트된 스케줄 반영
+  }
 }
