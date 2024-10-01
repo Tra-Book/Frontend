@@ -42,6 +42,9 @@ const SearchArea = ({
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
 
+  const previousFilterRef = useRef(filter)
+  const previousArrangeRef = useRef(arrange)
+
   // # 처음 들어오면 설정한 지역으로 설정
   const [isFirstQueryDone, setIsFirstQueryDone] = useState(false)
   useEffect(() => {
@@ -87,6 +90,7 @@ const SearchArea = ({
       return nextPage <= maxPage ? nextPage : undefined // 다음 데이터가 있는지 없는지 판단
     },
     enabled: session.data !== undefined,
+    refetchOnWindowFocus: false,
   })
 
   // #0-1. Scroll Event Data Fetching
@@ -97,17 +101,17 @@ const SearchArea = ({
   }, [inView])
 
   // #0-2. New Data Fetching
-  // useEffect(() => {
-  //   queryClient.refetchQueries({
-  //     queryKey:
-  //       name === 'Plan'
-  //         ? ['plans', 'scrap']
-  //         : pathname.includes('scrap')
-  //           ? ['places', 'scrap']
-  //           : ['places', 'schedule'],
-  //   })
-  //   refetch() // 첫 페이지부터 refetch하도록 설정
-  // }, [filter, arrange])
+  useEffect(() => {
+    if (
+      JSON.stringify(filter) !== JSON.stringify(previousFilterRef.current) ||
+      arrange !== previousArrangeRef.current
+    ) {
+      // 필터나 arrange 값이 변경된 경우에만 데이터를 다시 페칭
+      refetch()
+      previousFilterRef.current = filter // 최신 상태로 업데이트
+      previousArrangeRef.current = arrange
+    }
+  }, [filter, arrange])
 
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault()

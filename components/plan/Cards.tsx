@@ -2,13 +2,13 @@
 import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
 import useMapStore from '@/lib/context/mapStore'
 import { queryClient } from '@/lib/HTTP/http'
-import { placeAddScrap } from '@/lib/HTTP/place/API'
+import { placeAddScrap, placeDeleteScrap } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -118,25 +118,30 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
   // scrap
   const scrapHandler = () => {
     mutate({ placeId: data.id, accessToken: session.data.accessToken })
-    setTmpIsScrap(prev => !prev)
   }
 
   /**
-   * 스크랩하기
+   * 스크랩하기 및 삭제하기
    */
   const { mutate } = useMutation({
     mutationKey: ['place', 'scrap', { placeId: data.id }],
-    mutationFn: placeAddScrap,
+    mutationFn: !tmpIsScrap ? placeAddScrap : placeDeleteScrap,
     onSuccess: () => {
-      toast({ title: '보관함에 추가되었습니다!' })
+      setTmpIsScrap(prev => !prev)
+      toast({ title: '변경되었습니다!' })
     },
     onError: () => {
+      toast({ title: '다시 시도해주세요!' })
       setTmpIsScrap(prev => !prev)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['places', 'search'] })
     },
   })
+
+  useEffect(() => {
+    console.log(tmpIsScrap)
+  }, [tmpIsScrap])
 
   return (
     <div

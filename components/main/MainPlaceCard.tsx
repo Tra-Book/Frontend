@@ -104,7 +104,7 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
     mutationKey: ['place', 'scrap', { placeId: id }],
     mutationFn: placeDeleteScrap,
 
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['places', 'scrap'] })
     },
   })
