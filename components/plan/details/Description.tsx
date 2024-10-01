@@ -46,8 +46,14 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
     comments,
     id,
   } = plan
-  const [tmpIsLiked, setTmpIsLiked] = useState<boolean>(isLiked)
-  const [tmpIsScraped, setTmpIsScraped] = useState<boolean>(isScraped)
+  const [tmpLikeData, setTmpLikeData] = useState({
+    likeCnt: likeCnt,
+    isLiked: isLiked,
+  })
+  const [tmpScrapData, setTmpScrapData] = useState({
+    scrapCnt: scrapCnt,
+    isScraped: isScraped,
+  })
 
   const onConfirm = () => {
     if (modalData.id === 'confirm') {
@@ -66,17 +72,18 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
 
   // #1. Plan Likes Mutation
   const { mutate: likesMutate } = useMutation({
-    mutationKey: ['plan', 'likes', { planId: id }],
-    mutationFn: !tmpIsLiked ? planAddLikes : planDeleteLikes,
+    mutationKey: ['plan', { planId: id }],
+    mutationFn: !tmpLikeData.isLiked ? planAddLikes : planDeleteLikes,
     onSuccess: () => {
-      setTmpIsLiked(prev => !prev)
-      toast({ title: '변경 완료!' })
+      setTmpLikeData(prev => ({
+        likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt += 1) : (prev.likeCnt -= 1),
+        isLiked: !prev.isLiked,
+      }))
     },
-    onError: () => {
-      setTmpIsLiked(prev => !prev)
-    },
+
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', 'likes', { planId: id }] })
+      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
+      queryClient.invalidateQueries({ queryKey: ['plans', user?.userId, 'user'] })
     },
   })
 
@@ -91,17 +98,18 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
 
   // #1. Plan Scrap Mutations
   const { mutate: scrapMutate } = useMutation({
-    mutationKey: ['plan', 'scrap', { planId: id }],
-    mutationFn: !tmpIsScraped ? planAddScrap : planDeleteScrap,
+    mutationKey: ['plan', { planId: id }],
+    mutationFn: !tmpScrapData.isScraped ? planAddScrap : planDeleteScrap,
     onSuccess: () => {
-      setTmpIsScraped(prev => !prev)
-      toast({ title: '변경 완료!' })
+      setTmpScrapData(prev => ({
+        scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
+        isScraped: !prev.isScraped,
+      }))
     },
-    onError: () => {
-      setTmpIsScraped(prev => !prev)
-    },
+
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', 'scrap', { planId: id }] })
+      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
+      queryClient.invalidateQueries({ queryKey: ['plans', user?.userId, 'user'] })
     },
   })
   const scrapHandler = () => {
@@ -125,12 +133,13 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
       toast({ title: '다시 시도해주세요' })
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
       queryClient.invalidateQueries({ queryKey: ['plans', user?.userId, 'user'] })
     },
   })
   const planDeleteHandler = () => {
     // #1. 권한 없는 유저의 접근
-    if (planUser.userId !== plan.userId) {
+    if (!user && planUser.userId === user.userId) {
       handleModalStates(ClientModalData.noAuthorizationError, 'open')
     }
     // #2. 권한 있는 사람의 접근
@@ -147,6 +156,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
 
     router.push(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
   }
+
   return (
     <div className={cn('relative flex items-start justify-start gap-6 px-3 pb-2 pt-6', className)}>
       <div className='items-cente relative flex h-full w-80 justify-center'>
@@ -182,34 +192,34 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
         </div>
         <div className='flex items-center justify-start gap-3'>
           <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
-            <LucideIcon name='MessageCircle' size={20} />
-            <span>{comments?.length}</span>
-          </div>
-          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon
               onClick={likeHandler}
               name='Heart'
-              fill={tmpIsLiked ? 'tbRed' : undefined}
-              // strokeWidth={tmpIsLiked ? 0 : 2}
+              fill={tmpLikeData.isLiked ? 'tbRed' : undefined}
+              // strokeWidth={tmpLikeData ? 0 : 2}
               size={20}
-              // className={cn(tmpIsScraped ? 'hover:fill-none' : 'hover:fill-tbRed')}
+              // className={cn(tmpScrapData ? 'hover:fill-none' : 'hover:fill-tbRed')}
             />
-            <span>{likeCnt}</span>
+            <span>{tmpLikeData.likeCnt}</span>
           </div>
           <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
             <LucideIcon
               onClick={scrapHandler}
               name='Bookmark'
-              // className={cn(tmpIsScraped ? 'hover:fill-none' : 'hover:fill-tbPrimaryHover')}
-              fill={tmpIsScraped ? 'tbPrimaryHover' : undefined}
+              // className={cn(tmpScrapData ? 'hover:fill-none' : 'hover:fill-tbPrimaryHover')}
+              fill={tmpScrapData.isScraped ? 'tbPrimaryHover' : undefined}
               size={20}
             />
-            <span>{scrapCnt}</span>
+            <span>{tmpScrapData.scrapCnt}</span>
+          </div>
+          <div className='flex w-fit cursor-pointer items-center justify-start gap-1 text-base'>
+            <LucideIcon name='MessageCircle' size={20} />
+            <span>{comments?.length}</span>
           </div>
         </div>
       </div>
       {/* 버튼들: 계획 소유자만 보임 */}
-      {planUser.userId === plan.userId && (
+      {!user && planUser.userId === user.userId && (
         <div className='asbolute right-0 top-0 flex items-center justify-center gap-2 font-medium'>
           <div onClick={updateClickHandler} className='cursor-pointer hover:text-tbBlueHover'>
             수정

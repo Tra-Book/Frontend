@@ -1,9 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import React, { ReactNode, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import { formatKoreanDate, parseHypenDateToDate } from '@/lib/utils/dateUtils'
@@ -24,9 +26,13 @@ const formatPeriod = (date: string) => {
 }
 
 const PlanCard = ({ plan }: PlanCardProps): ReactNode => {
-  const [isHovered, setIsHovered] = useState(false)
-  // console.log(plan)
+  const router = useRouter()
 
+  const [isHovered, setIsHovered] = useState(false)
+
+  const openPlanHandler = () => {
+    router.push(`${ROUTES.PLAN.DETAIL.url}/${plan.planId}`)
+  }
   return (
     <div
       // href={`/community/plan/detail/${plan.planId}`}
@@ -34,6 +40,7 @@ const PlanCard = ({ plan }: PlanCardProps): ReactNode => {
       className='relative block h-[95%] w-[90%] rounded-lg shadow-tb-shadow hover:scale-105 hover:cursor-pointer'
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={openPlanHandler}
     >
       <Image
         src={PLACE_DEFAULT_IMAGE || BusanImg}
