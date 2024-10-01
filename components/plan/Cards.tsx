@@ -90,12 +90,14 @@ export const SchedulePlaceCard = ({
           </div>
           {!isReduced && <span className='w-fit text-sm'>방문자 {formatNumOfReview(visitCnt)}</span>}
         </div>
-        <LucideIcon
-          onClick={deleteHandler}
-          name='X'
-          className='absolute right-3 top-3 hover:text-tbRed'
-          strokeWidth={3}
-        />
+        {!deleteHandler && (
+          <LucideIcon
+            onClick={deleteHandler}
+            name='X'
+            className='absolute right-3 top-3 hover:text-tbRed'
+            strokeWidth={3}
+          />
+        )}
       </div>
     </>
   )
