@@ -167,7 +167,7 @@ const SignUpPage = ({}: SignUpPageProps): ReactNode => {
           {nextButton}
         </div>
       </div>
-      <Modal id='info' onConfirm={handleModalConfirm} />
+      <Modal onConfirm={handleModalConfirm} />
     </div>
   )
 }

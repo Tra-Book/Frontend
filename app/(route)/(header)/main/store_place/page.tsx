@@ -1,62 +1,9 @@
 import React, { ReactNode } from 'react'
 
 import Contents from '@/components/main/Contents'
-import { StateType } from '@/lib/constants/regions'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { Geo } from '@/lib/types/Entity/place'
-import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
 
 interface MainStorePlacePageProps {}
-
-// Todo: 실제 데이터 Fetch하여 사용하기
-const dummy_place1 = {
-  id: 1,
-  name: '성산일출봉',
-  state: '서울특별시' as StateType,
-  city: '강남구',
-  location: {
-    latitude: 127,
-    longitude: 32,
-  } as Geo,
-  imageSrc: DummyThumbNail,
-  tag: '휴양지',
-  star: 4.3,
-  reviewCnt: 20,
-  reviews: [
-    '성산일출봉을 가지 않는 것은 제주도 여행을 가지 않겠다는 것이랑 같다.',
-    '친구들과 가기 좋아요',
-    '연인과 가기 좋아요',
-  ],
-  usedCnt: 120,
-}
-const dummy_place2 = {
-  id: 1,
-  name: '성산일출봉',
-  state: '부산광역시' as StateType,
-  city: '중구',
-  location: {
-    latitude: 127,
-    longitude: 32,
-  } as Geo,
-  imageSrc: DummyThumbNail,
-  tag: '휴양지',
-  star: 4.1,
-  reviewCnt: 40,
-  reviews: [
-    '성산일출봉을 가지 않는 것은 제주도 여행을 가지 않겠다는 것이랑 같다.',
-    '친구들과 가기 좋아요',
-    '연인과 가기 좋아요',
-  ],
-  usedCnt: 140,
-}
-export type DummyPlaceType = typeof dummy_place1
-let dummy_places = []
-for (let i = 0; i < 40; i++) {
-  dummy_places.push(dummy_place1)
-}
-for (let i = 0; i < 10; i++) {
-  dummy_places.push(dummy_place2)
-}
 
 const MainStorePlacePage = ({}: MainStorePlacePageProps): ReactNode => {
   return (
@@ -67,7 +14,7 @@ const MainStorePlacePage = ({}: MainStorePlacePageProps): ReactNode => {
         여행지
       </p>
 
-      <Contents name='Place' datas={dummy_places} />
+      <Contents name='Place' />
     </div>
   )
 }

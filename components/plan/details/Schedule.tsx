@@ -22,6 +22,7 @@ interface PlanDetailScheduleProps {
 
 const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): ReactNode => {
   const { startDate, schedule } = plan
+  console.log('schedule fetched: ', schedule)
 
   const { DayDropdown } = useDayDropdown(schedule.length)
   const { setDay } = useDropdownStore()
@@ -137,22 +138,25 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
       setDurations(results as Array<number>)
     }
   }
-  // useEffect(() => {
-  //   calculateDurations()
-  // }, [])
+  useEffect(() => {
+    calculateDurations()
+  }, [])
 
   // #2. 카드
   let contents
   // width만 차지하고 보이지 않는 카드를 만들어라!
   if (places.length === 0) {
     contents = (
-      <SchedulePlaceCard
-        id='dummy'
-        data={DUMMY_PLACES[0]}
-        fillIndex={fillIndex}
-        isReduced={false}
-        className='h-[200px]'
-      />
+      <>
+        <SchedulePlaceCard
+          id='dummy'
+          data={DUMMY_PLACES[0]}
+          fillIndex={fillIndex}
+          isReduced={false}
+          className='h-[200px]'
+        />
+        <div className='flex h-20 w-full items-center justify-center'>추가된 여행지가 없습니다!</div>
+      </>
     )
   }
   // 원래 카드
@@ -164,8 +168,7 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
           <div className='relative flex min-h-14 w-full items-center justify-center border-t-[0.5px] border-tbPlaceholder px-3'>
             <LucideIcon name='CarFront' size={26} />
             <div className='absolute right-4 text-sm text-tbGray'>
-              0분
-              {/* {durations[index] !== null ? `${durations[index]}분` : 'Loading...'} */}
+              {durations[index] !== null ? `${durations[index]}분` : 'Loading...'}
             </div>
           </div>
         )}
@@ -183,7 +186,7 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
         <span>{startTime}&nbsp;출발</span>
         <span className='mr-3'>{endTime}&nbsp;도착</span>
       </div>
-      <div className={cn('my-3 w-full', places.length && 'border-l border-t border-solid border-tbGray')}>
+      <div className={cn('relative my-3 w-full', places.length && 'border-l border-t border-solid border-tbGray')}>
         {contents}
       </div>
     </div>

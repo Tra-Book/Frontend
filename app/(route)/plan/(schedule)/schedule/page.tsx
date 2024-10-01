@@ -2,52 +2,33 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
 import KakaoMap from '@/components/common/KakaoMap'
+import { Motion } from '@/components/common/MotionWrapper'
 import SearchArea from '@/components/plan/SerachArea'
 import { Button } from '@/components/ui/button'
-import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import useDropdownStore from '@/lib/context/dropdownStore'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { addPlaceToPlan } from '@/lib/HTTP/plan/API'
-import { Place } from '@/lib/types/Entity/place'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
+import { bounce } from '@/lib/types/animation'
 import { Plan } from '@/lib/types/Entity/plan'
-
-interface PlanSchedulePageProps {}
 
 const PlanSchedulePage = (): ReactNode => {
   const { planData, setPlanData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { setCenter, setFocusedPlacePin } = useMapStore()
   const { day } = useDropdownStore()
-  const [focusedPlaceCard, setFocusedPlaceCard] = useState<Place>() // 유저가 클릭한 카드
+  const [focusedPlaceCard, setFocusedPlaceCard] = useState<PlaceCardType>() // 유저가 클릭한 카드
 
   const handleSearchBtn = () => {
     setIsReduced(true)
     setIsSearching(true)
   }
 
-  // Todo: UPDATE fetch 만들기
-  const update = async () => {
-    try {
-      const res = await fetch(`server/${BACKEND_ROUTES.PLAN.UPDATE.url}`, {
-        method: BACKEND_ROUTES.PLAN.UPDATE.method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
-        credentials: 'include',
-      })
-
-      if (res.ok) {
-      }
-      const status = res.status
-    } catch (error) {}
-  }
-
   const handleAddPlace = () => {
-    // update();
-
     if (focusedPlaceCard) {
       const newPlan: Plan = addPlaceToPlan(planData, focusedPlaceCard, day)
+      console.log('newplan:', newPlan)
 
       setPlanData(newPlan)
     }
@@ -56,7 +37,7 @@ const PlanSchedulePage = (): ReactNode => {
     setFocusedPlacePin(null)
   }
 
-  const handleClickCard = (card: Place) => {
+  const handleClickCard = (card: PlaceCardType) => {
     setFocusedPlaceCard(card)
     setFocusedPlacePin(card.geo)
     setCenter(card.geo)
@@ -73,7 +54,7 @@ const PlanSchedulePage = (): ReactNode => {
         <SearchArea
           name='Place'
           focusCard={focusedPlaceCard}
-          handleClickCard={handleClickCard as (card: Place | Plan) => void}
+          handleClickCard={handleClickCard as (card: PlaceCardType | PlanCardType) => void}
           className='h-dvh w-[23dvw] min-w-[280px]'
         />
       )}
@@ -83,14 +64,11 @@ const PlanSchedulePage = (): ReactNode => {
         <KakaoMap />
 
         {!isSearching && (
-          <Button
-            onClick={handleSearchBtn}
-            variant='tbPrimary'
-            size='lg'
-            className='absolute bottom-4 right-1/2 z-10 px-12 text-base'
-          >
-            장소 검색하기
-          </Button>
+          <Motion animation={bounce()} className='absolute bottom-4 right-1/2 z-10'>
+            <Button onClick={handleSearchBtn} variant='tbPrimary' size='lg' className='px-12 text-base'>
+              장소 검색하기
+            </Button>
+          </Motion>
         )}
 
         {focusedPlaceCard && (

@@ -1,7 +1,7 @@
 'use client'
 
 import { QueryClientProvider } from '@tanstack/react-query'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, Suspense } from 'react'
 
 import PlanSideBar from '@/components/plan/PlanSideBar'
 import { ToastProvider } from '@/components/ui/toast'
@@ -19,7 +19,7 @@ const MainLayout = ({ children, modal }: MainLayoutProps): ReactNode => {
       <ToastProvider>
         <QueryClientProvider client={queryClient}>
           <PlanSideBar className='flex h-full w-[16vw] max-w-[100px] flex-col border-r-[1px] border-tbPlaceholder' />
-          {children}
+          <Suspense>{children}</Suspense>
           <Toaster />
           {modal}
         </QueryClientProvider>

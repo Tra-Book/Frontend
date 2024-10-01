@@ -14,8 +14,8 @@ interface LoadingPageProps {
 const LoadingPage = ({ className }: LoadingPageProps): ReactNode => {
   return (
     <>
-      <MobileLoading className='sm:hidden' />
-      <DesktopLoading className='hidden sm:flex' />
+      <MobileLoading className={cn('sm:hidden', className)} />
+      <DesktopLoading className={cn('hidden sm:flex', className)} />
     </>
   )
 }
@@ -24,7 +24,7 @@ export default LoadingPage
 
 const MobileLoading = ({ className }: LoadingPageProps) => {
   return (
-    <div className={cn('flex h-screen w-screen flex-col items-center justify-center gap-4', className)}>
+    <div className={cn('flex h-screen w-screen flex-col items-center justify-center gap-4 bg-tbWhite', className)}>
       <div className='flex flex-col items-center justify-center'>
         <Image src={LogoImage} alt='TraBook Logo' width={200} height={180} />
         <Slogan subTitleClassName='text-xs' />
@@ -52,7 +52,7 @@ const MobileLoading = ({ className }: LoadingPageProps) => {
 
 const DesktopLoading = ({ className }: LoadingPageProps) => {
   return (
-    <div className={cn('h-screen w-screen items-center justify-center', className)}>
+    <div className={cn('h-screen w-screen items-center justify-center bg-tbWhite', className)}>
       <div className='flex w-1/2 min-w-fit max-w-[760px] flex-col items-start justify-start gap-4'>
         <div className='flex flex-col items-center justify-center'>
           <Image src={LogoImage} alt='TraBook Logo' width={94} height={69} />

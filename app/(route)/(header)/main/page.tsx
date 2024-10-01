@@ -1,55 +1,37 @@
+'use client'
+import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode } from 'react'
 
-import Contents from '@/components/main/Contents'
-import { StateType } from '@/lib/constants/regions'
-import DummyThumbNail from '@/public/dummy/dummy_plan_thumbnail.png'
-interface MainPageProps {}
+import LoadingPage from '@/components/common/LoadingPage'
+import MainPlanContents from '@/components/main/MyPlanContents'
+import { GET_userPlans } from '@/lib/HTTP/plans/API'
 
-// Todo: 실제 데이터 Fetch하여 사용하기
-const dummy_plan = {
-  id: 1,
-  title: '가족 여행',
-  description: '아들 전역 기념 여행',
-  state: '제주도' as StateType,
-  likes: 30,
-  comments: 3,
-  scraps: 15,
-  schedule: '24.04.20~24.04.23',
-  imageSrc: DummyThumbNail,
-  isFinished: true,
-}
-const dummy_plan2 = {
-  id: 1,
-  title: '가족 여행',
-  description: '아들 전역 기념 여행',
-  state: '제주도' as StateType,
-  likes: 32,
-  comments: 3,
-  scraps: 15,
-  schedule: '24.04.20~24.04.23',
-  imageSrc: DummyThumbNail,
-  isFinished: true,
-}
-export type DummyPlanType = typeof dummy_plan
-// Todo: 서버 컴포넌트로 따로 뺴서 Data Fetching
+const MainPage = (): ReactNode => {
+  const session: any = useSession()
+  const user = session.data
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ['plans', user?.userId, 'user'],
+    queryFn: ({ signal }) => GET_userPlans({ type: 'user', accessToken: user?.accessToken, signal }),
+    enabled: user !== undefined,
+  })
 
-const dummy_plans1 = new Array(5).fill({
-  ...dummy_plan,
-})
-const dummy_plans2 = new Array(5).fill({
-  ...dummy_plan2,
-})
-const dummy_plans = [...dummy_plans1, ...dummy_plans2]
+  let contents
+  if (isPending) {
+    contents = <LoadingPage className='h-0 min-h-screen-header w-fit flex-grow' />
+  }
+  if (data) {
+    contents = (
+      <div className='relative flex h-min min-h-screen-header flex-grow flex-col items-start justify-start gap-2 bg-white px-6 md:px-10'>
+        <p className='flex h-[10dvh] min-h-[60px] w-full items-end pl-1 text-3xl font-semibold xl:text-4xl'>
+          내 여행 계획
+        </p>
 
-const MainPage = ({}: MainPageProps): ReactNode => {
-  return (
-    <div className='relative flex h-min min-h-screen-header flex-grow flex-col items-start justify-start gap-2 bg-white px-6 md:px-10'>
-      <p className='flex h-[10dvh] min-h-[60px] w-full items-end pl-1 text-3xl font-semibold xl:text-4xl'>
-        내 여행 계획
-      </p>
-      <Contents name='Plan' datas={dummy_plans} />
-    </div>
-  )
+        <MainPlanContents plans={data.plans} />
+      </div>
+    )
+  }
+  return contents
 }
 
 export default MainPage

@@ -1,17 +1,18 @@
 'use client'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import React, { ReactNode, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import { DUMMY_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
-import { fetchPlaces, SCROLL_SIZE } from '@/lib/HTTP/place/API'
+import { queryClient } from '@/lib/HTTP/http'
+import { fetchPlaces, PlaceCardType, SCROLL_SIZE } from '@/lib/HTTP/places/API'
+import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { bounce } from '@/lib/types/animation'
-import { Place } from '@/lib/types/Entity/place'
-import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
-import useFilters from '@/lib/utils/hooks/useFilters'
+import useFilters, { initArrange } from '@/lib/utils/hooks/useFilters'
 
 import { Motion } from '../common/MotionWrapper'
 import { Button } from '../ui/button'
@@ -19,34 +20,56 @@ import { Input } from '../ui/input'
 import { PlaceCard, PlanCard } from './Cards'
 
 interface SearchAreaProps {
-  className?: string
   name: 'Plan' | 'Place'
-  handleClickCard: (card: Place | Plan) => void
-  focusCard: Place | Plan | undefined
+  focusCard: PlaceCardType | PlanCardType | undefined
+  handleClickCard: (card: PlaceCardType | PlanCardType) => void
+  className?: string
   // setFocusedPlaceCard: React.Dispatch<React.SetStateAction<Place | undefined>>
 }
 
-const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaProps): ReactNode => {
-  const { filter, filterHandler, applyAllFilters, arrange, UseArrange, UseFilter } = useFilters(name)
+const SearchArea = ({ name, focusCard, handleClickCard, className }: SearchAreaProps): ReactNode => {
+  const pathname = usePathname()
+  const session: any = useSession()
+
+  const { filter, filterHandler, arrange, arrangeHandler, UseArrange, UseFilter } = useFilters(name)
   const { planData, isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
   const { ref, inView } = useInView({ threshold: 0.5 })
   const searchInputRef = useRef<HTMLInputElement>(null) // Ref를 사용하여 input 값 관리
+
   // # 처음 들어오면 설정한 지역으로 설정
+  const [isFirstQueryDone, setIsFirstQueryDone] = useState(false)
   useEffect(() => {
+    setIsFirstQueryDone(true)
     filterHandler('state', 'change', [planData.state])
   }, [])
 
-  // #0. Data Fetching
-  const { data, fetchNextPage, isPending, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['places', 'search'],
-    queryFn: ({ pageParam = 0 }) =>
-      fetchPlaces({
+  const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
+    queryKey:
+      name === 'Plan' ? ['plans', 'scrap'] : pathname.includes('scrap') ? ['places', 'scrap'] : ['places', 'schedule'],
+    queryFn: async ({ pageParam = 0 }) => {
+      const commonParams = {
         searchInput: searchInputRef.current?.value || '',
-        states: filter.state.includes('전체') ? [] : filter.state,
+        states: !isFirstQueryDone ? [planData.state] : filter.state.includes('전체') ? [] : filter.state,
         arrange: arrange,
         scrollNum: pageParam,
-        isScrap: false, // 일반 여행지 Fetching : False
-      }),
+        accessToken: session.data.accessToken,
+      }
+
+      // 조건에 따라 다른 함수 호출
+      if (name === 'Place') {
+        const response = await fetchPlaces({
+          ...commonParams,
+          isScrap: pathname.includes('scrap'), // 일반 여행지 Fetching: False
+        })
+        return response
+      } else {
+        const response = await fetchPlans({
+          ...commonParams,
+          isScrap: true, // 스크랩한 여행 계획
+        })
+        return response
+      }
+    },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       // lastPage에는 fetch callback의 리턴값이 전달됨
@@ -55,6 +78,7 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
       const nextPage = allPages.length + 1 //
       return nextPage <= maxPage ? nextPage : undefined // 다음 데이터가 있는지 없는지 판단
     },
+    enabled: session.data !== undefined,
   })
 
   // #0-1. Scroll Event Data Fetching
@@ -66,28 +90,50 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
 
   // #0-2. New Data Fetching
   useEffect(() => {
-    refetch()
+    queryClient.refetchQueries({
+      queryKey:
+        name === 'Plan'
+          ? ['plans', 'scrap']
+          : pathname.includes('scrap')
+            ? ['places', 'scrap']
+            : ['places', 'schedule'],
+    })
+    refetch() // 첫 페이지부터 refetch하도록 설정
   }, [filter, arrange])
+
   const submitHandler = (event: React.FormEvent) => {
     event.preventDefault()
     refetch()
   }
+  const resetHandler = () => {
+    if (searchInputRef.current) searchInputRef.current.value = ''
+    filterHandler('all', 'reset')
+    name === 'Plan' ? arrangeHandler(initArrange['Plan']) : arrangeHandler(initArrange['Place'])
+  }
 
   let contents
-  if (isPending) {
+
+  if (!session.data) {
+    contents = (
+      <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
+        잠시만 기다려주세요
+      </div>
+    )
+  }
+  if (isFetching && !isFetchingNextPage) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-lg font-bold'>
         <Motion animation={bounce()}>{name === 'Place' ? '여행지 로딩중입니다!' : '여행계획 로딩중입니다'}</Motion>
       </div>
     )
-  } else if (!data) {
+  } else if (data?.pages[0].datas.length === 0) {
     contents = (
       <div className='relative flex w-full flex-grow flex-col items-center justify-center gap-10 pb-1 text-xl font-bold'>
         <p>검색 결과가 없습니다!</p>
         <Button
           variant='tbPrimary'
           className='relative flex h-14 w-40 items-center justify-center gap-3 text-lg font-semibold'
-          onClick={() => filterHandler('all', 'reset')}
+          onClick={resetHandler}
         >
           초기화
           <LucideIcon name='RotateCw' size={20} />
@@ -97,29 +143,47 @@ const SearchArea = ({ name, handleClickCard, focusCard, className }: SearchAreaP
   } else {
     // #2. 무한스크롤 적용
     if (name === 'Place') {
-      contents = data.pages.map((page, scrollIndex) =>
-        page.datas.map((place, index) => {
-          // Fetch boundary를 8번째 카드 이후에 배치
-          const isBoundary = scrollIndex === data.pages.length - 1 && index === SCROLL_SIZE / 2
-          return (
-            <React.Fragment key={place.id}>
-              <PlaceCard
-                data={place}
-                focusedPlaceCard={focusCard as Place | undefined}
-                handleClickCard={handleClickCard as (card: Place) => void}
-              />
-              {/* 무한스크롤 경계(중간에 위치) */}
-              {isBoundary && <div ref={ref} />}
-            </React.Fragment>
-          )
-        }),
-      )
+      contents =
+        data &&
+        data.pages.map((page, scrollIndex) =>
+          page.datas.map((place, index) => {
+            place = place as PlaceCardType
+
+            // Fetch boundary를 8번째 카드 이후에 배치
+            const isBoundary = scrollIndex === data.pages.length - 1 && index === SCROLL_SIZE / 2
+            return (
+              <React.Fragment key={place.id}>
+                <PlaceCard
+                  data={place as PlaceCardType}
+                  focusedPlaceCard={focusCard as PlaceCardType | undefined}
+                  handleClickCard={handleClickCard as (card: PlaceCardType) => void}
+                />
+                {/* 무한스크롤 경계(중간에 위치) */}
+                {isBoundary && <div ref={ref} />}
+              </React.Fragment>
+            )
+          }),
+        )
     } else {
-      // TODO: 보관함 > 여행계획 페칭한걸로 대체
-      let tmpPlanData: Array<Plan> = Array(14).fill(DUMMY_PLAN)
-      contents = tmpPlanData.map((plan, index) => (
-        <PlanCard key={index} data={plan} handleClickCard={handleClickCard as (card: Plan) => void} />
-      ))
+      contents =
+        data &&
+        data.pages.map((page, scrollIndex) =>
+          page.datas.map((plan, index) => {
+            plan = plan as PlanCardType
+            // Fetch boundary를 8번째 카드 이후에 배치
+            const isBoundary = scrollIndex === data.pages.length - 1 && index === SCROLL_SIZE / 2
+            return (
+              <React.Fragment key={index}>
+                <PlanCard
+                  data={plan as PlanCardType}
+                  handleClickCard={handleClickCard as (card: PlanCardType) => void}
+                />
+                {/* 무한스크롤 경계(중간에 위치) */}
+                {isBoundary && <div ref={ref} />}
+              </React.Fragment>
+            )
+          }),
+        )
     }
   }
 

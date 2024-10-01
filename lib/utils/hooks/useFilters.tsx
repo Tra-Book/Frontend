@@ -1,10 +1,9 @@
 import { useState } from 'react'
 
-import { DummyPlanType } from '@/app/(route)/(header)/main/page'
-import { DummyPlaceType } from '@/app/(route)/(header)/main/store_place/page'
 import Filters from '@/components/main/Filters'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { CITIES, getStateIdx, STATES, StateType } from '@/lib/constants/regions'
+import { CITIES, STATES, StateType } from '@/lib/constants/regions'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 
 export const isFinishedChoices = ['전체', '계획 중', '계획 완료'] as const
@@ -26,6 +25,13 @@ export const initFilters: FilterType = {
   state: allElements as Array<StateChoicesType>,
   city: allElements as CityChoicesType,
 }
+export const initArrange: {
+  Plan: (typeof planArrangeChoices)[number]
+  Place: (typeof placeArrangeChoices)[number]
+} = {
+  Plan: '최신순',
+  Place: '방문자순',
+}
 
 export type FilterType = {
   isFinished: Array<IsFinishedChoicesType>
@@ -35,7 +41,7 @@ export type FilterType = {
 
 const useFilters = (name: 'Plan' | 'Place') => {
   const [filter, setFilter] = useState<FilterType>(initFilters)
-  const [arrange, setArrange] = useState<ArrangeChoiceType>(name === 'Plan' ? '최신순' : '방문자순')
+  const [arrange, setArrange] = useState<ArrangeChoiceType>(initArrange[name])
 
   const arrangeChoices = name === 'Plan' ? planArrangeChoices : placeArrangeChoices
 
@@ -81,73 +87,73 @@ const useFilters = (name: 'Plan' | 'Place') => {
 
   //Filter Apply Function
   const applyAllFilters = (
-    data: Array<DummyPlanType> | Array<DummyPlaceType>,
+    plans: Array<PlanCardType>,
     filter: FilterType,
     searchInput: string,
     arrange: ArrangeChoiceType,
-  ): Array<DummyPlanType> | Array<DummyPlaceType> => {
+  ): Array<PlanCardType> => {
     // Plan 필터
-    if ('isFinished' in data[0]) {
-      data = data as Array<DummyPlanType>
-      if (filter.isFinished !== allElements && filter.isFinished.length === 1) {
-        // #1. 필터 적용하기
-        // #1-1. 완료여부
-        data = filter.isFinished.includes('계획 중')
-          ? data.filter(data => data.isFinished === false)
-          : data.filter(data => data.isFinished === true)
-      }
-      // #1-2. 지역
-      if (filter.state !== allElements) {
-        data = data.filter(data => filter.state.includes(data.state))
-      }
-      // #2. 검색 적용하기
-      data = data.filter(data => data.title.includes(searchInput))
-      // #3. 정렬하기
-      switch (arrange) {
-        case '최신순':
-          // Todo: 실제 Date객체를 받아서 해봐야함
-          // filteredData.sort((a,b) => )
-          break
-        case '좋아요순':
-          data.sort((a, b) => b.likes - a.likes)
-          break
-        case '댓글순':
-          data.sort((a, b) => b.comments - a.comments)
-          break
-        case '스크랩순':
-          data.sort((a, b) => b.scraps - a.scraps)
-          break
-      }
+    // if ('isFinished' in data[0]) {
+    if (!filter.isFinished.includes('전체') && filter.isFinished.length === 1) {
+      // #1. 필터 적용하기
+      // #1-1. 완료여부
+      plans = filter.isFinished.includes('계획 중')
+        ? plans.filter(plans => plans.isDone === false)
+        : plans.filter(plans => plans.isDone === true)
     }
+    // #1-2. 지역
+    if (filter.state !== allElements) {
+      plans = plans.filter(plans => filter.state.includes(plans.state))
+    }
+    // #2. 검색 적용하기
+    if (searchInput != '' && searchInput) {
+      plans = plans.filter(plans => plans.title && plans.title.includes(searchInput))
+    }
+    // #3. 정렬하기
+    switch (arrange) {
+      case '최신순':
+        plans.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+        break
+      case '좋아요순':
+        plans.sort((a, b) => b.likeCnt - a.likeCnt)
+        break
+      case '댓글순':
+        plans.sort((a, b) => b.commentCnt - a.commentCnt)
+        break
+      case '스크랩순':
+        plans.sort((a, b) => b.scrapCnt - a.scrapCnt)
+        break
+    }
+    return plans
+    // }
     // Place 필터
-    else {
-      data = data as Array<DummyPlaceType>
-      // #1. 지역 필터 적용하기
-      if (filter.city !== allElements) {
-        data = data.filter(item => {
-          const stateIdx = getStateIdx(item.state)
-          if (filter.city[stateIdx].includes('전체')) {
-            return true
-          }
-          return filter.city[stateIdx].includes(item.city)
-        })
-      }
-      // #2. 검색
-      data = data.filter(data => data.name.includes(searchInput))
-      // #3. 정렬하기
-      switch (arrange) {
-        case '평점순':
-          data.sort((a, b) => b.star - a.star)
-          break
-        case '방문자순':
-          data.sort((a, b) => b.usedCnt - a.usedCnt)
-          break
-        case '리뷰순':
-          data.sort((a, b) => b.reviewCnt - a.reviewCnt)
-          break
-      }
-    }
-    return data
+    // else {
+    // data = data as Array<DummyPlaceType>
+    // // #1. 지역 필터 적용하기
+    // if (filter.city !== allElements) {
+    //   data = data.filter(item => {
+    //     const stateIdx = getStateIdx(item.state)
+    //     if (filter.city[stateIdx].includes('전체')) {
+    //       return true
+    //     }
+    //     return filter.city[stateIdx].includes(item.city)
+    //   })
+    // }
+    // // #2. 검색
+    // data = data.filter(data => data.name.includes(searchInput))
+    // // #3. 정렬하기
+    // switch (arrange) {
+    //   case '평점순':
+    //     data.sort((a, b) => b.star - a.star)
+    //     break
+    //   case '방문자순':
+    //     data.sort((a, b) => b.usedCnt - a.usedCnt)
+    //     break
+    //   case '리뷰순':
+    //     data.sort((a, b) => b.reviewCnt - a.reviewCnt)
+    //     break
+    // }
+    // }
   }
 
   // 정렬

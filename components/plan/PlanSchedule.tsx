@@ -1,10 +1,16 @@
 'use client'
+import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect, useState } from 'react'
 
+import { INITIAL_PLAN } from '@/lib/constants/dummy_data'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { fetchPlan } from '@/lib/HTTP/plan/API'
+import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { Geo } from '@/lib/types/Entity/place'
+import { bounce } from '@/lib/types/animation'
+import { Geo, Place } from '@/lib/types/Entity/place'
 import { Plan, Schedule } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
 import { calculateLeftTIme } from '@/lib/utils/dateUtils'
@@ -16,15 +22,53 @@ import { SchedulePlaceCard } from './Cards'
 
 interface PlanScheduleProps {
   id: 'schedule' | 'scrap'
-  plan: Plan // Todo: 일정에서는 전역 변수 + 보관함(여행계획)에서는 클릭한 여행계획
-  setFocusPlanCard?: React.Dispatch<React.SetStateAction<Plan | undefined>>
+  plan: Plan | PlanCardType // Todo: 일정에서는 전역 변수 + 보관함(여행계획)에서는 클릭한 여행계획
+  setFocusPlanCard?:
+    | React.Dispatch<React.SetStateAction<Plan | undefined>>
+    | React.Dispatch<React.SetStateAction<PlanCardType | undefined>>
   className?: string
 }
 
 const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanScheduleProps): ReactNode => {
-  const { isReduced, isSearching, setIsReduced, setIsSearching } = usePlanStore()
+  const { planData, setPlanData, isReduced, isSearching, setIsReduced } = usePlanStore()
   const { setPins, clearPins } = useMapStore()
-  const { day, DayDropdown } = useDayDropdown(plan.schedule.length)
+  const session: any = useSession()
+
+  // #0. Fetch Plan & User Info using planId & userId (useQuery)
+  const { data, isFetching, isError, error } = useQuery({
+    queryKey: ['plan', plan.id],
+    queryFn: () => fetchPlan({ planId: plan.id, accessToken: session.data ? session.data.accessToken : null }),
+    enabled: id === 'scrap',
+  })
+
+  let contents
+  if (isFetching) {
+    contents = (
+      <div className='relative flex w-full flex-grow flex-col items-center justify-center text-lg font-bold'>
+        <Motion animation={bounce()}>계획 정보 로딩중입니다</Motion>
+      </div>
+    )
+  }
+
+  // #1. 컴포넌트에서 사용할 Data 정의
+
+  const [fetchedData, setFetchedData] = useState<Plan>(id === 'schedule' ? (plan as Plan) : INITIAL_PLAN)
+
+  useEffect(() => {
+    if (data) {
+      setFetchedData(data.planData)
+    }
+  }, [data])
+
+  useEffect(() => {
+    setFetchedData(plan as Plan)
+  }, [plan])
+
+  if (!fetchedData || !fetchedData.schedule) {
+    contents = <div>No schedule data available</div>
+  }
+
+  const { day, DayDropdown } = useDayDropdown(fetchedData.schedule ? fetchedData.schedule.length : 1)
   const [durations, setDurations] = useState<Array<number>>([])
 
   const handleReduceBtn = () => {
@@ -38,7 +82,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
 
   const handleDayChange = (day: number) => {
     // #1. day에 해당하는 schedule 찾기
-    const targetSchedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
+    const targetSchedule: Schedule | undefined = fetchedData.schedule?.find(item => item.day === day)
     // #2. Schedule의 핀 가져오기
     if (targetSchedule?.places) {
       const newPins: Array<Geo> = targetSchedule.places.map(place => place.geo)
@@ -48,8 +92,33 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
     }
   }
 
+  const deletePlaceHandler = (placeId: number) => {
+    // #1. 스케쥴 돌며 업데이트
+    const newSchedule = fetchedData.schedule.map(daySchedule => {
+      // 날짜 찾기
+      if (daySchedule.day === day) {
+        const newPlaces: Place[] = daySchedule.places
+          .filter(place => place.id !== placeId)
+          .map((place, index) => ({
+            ...place,
+            order: index + 1,
+          }))
+
+        return {
+          ...daySchedule,
+          places: newPlaces,
+        }
+      }
+      return daySchedule
+    })
+    // #2. 전역변수 변경
+    setPlanData({
+      schedule: newSchedule, // schedule만 변경
+    })
+  }
+
   // #1. day에 해당하는 schedule 찾기 (DayPlan의 day value)
-  const schedule: Schedule | undefined = plan.schedule?.find(item => item.day === day)
+  const schedule: Schedule | undefined = fetchedData.schedule?.find(item => item.day === day)
 
   // #2.1 거리계산 함수
   const calculateDurations = async () => {
@@ -80,17 +149,17 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
   }, [schedule, setPins]) // schedule 변경될 때만 호출
 
   // #3. 계획한 일정들
-  let contents
   // #3.1 해당일자의 DayPlan이 없는 경우 (유저의 조작)
+
   if (!schedule) {
     contents = (
       <div
         className={cn(
           'relative flex w-full flex-grow items-center justify-center gap-10 text-balance pb-1 text-center font-bold',
-          isReduced ? 'text-lg' : 'text-2xl',
+          isReduced ? 'text-lg' : 'text-xl',
         )}
       >
-        해당 일자는 선택하지 않으셨습니다!
+        잠시만 기다려주세요
       </div>
     )
   }
@@ -109,10 +178,15 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
         </div>
       )
     } else {
-      const len = schedule.places.length
       contents = schedule.places.map((place, index) => (
         <React.Fragment key={place.order}>
-          <SchedulePlaceCard id={id} data={place} fillIndex={1} isReduced={isReduced} />
+          <SchedulePlaceCard
+            id={id}
+            data={place}
+            deletePlaceHandler={deletePlaceHandler}
+            fillIndex={1}
+            isReduced={isReduced}
+          />
           {index + 1 !== schedule.places?.length && (
             <div className='relative flex min-h-14 w-full items-center justify-center px-3'>
               <LucideIcon name='CarFront' size={26} />

@@ -1,36 +1,38 @@
 'use client'
 import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { Label } from '@/components/ui/label'
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
 import { updatePlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { Plan } from '@/lib/types/Entity/plan'
 import { toast } from '@/lib/utils/hooks/useToast'
 import { Nullable } from '@/lib/utils/typeUtils'
 
-import Loading from '../common/Loading'
-import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 
 interface UpdateInfoProps {}
 
 const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
-  const { planData, setPlanData } = usePlanStore()
   const session: any = useSession()
+  const router = useRouter()
+  const { planData, setPlanData } = usePlanStore()
 
-  const [previewUrl, setPreviewUrl] = useState<Nullable<string>>(null) // 임시 이미지 URL
+  // #0. 값 저장
+  const saveChanges = (id: 'title' | 'description' | 'memberCnt' | 'budget', value: any) => {
+    console.log({ id: value })
 
-  // #0. 값 저장 변수
-  const [title, setTitle] = useState<Nullable<string>>(planData.title)
-  const [description, setDescription] = useState<Nullable<string>>(planData.description)
-  const [memberCnt, setMemberCnt] = useState<Nullable<number>>(planData.memberCnt)
-  const [budget, setBudget] = useState<Nullable<number>>(planData.budget)
+    setPlanData({
+      [id]: value,
+    })
+  }
   // #1. Image Update
+  const [previewUrl, setPreviewUrl] = useState<Nullable<string>>(null) // 임시 이미지 URL
   const onClickImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -51,50 +53,32 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
     mutationKey: ['plan', 'update', planData.id],
     mutationFn: updatePlan,
     onSuccess: (data, variables) => {
-      // #3. Todo: 여행계획 디테일 페이지로 Redirect
+      // #3. 여행계획 디테일 페이지로 Redirect
+      router.push(`${ROUTES.PLAN.DETAIL.url}/${data.planId}`)
     },
     onError: error => {
       toast({ title: error.message })
     },
   })
+  useEffect(() => {
+    console.log(planData)
+  }, [planData])
 
-  const addPostHandler = () => {
-    // #0. 필수 필드 확인
-    if (planData.imgSrc === PLAN_DEFAULT_IMAGE) {
-      toast({ title: '여행 썸네일 이미지를 첨부해주세요' })
-      return
-    }
-    if (!title) {
-      toast({ title: '여행 제목을 입력해주세요' })
-      return
-    }
-    if (!description) {
-      toast({ title: '여행 설명을 입력해주세요' })
-      return
-    }
-    if (!memberCnt || memberCnt === 0) {
-      toast({ title: '인원수를 입력해주세요' })
-      return
-    }
-    if (!budget) {
-      toast({ title: '여행 예산을 입력해주세요' })
-      return
-    }
+  // const addPostHandler = () => {
+  //   // #1. 바뀐 값으로 업데이트
+  //   const updatedPlan: Plan = {
+  //     ...planData,
+  //     title,
+  //     description,
+  //     memberCnt,
+  //     budget,
+  //     isDone: true,
+  //     isPublic: true, // 완료하면 무조건 공개 (기획)
+  //   }
 
-    // #1. 바뀐 값으로 업데이트
-    const updatedPlan: Plan = {
-      ...planData,
-      title,
-      description,
-      memberCnt,
-      budget,
-      isDone: true,
-      isPublic: true, // 완료하면 무조건 공개 (기획)
-    }
-
-    // #2. Update하기
-    mutate({ plan: updatedPlan, userId: session.data.userId })
-  }
+  //   // #2. Update하기
+  //   mutate({ plan: updatedPlan, userId: session.data.userId })
+  // }
 
   return (
     <section className='mt-2 flex h-full w-full flex-col gap-5 border-t-[1px] border-tbPlaceholder p-10'>
@@ -126,8 +110,8 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
               className='h-13'
               placeholder='여행 제목을 입력해주세요'
               type='text'
-              value={title ? title : ''}
-              onChange={e => setTitle(e.target.value)}
+              value={planData.title ? planData.title : ''}
+              onChange={e => saveChanges('title', e.target.value)}
             />
           </div>
           <div className='w-full'>
@@ -136,8 +120,8 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
               className='h-13'
               placeholder='어떤 여행인가요?'
               type='text'
-              value={description ? description : ''}
-              onChange={e => setDescription(e.target.value)}
+              value={planData.description ? planData.description : ''}
+              onChange={e => saveChanges('description', e.target.value)}
             />
           </div>
           <div className='w-full'>
@@ -146,8 +130,8 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
               className='h-13'
               placeholder='몇명이서 여행가시나요?'
               type='number'
-              value={memberCnt ? memberCnt : ''}
-              onChange={e => setMemberCnt(e.target.value ? parseInt(e.target.value, 10) : null)}
+              value={planData.memberCnt ? planData.memberCnt : ''}
+              onChange={e => saveChanges('memberCnt', e.target.value ? parseInt(e.target.value, 10) : null)}
             />
           </div>
           <div className='w-full'>
@@ -156,13 +140,13 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
               className='h-13'
               type='number'
               placeholder='예산을 입력해주세요?'
-              value={budget ? budget : ''}
-              onChange={e => setBudget(e.target.value ? parseInt(e.target.value, 10) : null)}
+              value={planData.budget ? planData.budget : ''}
+              onChange={e => saveChanges('budget', e.target.value ? parseInt(e.target.value, 10) : null)}
             />
           </div>
-          <Button onClick={addPostHandler} variant='tbPrimary' className='col-span-2 mt-2 w-40 justify-self-end'>
+          {/* <Button onClick={addPostHandler} variant='tbPrimary' className='col-span-2 mt-2 w-40 justify-self-end'>
             {isPending ? <Loading /> : '여행 개시하기'}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </section>

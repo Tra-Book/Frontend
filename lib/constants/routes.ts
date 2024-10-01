@@ -173,8 +173,32 @@ export const BACKEND_ROUTES = {
         url: '/plan/comment/add',
       },
     },
+    SCRAP: {
+      ADD: {
+        method: HttpMethod.POST,
+        url: '/plan/scrap',
+      },
+      DELETE: {
+        method: HttpMethod.DELETE,
+        url: '/plan/scrap',
+      },
+    },
+    LIKE: {
+      ADD: {
+        method: HttpMethod.POST,
+        url: '/plan/like',
+      },
+      DELETE: {
+        method: HttpMethod.DELETE,
+        url: '/plan/like',
+      },
+    },
   },
   PLANS: {
+    GET: {
+      method: HttpMethod.GET,
+      url: '/plans',
+    },
     POPULAR: {
       method: HttpMethod.GET,
       url: '/plans/popular',
@@ -187,7 +211,7 @@ export const BACKEND_ROUTES = {
   PLACES: {
     GENERAL: {
       method: HttpMethod.GET,
-      url: '/places/general',
+      url: '/plans/general',
     },
     POPULAR: {
       method: HttpMethod.GET,
@@ -196,8 +220,14 @@ export const BACKEND_ROUTES = {
   },
   PLACE: {
     SCRAP: {
-      method: HttpMethod.POST,
-      url: '/place/scrap',
+      ADD: {
+        method: HttpMethod.POST,
+        url: '/place/scrap',
+      },
+      DELETE: {
+        method: HttpMethod.DELETE,
+        url: '/place/scrap',
+      },
     },
   },
 }

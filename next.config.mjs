@@ -7,7 +7,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
-        pathname: '/trabook-20240822/**',
+        pathname: '/**',
       },
       {
         protocol: 'http',
@@ -22,6 +22,12 @@ const nextConfig = {
     ],
     minimumCacheTTL: 1500000,
   },
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb',
+    },
+  },
+
   async rewrites() {
     return [
       {

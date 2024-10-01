@@ -7,6 +7,7 @@ import { formatDateToHyphenDate, parseHypenDateToDate } from '@/lib/utils/dateUt
 import { Nullable } from '@/lib/utils/typeUtils'
 
 import { attachQuery, Queries } from '../http'
+import { PlaceCardType } from '../places/API'
 
 /**
  * Plan Create > 새로운 여행 계획 만들기 함수입니다.
@@ -46,18 +47,6 @@ export const createPlan = async ({ state, startDate, endDate, accessToken }: Cre
   const data = await res.json()
 
   return data
-  // setPlanData({
-  //   id: data.planId,
-  //   userId: session.data.userId,
-  //   startDate: selected.from,
-  //   endDate: selected.to,
-  //   state: body.state,
-  //   schedule: generate_initial_schedule(getTripDuration(selected.from, selected.to)), // Default Schedule
-  //   imgSrc: PLAN_DEFAULT_IMAGE,
-  // })
-
-  // backendRoute === BACKEND_ROUTES.PLAN.UPDATE ? router.back() : router.replace(ROUTES.PLAN.PlAN.url)
-  // return
 }
 
 /**
@@ -91,9 +80,9 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     startTime: item.startTime,
     endTime: item.endTime,
     scheduleList: item.places?.map(place => ({
-      placeId: place.id,
       order: place.order,
       time: place.duration,
+      placeId: place.id,
       imageSrc: place.imgSrc,
       placeName: place.name,
       latitude: place.geo.latitude,
@@ -117,6 +106,8 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
     isPublic: isPublic,
     isFinished: isDone,
   }
+  console.log('bodyPlan: ', bodyPlan)
+  console.log('imgrsc:', imgSrc)
 
   const formData = new FormData()
   formData.append('plan', JSON.stringify(bodyPlan))
@@ -248,6 +239,7 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     likeCnt: plan.likes, // default: 0
     scrapCnt: plan.scraps, // default: 0
     comments: planComments, // default: null
+    commentCnt: 0, // 쓰지 않는 데이터 (백엔드에서 보내질 않음)
 
     // #4. 요청 유저관련 정보
     isScraped: scrapped,
@@ -261,6 +253,9 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     status_message: user.status_message as string,
     image: user.image as string,
   }
+  console.log('planData:', planData)
+  console.log('PlanUser:', planUser)
+  console.log('Tags:', tags)
 
   return { planData, planUser, tags }
 }
@@ -288,8 +283,6 @@ export const addComment = async ({ newComment, accessToken }: AddCommentProps) =
     const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
     const error = new Error('Error oucurred in adding comment')
     error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
-    console.log(error.message)
-
     throw error
   }
   const data = await res.json()
@@ -301,7 +294,7 @@ export const addComment = async ({ newComment, accessToken }: AddCommentProps) =
 /**
  * 선택한 여행지를 여행 계획에 추가하는 함수입니다.
  */
-export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: number): Plan => {
+export const addPlaceToPlan = (originPlan: Plan, place: PlaceCardType, currentDay: number): Plan => {
   // #1. Schedule에서 currentDay와 일치하는 항목을 찾음
   const updatedSchedule = originPlan.schedule.map(schedule => {
     if (schedule.day === currentDay) {
@@ -309,8 +302,9 @@ export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: numbe
 
       const newPlace: Place = {
         ...place,
-        order: schedule.places ? schedule.places.length + 1 : 1,
         duration: 60,
+        order: schedule.places ? schedule.places.length + 1 : 1,
+        reviews: place.reviews,
       }
       const updatedPlaces: Place[] = schedule.places ? [...schedule.places, newPlace] : [newPlace]
       return {
@@ -325,4 +319,128 @@ export const addPlaceToPlan = (originPlan: Plan, place: Place, currentDay: numbe
     ...originPlan,
     schedule: updatedSchedule, // 업데이트된 스케줄 반영
   }
+}
+
+/**
+ * 여행계획 스크랩하기 POST
+ */
+interface PlanAddScrapType {
+  planId: number
+  accessToken: string
+}
+export const planAddScrap = async ({ planId, accessToken }: PlanAddScrapType) => {
+  const Route = BACKEND_ROUTES.PLAN.SCRAP.ADD
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while adding scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
+}
+
+/**
+ * 여행계획 스크립 삭제하기 POST
+ */
+interface PlanDeleteScrapType {
+  planId: number
+  accessToken: string
+}
+export const planDeleteScrap = async ({ planId, accessToken }: PlanDeleteScrapType) => {
+  const Route = BACKEND_ROUTES.PLAN.SCRAP.DELETE
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while deleting scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
+}
+
+/**
+ * 여행계획 좋아요 추가하기 POST
+ */
+interface PlanAddLikesType {
+  planId: number
+  accessToken: string
+}
+export const planAddLikes = async ({ planId, accessToken }: PlanAddLikesType) => {
+  const Route = BACKEND_ROUTES.PLAN.LIKE.ADD
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while adding scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
+}
+
+/**
+ * 여행계획 좋아요 삭제하기 POST
+ */
+interface PlanDeleteLikesType {
+  planId: number
+  accessToken: string
+}
+export const planDeleteLikes = async ({ planId, accessToken }: PlanDeleteLikesType) => {
+  const Route = BACKEND_ROUTES.PLAN.LIKE.DELETE
+
+  const res = await fetch(`/server/${Route.url}`, {
+    method: Route.method,
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      planId: planId,
+    }),
+    credentials: 'include',
+  })
+  if (!res.ok) {
+    const errorData = await res.json() // 서버에서 보내는 에러 메시지를 가져옴
+    const error = new Error('An error occurred while deleting scrap')
+    error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
+    throw error
+  }
+
+  return
 }

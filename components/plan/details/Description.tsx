@@ -5,7 +5,8 @@ import { ReactNode } from 'react'
 
 import Backdrop from '@/components/common/Backdrop'
 import UserAvatar from '@/components/common/UserAvatar'
-import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { PLAN_DEFAULT_IMAGE, USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
+import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -37,7 +38,6 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
     isScraped,
     comments,
   } = plan
-  console.log('imgSrc:', imgSrc)
 
   /**
    * 좋아요 클릭 함수
@@ -75,15 +75,10 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
       <div className={cn('flex h-fit min-h-full w-fit flex-grow origin-left flex-col items-start justify-start gap-3')}>
         {/* 유저정보 */}
         <div className='flex items-center justify-start gap-2'>
-          <UserAvatar
-            imgSrc={
-              planUser.image ||
-              'https://storage.cloud.google.com/trabook-20240822/frontendComponent/map_marker_focus.png'
-            }
-          />
+          <UserAvatar imgSrc={planUser.image || USER_DEFAULT_IMAGE} />
           <div>
-            <p className='text-lg font-semibold'>{planUser.username}</p>
-            <p className='text-sm text-tbGray'>{planUser.status_message}</p>
+            <p className='text-lg font-semibold'>{planUser.username || NO_USER_NAME}</p>
+            <p className='text-sm text-tbGray'>{planUser.status_message || NO_USER_DESCRIPTION}</p>
           </div>
         </div>
         {/* 계획정보 */}
@@ -99,7 +94,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
         </div>
         <div className='flex items-center justify-start gap-3'>
           <div className='flex w-fit items-center justify-start gap-1 text-base'>
-            <LucideIcon name='Heart' fill={isLiked ? 'tbRed' : undefined} strokeWidth={0} />
+            <LucideIcon name='Heart' fill={isLiked ? 'tbRed' : undefined} strokeWidth={isLiked ? 0 : 2} />
             <span>{likeCnt}</span>
           </div>
           <div onClick={likeHandler} className='flex w-fit items-center justify-start gap-1 text-base'>

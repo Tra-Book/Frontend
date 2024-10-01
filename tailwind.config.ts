@@ -13,6 +13,10 @@ const config = {
       },
     },
     extend: {
+      gridTemplateRows: {
+        // Simple 16 row grid
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
       screens: {
         ssm: '400px',
       },

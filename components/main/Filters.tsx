@@ -121,17 +121,19 @@ const Filters = ({ filter, filterHandler, movePageHandler, hasReset, className }
       FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
       break
     case ROUTES.MAIN.STORE_PLACE.url:
-      FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
+      FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
       break
     // #Plan
     case ROUTES.PLAN.SCHEDULE.url:
       FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
       break
     case ROUTES.PLAN.SCRAP.PLAN.url:
-      FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
+      FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
       break
     case ROUTES.PLAN.SCRAP.PLACE.url:
       FILTER_BUTTONS = [makeFilterButton('state')] as Array<FilterDisplayType>
+      // TODO: city 필터를 썻어야..
+      // FILTER_BUTTONS = [makeFilterButton('city')] as Array<FilterDisplayType>
       break
   }
 

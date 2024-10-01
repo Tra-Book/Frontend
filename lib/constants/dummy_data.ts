@@ -6,6 +6,7 @@ import { StateType } from './regions'
 export const USER_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/profilePhoto/default.png'
 export const PLAN_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/planPhoto/thumbnail.png'
 export const PLACE_DEFAULT_IMAGE: string = 'https://storage.googleapis.com/trabook-20240822/placePhoto/thumbnail.png'
+
 const get_dummy_place = (idx: number): Place => {
   return {
     id: idx,
@@ -28,6 +29,7 @@ const get_dummy_place = (idx: number): Place => {
     isScraped: Math.random() < 0.5, // 스크랩 여부
 
     order: 1 + idx, // 계획세우기에 담긴 순서}
+    reviews: [],
   }
 }
 export const DUMMY_PLACES: Array<Place> = Array.from({ length: 6 }, (_, idx) => get_dummy_place(idx))
@@ -71,6 +73,7 @@ export const DUMMY_PLAN: Plan = {
   imgSrc: PLAN_DEFAULT_IMAGE,
   scrapCnt: 200,
   memberCnt: 10,
+  commentCnt: 6,
   userId: 41,
   comments: Array.from({ length: 6 }, (_, idx) => get_dummy_parent_comment(idx)),
   isScraped: true,
@@ -103,6 +106,7 @@ export const INITIAL_PLAN: Plan = {
   isPublic: true, // Todo: 설정 페이지에서 isPublic을 설정하는 토글 페이지 만들기
   likeCnt: 0, // default: 0
   scrapCnt: 0, // default: 0
+  commentCnt: 0, // default: 0
   comments: null, // default: 0
 
   // #4. 요청 유저관련 정보

@@ -1,6 +1,5 @@
 'use client'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect } from 'react'
 
@@ -22,8 +21,6 @@ interface PlanDetailsPageProps {
 }
 
 const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
-  const router = useRouter()
-
   const planId = parseInt(params.id) // PlanId
   const session: any = useSession() // 해당 Plan의 User 정보 받기
 
@@ -34,7 +31,6 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     return () => setDay(1)
   }, [])
 
-  // const data = DUMMY_PLAN
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isPending, isError, error } = useQuery({
     queryKey: ['plan', planId],
@@ -49,10 +45,10 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     content = <LoadingPage />
   }
   if (data) {
+    console.log('Fetched from ID:', data)
+
     content = (
       <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
-        {/* 설명 */}
-        {/* TODO: 글쓴이의 정보로 user바꾸기 */}
         <Description
           plan={data?.planData as Plan}
           planUser={data?.planUser}
