@@ -1,7 +1,7 @@
 'use client'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import React, { Fragment, ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import Loading from '@/components/common/Loading'
@@ -100,7 +100,7 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
   }, [inView])
 
   useEffect(() => {
-    refetch()
+    // refetch()
   }, [filterDetail])
 
   const renderDetailFilter = (filter: FilterType) => {
@@ -112,22 +112,18 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
     } else {
       detailFilter = DURATION_FILTERS
     }
-    return (
-      <>
-        {detailFilter.map(detail => (
-          <div
-            key={detail}
-            onClick={e => onClickFilterDetail(e)}
-            className={cn(
-              'rounded-full px-3 py-2 text-base hover:bg-tbPrimaryHover hover:text-white',
-              detail === filterDetail && 'scale-110 bg-tbPrimaryHover text-white',
-            )}
-          >
-            {detail}
-          </div>
-        ))}
-      </>
-    )
+    return detailFilter.map(detail => (
+      <div
+        key={detail}
+        onClick={e => onClickFilterDetail(e)}
+        className={cn(
+          'rounded-full px-3 py-2 text-base hover:bg-tbPrimaryHover hover:text-white',
+          detail === filterDetail && 'scale-110 bg-tbPrimaryHover text-white',
+        )}
+      >
+        {detail}
+      </div>
+    ))
   }
 
   return (
@@ -151,23 +147,16 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
       <div className='flex flex-wrap items-center gap-3 p-3'>{renderDetailFilter(filter)}</div>
       {/* Plans Infinite Scroll */}
       <div className='flex flex-wrap items-center justify-evenly gap-5'>
-        {data?.pages.map((group, scrollIndex) => {
-          return (
-            <Fragment key={`${group.plans[0]?.planId}${group.plans[1]?.planId}${Math.random()}`}>
-              {group?.plans.map((plan: FilterPlan, index: number) => (
-                <>
-                  <div
-                    key={`${plan.plan.planTitle}${plan.plan.description}`}
-                    className='flex h-[288px] w-[330px] items-center justify-center'
-                  >
-                    <PlanCard plan={plan.plan} />
-                  </div>
-                  {scrollIndex === data.pages.length - 1 && index === 8 && <div ref={ref} />}
-                </>
-              ))}
-            </Fragment>
-          )
-        })}
+        {data?.pages.map((page, scrollIndex) =>
+          page?.plans.map((plan: FilterPlan, index: number) => (
+            <React.Fragment key={plan.plan.planId}>
+              <div className='flex h-[288px] w-[330px] items-center justify-center'>
+                <PlanCard plan={plan.plan} />
+              </div>
+              {scrollIndex === data.pages.length - 1 && index === 8 && <div ref={ref} />}
+            </React.Fragment>
+          )),
+        )}
         {data?.pages[0].totalPages === 0 && (
           <div className='mt-5 text-2xl'>만들어진 계획이 없습니다. 계획을 만들고 공유하세요!</div>
         )}

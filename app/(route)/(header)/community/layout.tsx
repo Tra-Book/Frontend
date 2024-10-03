@@ -16,7 +16,7 @@ const CommunityLayout = ({ children }: CommunityLayoutProps): ReactNode => {
 
   useEffect(() => {
     setPlanData(INITIAL_PLAN)
-  }, [])
+  }, [setPlanData])
   return (
     <div className='mt-24'>
       <QueryClientProvider client={queryClient}>
