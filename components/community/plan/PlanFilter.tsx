@@ -92,7 +92,6 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
       return nextPage <= maxPage ? nextPage : undefined
     },
   })
-  console.log(data)
 
   useEffect(() => {
     if (inView && hasNextPage) {
