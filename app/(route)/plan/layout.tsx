@@ -6,7 +6,7 @@ import React, { ReactNode, Suspense } from 'react'
 import PlanSideBar from '@/components/plan/PlanSideBar'
 import { ToastProvider } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
-import { queryClient } from '@/lib/HTTP/http'
+import { queryClient } from '@/lib/HTTP/cacheKey'
 
 interface MainLayoutProps {
   children: React.ReactNode

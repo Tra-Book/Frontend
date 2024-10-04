@@ -1,19 +1,18 @@
 'use client'
-import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { PLACE_DEFAULT_IMAGE, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_PLAN_TITLE, NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import useMapStore from '@/lib/context/mapStore'
-import { queryClient } from '@/lib/HTTP/http'
-import { placeAddScrap, placeDeleteScrap } from '@/lib/HTTP/place/API'
+import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { AddPlaceScrapType, DeletePlaceScrapType } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
-import { planAddLikes, planAddScrap, planDeleteLikes, planDeleteScrap } from '@/lib/HTTP/plan/API'
+import { AddPlanLikesType, AddPlanScrapType, DeletePlanLikesType, DeletePlanScrapType } from '@/lib/HTTP/plan/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Place } from '@/lib/types/Entity/place'
@@ -119,36 +118,28 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
   const session: any = useSession()
 
   const [tmpIsScrap, setTmpIsScrap] = useState<boolean>(isScraped)
+
+  const { mutate: scrapPlaceMutate } = useMutationStore<AddPlaceScrapType | DeletePlaceScrapType>(
+    !tmpIsScrap ? ['addPlaceScrap'] : ['deletePlaceScrap'],
+  )
+
   const focusHandler = () => {
     handleClickCard(data)
   }
   // scrap
   const scrapHandler = () => {
-    mutate({ placeId: data.id, accessToken: session.data.accessToken })
+    scrapPlaceMutate(
+      { placeId: data.id, accessToken: session.data.accessToken },
+      {
+        onSuccess: () => {
+          setTmpIsScrap(prev => !prev)
+        },
+        onError: () => {
+          setTmpIsScrap(prev => !prev)
+        },
+      },
+    )
   }
-
-  /**
-   * 스크랩하기 및 삭제하기
-   */
-  const { mutate } = useMutation({
-    mutationKey: ['place', 'scrap', { placeId: data.id }],
-    mutationFn: !tmpIsScrap ? placeAddScrap : placeDeleteScrap,
-    onSuccess: () => {
-      setTmpIsScrap(prev => !prev)
-      toast({ title: '변경되었습니다!' })
-    },
-    onError: () => {
-      toast({ title: '다시 시도해주세요!' })
-      setTmpIsScrap(prev => !prev)
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['places', 'search'] })
-    },
-  })
-
-  useEffect(() => {
-    console.log(tmpIsScrap)
-  }, [tmpIsScrap])
 
   return (
     <div
@@ -221,6 +212,8 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
   const { modalData, handleModalStates, Modal } = useModal()
 
   const { id, imgSrc, title, likeCnt, scrapCnt, description, commentCnt, tags, isScraped, isLiked } = data
+
+  // 임시 반영을 위한
   const [tmpLikeData, setTmpLikeData] = useState({
     likeCnt: likeCnt,
     isLiked: isLiked,
@@ -231,22 +224,13 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
   })
 
   // #1. Plan Likes Mutation
-  const { mutate: likesMutate, isPending: isLikesPending } = useMutation({
-    mutationKey: ['plan', { planId: id }],
-    mutationFn: !tmpLikeData.isLiked ? planAddLikes : planDeleteLikes,
-    onError: error => {
-      setTmpLikeData(prev => ({
-        likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt -= 1) : (prev.likeCnt += 1),
-        isLiked: !prev.isLiked,
-      }))
-      toast({ title: '서버 오류 다시 시도해주세요' })
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
-      queryClient.invalidateQueries({ queryKey: ['plans'] })
-    },
-  })
+  const { mutate: likesMutate, isPending: isLikesPending } = useMutationStore<AddPlanLikesType | DeletePlanLikesType>(
+    !tmpLikeData.isLiked ? ['addPlanLikes'] : ['deletePlanLikes'],
+  )
+  // #2. Plan Scrap Mutations
+  const { mutate: scrapPlaceMutate, isPending: isScrapPending } = useMutationStore<
+    AddPlanScrapType | DeletePlanScrapType
+  >(!tmpScrapData.isScraped ? ['addPlanScrap'] : ['deletePlanScrap'])
 
   const likeHandler = () => {
     if (isLikesPending) {
@@ -261,24 +245,20 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt += 1) : (prev.likeCnt -= 1),
       isLiked: !prev.isLiked,
     }))
-    likesMutate({ planId: id, accessToken: session.data.accessToken })
+    likesMutate(
+      { planId: id, accessToken: session.data.accessToken },
+      {
+        onError: error => {
+          setTmpLikeData(prev => ({
+            likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt -= 1) : (prev.likeCnt += 1),
+            isLiked: !prev.isLiked,
+          }))
+          toast({ title: '서버 오류 다시 시도해주세요' })
+        },
+      },
+    )
   }
 
-  // #1. Plan Scrap Mutations
-  const { mutate: scrapMutate, isPending: isScrapPending } = useMutation({
-    mutationKey: ['plan', { planId: id }],
-    mutationFn: !tmpScrapData.isScraped ? planAddScrap : planDeleteScrap,
-    onError: () => {
-      setTmpScrapData(prev => ({
-        scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt -= 1) : (prev.scrapCnt += 1),
-        isScraped: !prev.isScraped,
-      }))
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
-      queryClient.invalidateQueries({ queryKey: ['plans'] })
-    },
-  })
   const scrapHandler = () => {
     if (isScrapPending) {
       toast({ title: '다른 작업 수행중입니다.' })
@@ -292,7 +272,17 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
       scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
       isScraped: !prev.isScraped,
     }))
-    scrapMutate({ planId: id, accessToken: session.data.accessToken })
+    scrapPlaceMutate(
+      { planId: id, accessToken: session.data.accessToken },
+      {
+        onError: () => {
+          setTmpScrapData(prev => ({
+            scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt -= 1) : (prev.scrapCnt += 1),
+            isScraped: !prev.isScraped,
+          }))
+        },
+      },
+    )
   }
 
   const onConfirm = () => {

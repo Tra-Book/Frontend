@@ -7,13 +7,13 @@ import { BACKEND_ROUTES } from '@/lib/constants/routes'
 import { toast } from '@/lib/utils/hooks/useToast'
 
 /**
- * 여행지 스크랩하기 POST
+ * placeId: number, accessToken: string
  */
-interface PlaceAddScrapType {
+export interface AddPlaceScrapType {
   placeId: number
   accessToken: string
 }
-export const placeAddScrap = async ({ placeId, accessToken }: PlaceAddScrapType) => {
+export const addPlaceScrap = async ({ placeId, accessToken }: AddPlaceScrapType) => {
   const Route = BACKEND_ROUTES.PLACE.SCRAP.ADD
   console.log('여행지 스크랩 넣기 들어옴')
 
@@ -40,15 +40,13 @@ export const placeAddScrap = async ({ placeId, accessToken }: PlaceAddScrapType)
 }
 
 /**
- * 여행지 스크립 삭제하기 POST
+ * placeId: number, accessToken: string
  */
-interface PlaceDeleteScrapType {
+export interface DeletePlaceScrapType {
   placeId: number
   accessToken: string
 }
-export const placeDeleteScrap = async ({ placeId, accessToken }: PlaceDeleteScrapType) => {
-  console.log('여행지 스크랩 삭제 들어옴')
-
+export const deletePlaceScrap = async ({ placeId, accessToken }: DeletePlaceScrapType) => {
   const Route = BACKEND_ROUTES.PLACE.SCRAP.DELETE
 
   const res = await fetch(`/server/${Route.url}`, {

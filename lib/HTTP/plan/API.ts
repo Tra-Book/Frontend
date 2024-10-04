@@ -10,16 +10,21 @@ import { attachQuery, Queries } from '../http'
 import { PlaceCardType } from '../places/API'
 
 /**
- * Plan Create > 새로운 여행 계획 만들기 함수입니다.
+ * {state: 지역, startDate: Date, endDate: Date, accessToken: string}
  */
-interface CreatePlanProps {
+export interface CreatePlanType {
   state: StateType
   startDate: Date
   endDate: Date
   accessToken: string
 }
-export const createPlan = async ({ state, startDate, endDate, accessToken }: CreatePlanProps) => {
-  console.log('creating plan')
+/**
+ * 새로운 여행 계획 만들기
+ * @param param0 `{state: 지역, startDate: Date, endDate: Date, accessToken: string}`
+ * @returns data: `{planId: number}`
+ */
+export const createPlan = async ({ state, startDate, endDate, accessToken }: CreatePlanType) => {
+  console.log('creating plan!')
 
   let backendRoute = BACKEND_ROUTES.PLAN.CREATE
   const body = {
@@ -50,13 +55,20 @@ export const createPlan = async ({ state, startDate, endDate, accessToken }: Cre
 }
 
 /**
- * Plan Update (DB 반영하기) 함수입니다.
+ * {plan: Plan, userId: number}
  */
-interface UpdatePlanProps {
+export interface UpdatePlanType {
   plan: Plan
   userId: number
 }
-export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
+/**
+ * Plan Update (DB 반영하기) 함수입니다.
+ * @param param0 `{plan: Plan, userId: number}`
+ * @returns`planId: number,
+    message: string,
+    imgSrc: 이미지 경로`
+ */
+export const updatePlan = async ({ plan, userId }: UpdatePlanType): Promise<any> => {
   const {
     id,
     state,
@@ -133,16 +145,19 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanProps) => {
   return data
 }
 
-interface FetchPlanProps {
+/**
+ * {planId: number, accessToken: string}
+ */
+export interface GetPlanType {
   planId: number
   accessToken: string
 }
-
 /**
- * Plan 정보를 받아오는 API 입니다.
- * @param planId: Params로 입력된 Id
+ * Plan 정보를 받아오는 API
+ * @param param0 {planId: number, accessToken: string}
+ * @returns `planData: Plan Type 정보, planUser: Plan 만든 사람 정보, tags: Plan의 3개 태그}`
  */
-export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
+export const getPlan = async ({ planId, accessToken }: GetPlanType) => {
   const queries: Queries = [
     {
       key: 'planId',
@@ -151,7 +166,6 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
   ]
 
   const API = BACKEND_ROUTES.PLAN.GET
-  console.log('accessToken')
 
   const res = await fetch(`${attachQuery(`/server/${API.url}`, queries)}`, {
     method: API.method,
@@ -169,7 +183,6 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
     throw error
   }
   const { plan, user, tags, comments, liked, scrapped } = await res.json()
-  console.log('FetchedPlan:', plan)
 
   const schedule: Array<Schedule> = plan.dayPlanList.map((dayPlan: any) => ({
     day: dayPlan.day,
@@ -201,7 +214,6 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
         }) as Place,
     ),
   }))
-  console.log('API에서의 shcedule:', schedule)
 
   const planComments: Nullable<Array<CommentResponse>> = comments.map((comment: any) => ({
     id: comment.commentId,
@@ -264,13 +276,18 @@ export const fetchPlan = async ({ planId, accessToken }: FetchPlanProps) => {
 }
 
 /**
- * #3. 댓글 추가하기
+ * {newComment: CommentRequest, accessToken: string}
  */
-interface AddCommentProps {
+export interface AddPlanCommentType {
   newComment: CommentRequest
   accessToken: string
 }
-export const addComment = async ({ newComment, accessToken }: AddCommentProps) => {
+/**
+ * 여행계획 댓글 추가하기
+ * @param param0 `newComment<CommentRequest>, accessToken: string`
+ * @returns  `commentId: number` `message: string`
+ */
+export const addPlanComment = async ({ newComment, accessToken }: AddPlanCommentType) => {
   const body = newComment
   const Route = BACKEND_ROUTES.PLAN.COMMENT.CREATE
 
@@ -290,20 +307,22 @@ export const addComment = async ({ newComment, accessToken }: AddCommentProps) =
   }
   const data = await res.json()
   return data
-
-  // toast({ title: 'Internal Server Error Occured!' })
 }
 
 /**
- * 여행계획 삭제하기 DELTE
+ * {placeId: number, accessToken: string}
  */
-interface PlanDeleteType {
+export interface DeletePlanType {
   planId: number
   accessToken: string
 }
-export const deletePlan = async ({ planId, accessToken }: PlanDeleteType) => {
+/**
+ * 여행계획 삭제하기 DELTE
+ * @param param0 `placeId: number, accessToken: string`
+ * @returns
+ */
+export const deletePlan = async ({ planId, accessToken }: DeletePlanType) => {
   const Route = BACKEND_ROUTES.PLAN.DELETE
-  console.log('Plan Delete API Entered')
 
   const queries: Queries = [
     {
@@ -330,13 +349,18 @@ export const deletePlan = async ({ planId, accessToken }: PlanDeleteType) => {
 }
 
 /**
- * 여행계획 스크랩하기 POST
+ * {planId: number, accessToken: string}
  */
-interface PlanAddScrapType {
+export interface AddPlanScrapType {
   planId: number
   accessToken: string
 }
-export const planAddScrap = async ({ planId, accessToken }: PlanAddScrapType) => {
+/**
+ * 여행계획 스크랩하기 POST
+ * @param param0 `planId: number, accessToken: string`
+ * @returns
+ */
+export const addPlanScrap = async ({ planId, accessToken }: AddPlanScrapType) => {
   const Route = BACKEND_ROUTES.PLAN.SCRAP.ADD
 
   const res = await fetch(`/server/${Route.url}`, {
@@ -361,15 +385,14 @@ export const planAddScrap = async ({ planId, accessToken }: PlanAddScrapType) =>
 }
 
 /**
- * 여행계획 스크립 삭제하기 POST
+ * planId: number, accessToken: string
  */
-interface PlanDeleteScrapType {
+export interface DeletePlanScrapType {
   planId: number
   accessToken: string
 }
-export const planDeleteScrap = async ({ planId, accessToken }: PlanDeleteScrapType) => {
+export const deletePlanScrap = async ({ planId, accessToken }: DeletePlanScrapType) => {
   const Route = BACKEND_ROUTES.PLAN.SCRAP.DELETE
-  console.log('Plan Delete scrap')
 
   const queries: Queries = [
     {
@@ -396,15 +419,16 @@ export const planDeleteScrap = async ({ planId, accessToken }: PlanDeleteScrapTy
 }
 
 /**
- * 여행계획 좋아요 추가하기 POST
+ * planId: number, accessToken: string
  */
-interface PlanAddLikesType {
+export interface AddPlanLikesType {
   planId: number
   accessToken: string
 }
-export const planAddLikes = async ({ planId, accessToken }: PlanAddLikesType) => {
-  console.log('planaddlikes executed')
-
+/**
+ * 여행계획 좋아요 추가하기 POST
+ */
+export const addPlanLikes = async ({ planId, accessToken }: AddPlanLikesType) => {
   const Route = BACKEND_ROUTES.PLAN.LIKE.ADD
 
   const res = await fetch(`/server/${Route.url}`, {
@@ -424,18 +448,20 @@ export const planAddLikes = async ({ planId, accessToken }: PlanAddLikesType) =>
     error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
     throw error
   }
-
   return
 }
 
 /**
- * 여행계획 좋아요 삭제하기 POST
+ * planId: number, accessToken: string
  */
-interface PlanDeleteLikesType {
+export interface DeletePlanLikesType {
   planId: number
   accessToken: string
 }
-export const planDeleteLikes = async ({ planId, accessToken }: PlanDeleteLikesType) => {
+/**
+ * 여행계획 좋아요 삭제하기 POST
+ */
+export const deletePlanLikes = async ({ planId, accessToken }: DeletePlanLikesType) => {
   const Route = BACKEND_ROUTES.PLAN.LIKE.DELETE
   console.log('planDElete lieks')
 

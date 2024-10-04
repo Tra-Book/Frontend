@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { ROUTES } from '@/lib/constants/routes'
-import { queryClient } from '@/lib/HTTP/http'
+import { queryClient } from '@/lib/HTTP/cacheKey'
 import { fetchPlaces, PlaceCardType } from '@/lib/HTTP/places/API'
 import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'

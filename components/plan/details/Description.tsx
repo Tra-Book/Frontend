@@ -1,5 +1,4 @@
 'use client'
-import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useState } from 'react'
@@ -9,8 +8,8 @@ import { PLAN_DEFAULT_IMAGE, USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_da
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
-import { attachQuery, Queries, queryClient } from '@/lib/HTTP/http'
-import { deletePlan, planAddLikes, planAddScrap, planDeleteLikes, planDeleteScrap } from '@/lib/HTTP/plan/API'
+import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { attachQuery, Queries } from '@/lib/HTTP/http'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
@@ -65,29 +64,23 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
           break
         // Case: 계획 삭제
         case ClientModalData.deletePlan:
-          deletePlanMutate({ planId: id, accessToken: user.accessToken })
+          deletePlanMutate(
+            { planId: id, accessToken: user.accessToken },
+            {
+              onSuccess: () => {
+                router.push(ROUTES.MAIN.MY_PLAN.url) // 내 계획으로 이동
+              },
+            },
+          )
           break
       }
     }
   }
 
   // #1. Plan Likes Mutation
-  const { mutate: likesMutate, isPending: isLikesPending } = useMutation({
-    mutationKey: ['plan', { planId: id }],
-    mutationFn: !tmpLikeData.isLiked ? planAddLikes : planDeleteLikes,
-    onError: error => {
-      setTmpLikeData(prev => ({
-        likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt += 1) : (prev.likeCnt -= 1),
-        isLiked: !prev.isLiked,
-      }))
-      toast({ title: '서버 오류 다시 시도해주세요' })
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
-      queryClient.invalidateQueries({ queryKey: ['plans'] })
-    },
-  })
+  const { mutate: planLikeMutate, isPending: isLikesPending } = useMutationStore(
+    !tmpLikeData.isLiked ? ['addPlanLikes'] : ['deletePlanLikes'],
+  )
 
   const likeHandler = () => {
     if (isLikesPending) {
@@ -102,24 +95,23 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
       likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt += 1) : (prev.likeCnt -= 1),
       isLiked: !prev.isLiked,
     }))
-    likesMutate({ planId: id, accessToken: user.accessToken })
+    planLikeMutate(
+      { planId: id, accessToken: user.accessToken },
+      {
+        onError: error => {
+          setTmpLikeData(prev => ({
+            likeCnt: !tmpLikeData.isLiked ? (prev.likeCnt += 1) : (prev.likeCnt -= 1),
+            isLiked: !prev.isLiked,
+          }))
+        },
+      },
+    )
   }
 
   // #1. Plan Scrap Mutations
-  const { mutate: scrapMutate, isPending: isScrapPending } = useMutation({
-    mutationKey: ['plan', { planId: id }],
-    mutationFn: !tmpScrapData.isScraped ? planAddScrap : planDeleteScrap,
-    onError: () => {
-      setTmpScrapData(prev => ({
-        scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
-        isScraped: !prev.isScraped,
-      }))
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
-      queryClient.invalidateQueries({ queryKey: ['plans'] })
-    },
-  })
+  const { mutate: planScrapMutate, isPending: isScrapPending } = useMutationStore(
+    !tmpScrapData.isScraped ? ['addPlanScrap'] : ['deletePlanScrap'],
+  )
   const scrapHandler = () => {
     if (isScrapPending) {
       toast({ title: '다른 작업 수행중입니다.' })
@@ -133,25 +125,21 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
       scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
       isScraped: !prev.isScraped,
     }))
-    scrapMutate({ planId: id, accessToken: user.accessToken })
+    planScrapMutate(
+      { planId: id, accessToken: user.accessToken },
+      {
+        onError: () => {
+          setTmpScrapData(prev => ({
+            scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
+            isScraped: !prev.isScraped,
+          }))
+        },
+      },
+    )
   }
 
   // #2. Plan Delete Mutation
-  const { mutate: deletePlanMutate } = useMutation({
-    mutationKey: ['plan', { planId: id }],
-    mutationFn: deletePlan,
-    onSuccess: () => {
-      router.push(ROUTES.MAIN.MY_PLAN.url) // 내 계획으로 이동
-      toast({ title: '삭제 완료!' })
-    },
-    onError: () => {
-      toast({ title: '다시 시도해주세요' })
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['plan', { planId: id }] })
-      queryClient.invalidateQueries({ queryKey: ['plans'] })
-    },
-  })
+  const { mutate: deletePlanMutate } = useMutationStore(['deletePlan'])
   const planDeleteHandler = () => {
     // #1. 권한 없는 유저의 접근
     if (!user && planUser.userId === user.userId) {

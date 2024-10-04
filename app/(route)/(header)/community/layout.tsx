@@ -5,7 +5,7 @@ import React, { ReactNode, useEffect } from 'react'
 
 import { INITIAL_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
-import { queryClient } from '@/lib/HTTP/http'
+import { queryClient } from '@/lib/HTTP/cacheKey'
 
 interface CommunityLayoutProps {
   children: React.ReactNode

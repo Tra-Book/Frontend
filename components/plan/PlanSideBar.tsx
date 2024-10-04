@@ -1,17 +1,16 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode } from 'react'
 
 import { INITIAL_PLAN, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
-import { queryClient } from '@/lib/HTTP/http'
-import { updatePlan } from '@/lib/HTTP/plan/API'
+import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { UpdatePlanType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import useModal from '@/lib/utils/hooks/useModal'
@@ -30,31 +29,19 @@ const iconSize: number = 24
 const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const pathname = usePathname()
   const router = useRouter()
-
   const session: any = useSession()
 
   const { planData, setPlanData, setIsReduced, setIsSearching } = usePlanStore()
   const { modalData, handleModalStates, Modal } = useModal()
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: ['plan', 'update', planData.id],
-    mutationFn: updatePlan,
-    onSuccess: data => {
-      toast({ title: '저장되었습니다' }) // 성공 메세지
-      queryClient.invalidateQueries({ queryKey: ['plan', planData.id] }) // Post 내용
-      queryClient.invalidateQueries({ queryKey: ['plans', session.data?.userId, 'user'] })
-    },
-    onError: () => {
-      toast({ title: 'Error occured on Saving...' })
-    },
-  })
+  const { mutate: updatePlanMutate, isPending: isUpdating } = useMutationStore<UpdatePlanType>(['updatePlan'])
 
   const savePlanHandler = () => {
-    if (isPending) {
+    if (isUpdating) {
       toast({ title: '이미 저장중입니다.' })
       return
     }
-    mutate({ plan: planData, userId: session.data.userId })
+    updatePlanMutate({ plan: planData, userId: session.data.userId })
   }
 
   // TODO: 설정 기획 / 로직 만들기
@@ -98,10 +85,6 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
     handleModalStates(ClientModalData.submitPlan, 'open')
   }
 
-  useEffect(() => {
-    console.log(modalData)
-  }, [modalData])
-
   /**
    * 모달 Confirm시 수행할 작업
    */
@@ -120,10 +103,10 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
         // Case2 포스팅
         case ClientModalData.submitPlan:
           // #0. 저장 > onSuccess
-          mutate(
+          updatePlanMutate(
             { plan: planData, userId: session.data.userId },
             {
-              onSuccess(data) {
+              onSuccess: (data: any) => {
                 // #1. 여행계획 디테일 페이지로 Redirect
                 router.push(`${ROUTES.PLAN.DETAIL.url}/${data.planId}`)
               },
@@ -178,7 +161,7 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
       </div>
 
       <div onClick={savePlanHandler} className={cn(style)}>
-        {isPending ? (
+        {isUpdating ? (
           <Loading />
         ) : (
           <>

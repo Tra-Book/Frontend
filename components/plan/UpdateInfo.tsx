@@ -1,17 +1,13 @@
 'use client'
-import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { Label } from '@/components/ui/label'
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
-import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
-import { updatePlan } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
-import { toast } from '@/lib/utils/hooks/useToast'
 import { Nullable } from '@/lib/utils/typeUtils'
 
 import { Input } from '../ui/input'
@@ -47,38 +43,6 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
       reader.readAsDataURL(file)
     }
   }
-
-  // #2. 제출하기
-  const { mutate, isPending } = useMutation({
-    mutationKey: ['plan', 'update', planData.id],
-    mutationFn: updatePlan,
-    onSuccess: (data, variables) => {
-      // #3. 여행계획 디테일 페이지로 Redirect
-      router.push(`${ROUTES.PLAN.DETAIL.url}/${data.planId}`)
-    },
-    onError: error => {
-      toast({ title: error.message })
-    },
-  })
-  useEffect(() => {
-    console.log(planData)
-  }, [planData])
-
-  // const addPostHandler = () => {
-  //   // #1. 바뀐 값으로 업데이트
-  //   const updatedPlan: Plan = {
-  //     ...planData,
-  //     title,
-  //     description,
-  //     memberCnt,
-  //     budget,
-  //     isDone: true,
-  //     isPublic: true, // 완료하면 무조건 공개 (기획)
-  //   }
-
-  //   // #2. Update하기
-  //   mutate({ plan: updatedPlan, userId: session.data.userId })
-  // }
 
   const budgetChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/,/g, '') // 쉼표 제거

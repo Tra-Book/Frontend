@@ -1,19 +1,3 @@
-import { QueryClient } from '@tanstack/react-query'
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      retryDelay: 0,
-      // 10분으로 staleTime 지정하기
-      staleTime: 1 * 60 * 1000 * 10,
-    },
-    mutations: {
-      retry: 1,
-      retryDelay: 0,
-    },
-  },
-})
-
 export enum HttpMethod {
   CREATE = 'CREATE',
   GET = 'GET',

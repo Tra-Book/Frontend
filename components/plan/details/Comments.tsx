@@ -1,5 +1,4 @@
 'use client'
-import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
@@ -11,8 +10,8 @@ import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
-import { queryClient } from '@/lib/HTTP/http'
-import { addComment } from '@/lib/HTTP/plan/API'
+import { queryClient, useMutationStore } from '@/lib/HTTP/cacheKey'
+import { AddPlanCommentType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { CommentRequest, CommentResponse } from '@/lib/types/Entity/comment'
 import { USER_DEAFULT_STATUSMESSAGE } from '@/lib/types/Entity/user'
@@ -174,39 +173,7 @@ const PostComment = ({
   const commentRef = useRef<HTMLTextAreaElement>(null)
 
   // #0. 제출
-  const { mutate, isPending } = useMutation({
-    mutationKey: ['plan', 'comment', planId],
-    mutationFn: addComment,
-    /**
-     * data: mutate return value
-     * variables: mutate 인자
-     */
-    onSuccess: (data, variables) => {
-      // router.refresh()
-      queryClient.invalidateQueries({ queryKey: ['plan', planId] })
-      // #1. 대댓글창 닫기
-      handleAddChildComment(undefined)
-      // #2. 낙관적 업데이트
-      const newComment: CommentResponse = {
-        ...variables.newComment,
-        parentId: variables.newComment.parentId === 0 ? data.commentId : variables.newComment.parentId,
-        id: data.commentId,
-        userId: user.userId,
-        userName: user.nickname,
-        userStatusMessage: user.status_message,
-        userImgsrc: user.image,
-      }
-      addPlanComment(newComment)
-      // #3. 완료창
-      toast({ title: '댓글 업로드 성공' })
-    },
-    onError: error => {
-      toast({ title: error.message })
-    },
-    onSettled: () => {
-      if (commentRef.current) commentRef.current.value = '' // 입력값 초기화
-    },
-  })
+  const { mutate: addCommentMutate, isPending: isUploading } = useMutationStore<AddPlanCommentType>(['addPlanComment'])
 
   // #1. 엔터키 눌렀을때 제출
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -237,7 +204,37 @@ const PostComment = ({
         refOrder: id === 'parentComment' ? 0 : (nextRefOrder as number), // New Comment
       }
 
-      mutate({ newComment: newComment, accessToken: user.accessToken })
+      addCommentMutate(
+        { newComment: newComment, accessToken: user.accessToken },
+        {
+          /**
+           * data: mutate return value
+           * variables: mutate 인자
+           */
+          onSuccess: (data: any, variables: any) => {
+            // router.refresh()
+            queryClient.invalidateQueries({ queryKey: ['plan', planId] })
+            // #1. 대댓글창 닫기
+            handleAddChildComment(undefined)
+            // #2. 낙관적 업데이트
+            const newComment: CommentResponse = {
+              ...variables.newComment,
+              parentId: variables.newComment.parentId === 0 ? data.commentId : variables.newComment.parentId,
+              id: data.commentId,
+              userId: user.userId,
+              userName: user.nickname,
+              userStatusMessage: user.status_message,
+              userImgsrc: user.image,
+            }
+            addPlanComment(newComment)
+            // #3. 완료창
+          },
+
+          onSettled: () => {
+            if (commentRef.current) commentRef.current.value = '' // 입력값 초기화
+          },
+        },
+      )
     }
   }
 
@@ -260,7 +257,7 @@ const PostComment = ({
             onClick={handleSubmit}
             className='relative h-12 w-20'
           >
-            {isPending ? <Loading /> : id === 'parentComment' ? '댓글 작성' : '답글 작성'}
+            {isUploading ? <Loading /> : id === 'parentComment' ? '댓글 작성' : '답글 작성'}
           </Button>
         }
       </div>

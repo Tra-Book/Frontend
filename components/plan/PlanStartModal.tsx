@@ -2,7 +2,6 @@
 
 import 'react-day-picker/dist/style.css'
 
-import { useMutation } from '@tanstack/react-query'
 import { ko } from 'date-fns/locale'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
@@ -13,8 +12,9 @@ import { generate_initial_schedule } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
+import { useMutationStore } from '@/lib/HTTP/cacheKey'
 import { attachQuery, Queries } from '@/lib/HTTP/http'
-import { createPlan } from '@/lib/HTTP/plan/API'
+import { CreatePlanType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
 import { formatToKoreanShortDate, getTripDuration } from '@/lib/utils/dateUtils'
@@ -47,31 +47,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     setStep(prev => (prev === 0 ? 1 : 0))
   }
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: ['plan', 'create'],
-    mutationFn: createPlan,
-    onSuccess: (data, variables) => {
-      setPlanData({
-        id: data.planId,
-        userId: session.data.userId,
-        startDate: variables.startDate,
-        endDate: variables.endDate,
-        state: variables.state,
-        schedule: generate_initial_schedule(getTripDuration(variables.startDate, variables.endDate)), // Default Schedule
-        imgSrc: data.imgSrc,
-      })
-      const params: Queries = [
-        {
-          key: 'planId',
-          value: -1, // 새로 생성된 planId
-        },
-      ]
-      console.log('새로운 계획 생성')
-      // Case1-2: 새로운 계획을 생성하는 경우
-      router.replace(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
-      // router.replace(ROUTES.PLAN.PlAN.url)
-    },
-  })
+  const { mutate: createPlanMutate, isPending: isCreating } = useMutationStore<CreatePlanType>(['createPlan'])
 
   const onClickFinish = () => {
     if (!STATES.some(state => state === inputState)) {
@@ -84,12 +60,39 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     }
     // Case1-1: 새로운 계획을 생성하는 경우
     if (planData.id === -1) {
-      mutate({
-        state: inputState as StateType,
-        startDate: selected.from,
-        endDate: selected.to,
-        accessToken: session.data.accessToken,
-      })
+      console.log('entered click!')
+
+      createPlanMutate(
+        {
+          state: inputState as StateType,
+          startDate: selected.from,
+          endDate: selected.to,
+          accessToken: session.data.accessToken,
+        },
+        {
+          onSuccess: (data: any, variables) => {
+            setPlanData({
+              id: data.planId,
+              userId: session.data.userId,
+              startDate: variables.startDate,
+              endDate: variables.endDate,
+              state: variables.state,
+              schedule: generate_initial_schedule(getTripDuration(variables.startDate, variables.endDate)), // Default Schedule
+              imgSrc: data.imgSrc,
+            })
+            const params: Queries = [
+              {
+                key: 'planId',
+                value: -1, // 새로 생성된 planId
+              },
+            ]
+            console.log('새로운 계획 생성')
+            // Case1-2: 새로운 계획을 생성하는 경우
+            router.replace(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
+            // router.replace(ROUTES.PLAN.PlAN.url)
+          },
+        },
+      )
     }
     // Case2: 기존 계획을 수정하는 경우
     else {
@@ -232,7 +235,7 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
             {step === 0 ? '다음' : '이전'}
           </Button>
           <Button variant='tbSecondary' className='ml-3' onClick={onClickFinish}>
-            {isPending ? (
+            {isCreating ? (
               <p className='flex items-center gap-1'>
                 완료 <Loading />
               </p>

@@ -1,13 +1,12 @@
 'use client'
-import { useMutation } from '@tanstack/react-query'
 import Image from 'next/image'
 import React, { ReactNode, useState } from 'react'
 
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_REVIEW_TEXT } from '@/lib/constants/no_data'
-import { queryClient } from '@/lib/HTTP/http'
-import { placeDeleteScrap } from '@/lib/HTTP/place/API'
+import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { DeletePlaceScrapType } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import useModal from '@/lib/utils/hooks/useModal'
@@ -84,6 +83,7 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
   const { modalData, handleModalStates, Modal, isOpen: isModalOpen } = useModal()
 
+  const { mutate: deletePlanMutate } = useMutationStore<DeletePlaceScrapType>(['deletePlaceScrap'])
   // Todo: 리뷰삭제 및 쓰기 API 연결
   const options = [
     {
@@ -96,18 +96,6 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
       // action: 리뷰 삭제 API
     },
   ]
-
-  /**
-   * 스크랩 삭제하기
-   */
-  const { mutate } = useMutation({
-    mutationKey: ['place', 'scrap', { placeId: id }],
-    mutationFn: placeDeleteScrap,
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['places', 'scrap'] })
-    },
-  })
 
   const deleteScrapHandler = () => {
     toggleDropdown() // 드롭다운 닫기
@@ -122,7 +110,7 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
     if (modalData.id === 'confirm') {
       switch (modalData) {
         case ClientModalData.deleteScrap:
-          mutate(
+          deletePlanMutate(
             { placeId: id, accessToken: user.accessToken },
             {
               onSuccess: () => {
