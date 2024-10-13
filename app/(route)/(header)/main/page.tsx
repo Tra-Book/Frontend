@@ -5,6 +5,7 @@ import React, { ReactNode } from 'react'
 
 import LoadingPage from '@/components/common/LoadingPage'
 import MainPlanContents from '@/components/main/MyPlanContents'
+import { QUERY_KEYS } from '@/lib/HTTP/cacheKey'
 import { GET_userPlans } from '@/lib/HTTP/plans/API'
 
 const MainPage = (): ReactNode => {
@@ -12,7 +13,7 @@ const MainPage = (): ReactNode => {
 
   const user = session.data
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ['plans', user?.userId, 'user'],
+    queryKey: QUERY_KEYS.USER.PLANS.INDEX,
     queryFn: ({ signal }) => GET_userPlans({ type: 'user', accessToken: user?.accessToken, signal }),
     enabled: user !== undefined,
   })

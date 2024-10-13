@@ -58,7 +58,7 @@ const MainSideBar = ({}: SideBarProps): ReactNode => {
           <LucideIcon name='Bookmark' size={26} strokeWidth={1.5} />
         </div>
         <div className='flex flex-col items-start justify-start gap-2'>
-          <Link href={ROUTES.MAIN.STORE_PLAN.url} className='text-xl'>
+          <Link href={ROUTES.MAIN.STORE_PLAN.url} className='text-xl 2xl:text-2xl'>
             보관함
           </Link>
           <Link
@@ -86,7 +86,7 @@ const MainSideBar = ({}: SideBarProps): ReactNode => {
           <LucideIcon name='Settings' size={26} strokeWidth={1.5} />
         </div>
         <div className='flex flex-col items-start justify-start gap-2'>
-          <Link href={ROUTES.MAIN.INFO.url} className='text-xl'>
+          <Link href={ROUTES.MAIN.INFO.url} className='text-xl 2xl:text-2xl'>
             내 정보
           </Link>
           <Link

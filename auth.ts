@@ -79,23 +79,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               user.image = data.image
               break
             case 404:
-              console.log(data.message)
+              // console.log(data.message)
               return 'error'
             case 404:
-              console.log(data.message)
+              // console.log(data.message)
               return 'error'
             default:
-              console.log('credentails login error')
+              // console.log('credentails login error')
               return 'error'
           }
         } catch (error) {
-          console.log(error)
+          // console.log(error)
           return 'error'
         }
       }
       // Kakao Login API : /auth/kakao
       else if (account?.provider === 'kakao') {
-        console.log('Login with kakao')
+        // console.log('Login with kakao')
 
         try {
           const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.KAKAO_LOGIN.url, {
@@ -124,20 +124,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               user.image = data.image
               break
             case 400:
-              console.log(data.message)
+              // console.log(data.message)
               return 'error'
             default:
-              console.log('kakao login error')
+              // console.log('kakao login error')
               return 'error'
           }
         } catch (error) {
-          console.log(error)
+          // console.log(error)
           return 'error'
         }
       }
       // Google Login API : /auth/google
       else if (account?.provider === 'google') {
-        console.log('Login with google')
+        // console.log('Login with google')
         // console.log(account['id_token'])
         try {
           const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL! + BACKEND_ROUTES.AUTH.GOOGLE_LOGIN.url, {
@@ -169,11 +169,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               return 'error'
               break
             default:
-              console.log('kakao login error')
+              // console.log('kakao login error')
               return 'error'
           }
         } catch (error) {
-          console.log(error)
+          // console.log(error)
           return 'error'
         }
       } else {

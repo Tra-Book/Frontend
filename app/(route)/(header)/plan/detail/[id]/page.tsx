@@ -9,6 +9,7 @@ import Comments from '@/components/plan/details/Comments'
 import Description from '@/components/plan/details/Description'
 import PlanDetailSchedule from '@/components/plan/details/Schedule'
 import useDropdownStore from '@/lib/context/dropdownStore'
+import { QUERY_KEYS } from '@/lib/HTTP/cacheKey'
 import { getPlan } from '@/lib/HTTP/plan/API'
 import { CommentResponse } from '@/lib/types/Entity/comment'
 import { Plan } from '@/lib/types/Entity/plan'
@@ -35,7 +36,7 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
 
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ['plan', planId],
+    queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(planId),
     queryFn: () => getPlan({ planId: planId, accessToken: session.data ? session.data.accessToken : null }),
     enabled: session.data !== undefined,
   })
@@ -50,8 +51,6 @@ const PlanDetailsPage = ({ params }: PlanDetailsPageProps): ReactNode => {
     content = <LoadingPage />
   }
   if (data) {
-    console.log('Fetched Data from getPlan: ', data)
-
     content = (
       <div className='relative flex w-4/5 max-w-[1400px] flex-col items-start justify-start'>
         <Description

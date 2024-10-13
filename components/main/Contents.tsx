@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { ROUTES } from '@/lib/constants/routes'
-import { queryClient } from '@/lib/HTTP/cacheKey'
+import { QUERY_KEYS, queryClient } from '@/lib/HTTP/cacheKey'
 import { fetchPlaces, PlaceCardType } from '@/lib/HTTP/places/API'
 import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -80,8 +80,7 @@ const Contents = ({ name }: ContentsProps): ReactNode => {
   }
 
   // #0. Data Fetching
-  const queryKey =
-    name === 'Plan' ? ['plans', 'scrap', user?.userId, currentScroll] : ['places', 'scrap', user?.userId, currentScroll]
+  const queryKey = name === 'Plan' ? QUERY_KEYS.USER.PLANS.SCRAP : QUERY_KEYS.USER.PLACES.SCRAP
   const { data, isFetching, refetch } = useQuery({
     queryKey: queryKey,
 

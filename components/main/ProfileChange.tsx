@@ -19,8 +19,8 @@ import { useToast } from '@/lib/utils/hooks/useToast'
 import ProfileImage from '@/public/dummy/dummy_profile_image.png'
 
 function validateNickname(nickname: string) {
-  // 정규 표현식: 영문자, 한글, 숫자만 허용
-  const regex = /^[a-zA-Z가-힣0-9]+$/
+  // 정규 표현식: 영문자, 한글, 숫자, 띄어쓰기만 허용
+  const regex = /^[a-zA-Z가-힣0-9\s]+$/
 
   return regex.test(nickname)
 }

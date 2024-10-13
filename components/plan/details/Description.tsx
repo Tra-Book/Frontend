@@ -113,6 +113,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
     !tmpScrapData.isScraped ? ['addPlanScrap'] : ['deletePlanScrap'],
   )
   const scrapHandler = () => {
+    console.log('클릭은됨')
     if (isScrapPending) {
       toast({ title: '다른 작업 수행중입니다.' })
     }
@@ -125,6 +126,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
       scrapCnt: !tmpScrapData.isScraped ? (prev.scrapCnt += 1) : (prev.scrapCnt -= 1),
       isScraped: !prev.isScraped,
     }))
+
     planScrapMutate(
       { planId: id, accessToken: user.accessToken },
       {

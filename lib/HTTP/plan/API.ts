@@ -380,6 +380,7 @@ export const addPlanScrap = async ({ planId, accessToken }: AddPlanScrapType) =>
     error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
     throw error
   }
+  console.log('스크랩 더하기 완료')
 
   return
 }
