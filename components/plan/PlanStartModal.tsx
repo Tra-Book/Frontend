@@ -60,8 +60,6 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     }
     // Case1-1: 새로운 계획을 생성하는 경우
     if (planData.id === -1) {
-      console.log('entered click!')
-
       createPlanMutate(
         {
           state: inputState as StateType,
@@ -86,7 +84,6 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
                 value: -1, // 새로 생성된 planId
               },
             ]
-            console.log('새로운 계획 생성')
             // Case1-2: 새로운 계획을 생성하는 경우
             router.replace(attachQuery(ROUTES.PLAN.PlAN.url, params)) // PlanId 붙여서 계획 세우기 열기
             // router.replace(ROUTES.PLAN.PlAN.url)
@@ -96,8 +93,6 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     }
     // Case2: 기존 계획을 수정하는 경우
     else {
-      console.log('기존 계획 수정')
-
       setPlanData({
         ...planData,
         state: inputState as StateType,

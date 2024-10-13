@@ -15,8 +15,6 @@ export interface AddPlaceScrapType {
 }
 export const addPlaceScrap = async ({ placeId, accessToken }: AddPlaceScrapType) => {
   const Route = BACKEND_ROUTES.PLACE.SCRAP.ADD
-  console.log('여행지 스크랩 넣기 들어옴')
-
   const res = await fetch(`/server/${Route.url}`, {
     method: Route.method,
     headers: {

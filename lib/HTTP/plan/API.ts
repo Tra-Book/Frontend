@@ -24,8 +24,6 @@ export interface CreatePlanType {
  * @returns data: `{planId: number}`
  */
 export const createPlan = async ({ state, startDate, endDate, accessToken }: CreatePlanType) => {
-  console.log('creating plan!')
-
   let backendRoute = BACKEND_ROUTES.PLAN.CREATE
   const body = {
     state: state,
@@ -118,8 +116,6 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanType): Promise<any>
     isPublic: isPublic,
     isFinished: isDone,
   }
-  console.log('bodyPlan: ', bodyPlan)
-  console.log('imgrsc:', imgSrc)
 
   const formData = new FormData()
   formData.append('plan', JSON.stringify(bodyPlan))
@@ -140,7 +136,6 @@ export const updatePlan = async ({ plan, userId }: UpdatePlanType): Promise<any>
     throw error
   }
   const data = await res.json()
-  console.log('update revceived:', data)
 
   return data
 }
@@ -178,7 +173,6 @@ export const getPlan = async ({ planId, accessToken }: GetPlanType) => {
   if (!res.ok) {
     const error = new Error('존재하지 않는 여행계획입니다')
     const errors = await res.json()
-    console.log(errors)
 
     throw error
   }
@@ -380,7 +374,6 @@ export const addPlanScrap = async ({ planId, accessToken }: AddPlanScrapType) =>
     error.message = errorData.message || 'Error occured. Please try later' // 에러 메시지를 설정
     throw error
   }
-  console.log('스크랩 더하기 완료')
 
   return
 }
@@ -464,7 +457,6 @@ export interface DeletePlanLikesType {
  */
 export const deletePlanLikes = async ({ planId, accessToken }: DeletePlanLikesType) => {
   const Route = BACKEND_ROUTES.PLAN.LIKE.DELETE
-  console.log('planDElete lieks')
 
   const queries: Queries = [
     {

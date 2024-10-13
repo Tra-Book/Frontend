@@ -189,7 +189,6 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.LIKES.DELETE.key, {
 queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.SCRAPS.ADD.key, {
   mutationFn: MUTATION_KEYS.PLAN.SCRAPS.ADD.fc,
   onSuccess(data: any, variables, context) {
-    console.log('스크랩 수정 완료')
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLANS.INDEX })
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.planId) })
   },

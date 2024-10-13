@@ -61,8 +61,6 @@ const MainPlanCard = ({ data }: MainPlanCardProps): ReactNode => {
     router.push(`${ROUTES.PLAN.DETAIL.url}/${id}`)
   }
 
-  console.log('mainplacecard:', commentCnt)
-
   return (
     <div className='group relative flex h-min w-full cursor-pointer flex-col justify-start gap-4 overflow-hidden rounded-lg bg-white p-3 shadow-tb-shadow hover:scale-105'>
       <div className='relative w-full overflow-hidden rounded-md'>

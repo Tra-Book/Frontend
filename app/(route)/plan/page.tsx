@@ -22,10 +22,6 @@ const TravelInfoPage = ({}: TravelInfoPageProps): ReactNode => {
   const planId = parseInt(params.get('planId') as string)
   const session: any = useSession()
 
-  useEffect(() => {
-    console.log(planData)
-  }, [planData])
-
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isPending, isError, error } = useQuery({
     queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(planId),
@@ -37,8 +33,6 @@ const TravelInfoPage = ({}: TravelInfoPageProps): ReactNode => {
   // #1. 가져온 값 대입하기
   useEffect(() => {
     if (data && data.id !== planData.id) {
-      console.log('fetched data:', data)
-
       setPlanData(data) // data가 변경될 때만 상태 업데이트
     }
   }, [data, planData, setPlanData])

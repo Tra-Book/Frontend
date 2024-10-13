@@ -28,8 +28,6 @@ export const GET_userPlans = async ({ type, accessToken, signal }: FetchUserPlan
   ]
 
   const API = BACKEND_ROUTES.PLANS.GET
-  console.log(`${attachQuery(`/server/${API.url}`, queries)}`)
-
   const res = await fetch(`${attachQuery(`/server/${API.url}`, queries)}`, {
     method: API.method,
     headers: {
@@ -146,8 +144,6 @@ export const fetchPlans = async (
   totalPages: any
 }> => {
   const { searchInput, states, arrange, scrollNum, isScrap, accessToken } = params
-  console.log('Exectued fetch plans')
-
   const queries: Queries = [
     {
       key: 'search',
@@ -235,8 +231,6 @@ export const fetchPlans = async (
         tags: data.plan.tags,
       }) as PlanCardType,
   )
-  console.log('FetchedPlans:', datas)
-  console.log('totalPages:', totalPages)
 
   return { datas, totalPages }
 }

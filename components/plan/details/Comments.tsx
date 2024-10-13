@@ -80,8 +80,6 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
       }, {} as GroupedComments)
     : []
 
-  console.log(groupedComments)
-
   // #2. 본댓글과 대댓글 분리 및 본댓글 기준 정렬
   const sortedComments = Object.values(groupedComments)
     .filter((group: CommentResponse[]) => group.some(comment => comment.id === comment.parentId))
@@ -96,7 +94,6 @@ const Comments = ({ planId, comments, user, className }: CommentsProps): ReactNo
       return { parentComment, childComments }
     })
     .sort((a, b) => new Date(a.parentComment!.time).getTime() - new Date(b.parentComment!.time).getTime()) // 본댓글을 기준으로 시간 오름차순 정렬
-  console.log(sortedComments)
   return (
     <div className={cn('relative flex flex-col items-end justify-start gap-2', className)}>
       <p className='w-full py-3 text-xl font-semibold'>댓글&nbsp;{planComments?.length}개</p>

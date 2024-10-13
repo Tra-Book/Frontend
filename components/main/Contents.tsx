@@ -142,8 +142,6 @@ const Contents = ({ name }: ContentsProps): ReactNode => {
   // Case2 : 데이터는 있음 (페이지네이션으로 이동한건 항상 있어야 만 함)
   else {
     const filteredData = data?.datas
-    console.log('filteredData:', filteredData)
-
     // Case2-1: 필터된 데이터가 없음
     if (!filteredData || filteredData.length === 0) {
       contents = (

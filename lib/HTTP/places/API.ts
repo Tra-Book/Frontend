@@ -137,8 +137,6 @@ export const fetchPlaces = async (
         isScraped: data.place.isScrapped,
       }) as PlaceCardType,
   )
-  console.log('Fetched datas', datas)
-  console.log('Fetched totalPages', totalPages)
 
   return { datas, totalPages }
 }

@@ -21,8 +21,6 @@ const UpdateInfo = ({}: UpdateInfoProps): ReactNode => {
 
   // #0. 값 저장
   const saveChanges = (id: 'title' | 'description' | 'memberCnt' | 'budget', value: any) => {
-    console.log({ id: value })
-
     setPlanData({
       [id]: value,
     })

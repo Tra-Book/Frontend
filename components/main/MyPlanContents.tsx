@@ -120,8 +120,6 @@ const MainPlanContents = ({ plans }: MainPlanContentsProps): ReactNode => {
     const endIndex = startIndex + ELEMENTS_PER_PAGE
     const displayedData = filteredData.slice(startIndex, endIndex)
 
-    console.log(displayedData)
-
     contents = (
       <>
         <div className='relative grid w-full grid-cols-1 gap-x-8 gap-y-10 overflow-x-hidden pb-4 pl-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>

@@ -113,7 +113,6 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
     !tmpScrapData.isScraped ? ['addPlanScrap'] : ['deletePlanScrap'],
   )
   const scrapHandler = () => {
-    console.log('클릭은됨')
     if (isScrapPending) {
       toast({ title: '다른 작업 수행중입니다.' })
     }

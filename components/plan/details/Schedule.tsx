@@ -22,15 +22,11 @@ interface PlanDetailScheduleProps {
 
 const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): ReactNode => {
   const { startDate, schedule } = plan
-  console.log('schedule fetched: ', schedule)
 
   const { DayDropdown } = useDayDropdown(schedule.length)
   const { setDay } = useDropdownStore()
   const { setCenter, pins, setPins, clearPins } = useMapStore()
 
-  useEffect(() => {
-    console.log(pins)
-  }, [pins])
   const handleDayChange = (day: number) => {
     setDay(day)
     // 해당하는 날짜의 Pin만 남기기
@@ -39,7 +35,6 @@ const PlanDetailSchedule = ({ plan, className }: PlanDetailScheduleProps): React
       // 전체 pin 더하기
       schedule.map((item, index) => {
         const geoArray: Geo[] = item.places.map(place => place.geo)
-        console.log('geoArray:', geoArray)
 
         setPins(index + 1, geoArray)
         // 첫 위치로 Map Center 두기
@@ -168,8 +163,6 @@ const UniSchedule = ({ schedule, fillIndex, date }: ScheduleProps): ReactNode =>
   }
   // 원래 카드
   else {
-    console.log('schedule: ', schedule)
-
     contents = places.map((place, index) => (
       <React.Fragment key={place.order}>
         <SchedulePlaceCard id='schedule' data={place} fillIndex={fillIndex} isReduced={false} className='h-[200px]' />
