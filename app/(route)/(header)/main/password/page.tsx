@@ -145,7 +145,7 @@ const ChangePasswordPage = ({}: ChangePasswordPageProps): ReactNode => {
 
         <div className='flex w-full max-w-[300px] flex-col'>
           <Label htmlFor='newPw' className='mb-2 flex text-base'>
-            비밀번호 <span className='text-tbRed'>*</span>
+            변경 비밀번호 <span className='text-tbRed'>*</span>
           </Label>
           <div className='gap relative flex justify-between gap-2'>
             <Input

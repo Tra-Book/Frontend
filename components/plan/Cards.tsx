@@ -171,7 +171,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
             <span className='truncate text-base font-semibold group-hover:text-tbBlue'>{name}</span>
             <LucideIcon
               name='Bookmark'
-              className={cn('absolute right-2 top-1', tmpIsScrap ? 'hover:fill-none' : 'hover:fill-tbPrimaryHover')}
+              className={cn('absolute right-2 top-1')}
               fill={tmpIsScrap ? 'tbPrimaryHover' : undefined}
               onClick={scrapHandler}
             />

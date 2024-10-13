@@ -6,6 +6,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { INITIAL_PLAN } from '@/lib/constants/dummy_data'
 import useMapStore from '@/lib/context/mapStore'
 import usePlanStore from '@/lib/context/planStore'
+import { QUERY_KEYS } from '@/lib/HTTP/cacheKey'
 import { getPlan } from '@/lib/HTTP/plan/API'
 import { PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -36,7 +37,7 @@ const PlanSchedule = ({ id, plan, setFocusPlanCard, className }: PlanSchedulePro
 
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isFetching, isError, error } = useQuery({
-    queryKey: ['plan', plan.id],
+    queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(plan.id),
     queryFn: () => getPlan({ planId: plan.id, accessToken: session.data ? session.data.accessToken : null }),
     enabled: id === 'scrap',
   })

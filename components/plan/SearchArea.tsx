@@ -6,6 +6,7 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import usePlanStore from '@/lib/context/planStore'
+import { QUERY_KEYS } from '@/lib/HTTP/cacheKey'
 import { fetchPlaces, PlaceCardType, SCROLL_SIZE } from '@/lib/HTTP/places/API'
 import { fetchPlans, PlanCardType } from '@/lib/HTTP/plans/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -54,7 +55,11 @@ const SearchArea = ({
 
   const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
     queryKey:
-      name === 'Plan' ? ['plans', 'scrap'] : pathname.includes('scrap') ? ['places', 'scrap'] : ['places', 'schedule'],
+      name === 'Plan'
+        ? QUERY_KEYS.USER.PLANS.SCRAP
+        : pathname.includes('scrap')
+          ? QUERY_KEYS.USER.PLACES.SCRAP
+          : QUERY_KEYS.GENERAL.PLACES.INDEX,
     queryFn: async ({ pageParam = 0 }) => {
       const commonParams = {
         searchInput: searchInputRef.current?.value || '',

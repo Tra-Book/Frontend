@@ -207,10 +207,6 @@ const PostComment = ({
       addCommentMutate(
         { newComment: newComment, accessToken: user.accessToken },
         {
-          /**
-           * data: mutate return value
-           * variables: mutate 인자
-           */
           onSuccess: (data: any, variables: any) => {
             // router.refresh()
             queryClient.invalidateQueries({ queryKey: ['plan', planId] })

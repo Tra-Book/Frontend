@@ -8,6 +8,7 @@ import LoadingPage from '@/components/common/LoadingPage'
 import UpdateInfo from '@/components/plan/UpdateInfo'
 import UpdatePeriod from '@/components/plan/UpdatePeriod'
 import usePlanStore from '@/lib/context/planStore'
+import { QUERY_KEYS } from '@/lib/HTTP/cacheKey'
 import { getPlan } from '@/lib/HTTP/plan/API'
 interface TravelInfoPageProps {}
 
@@ -27,7 +28,7 @@ const TravelInfoPage = ({}: TravelInfoPageProps): ReactNode => {
 
   // #0. Fetch Plan & User Info using planId & userId (useQuery)
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ['plan', planId],
+    queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(planId),
     queryFn: () => getPlan({ planId: planId, accessToken: session.data ? session.data.accessToken : null }),
     enabled: planId !== -1 && planId !== planData.id,
     //select는 data가 존재할때만 호출된다. 그렇기때문에 data가 undefined인 경우를 고려할 필요가 없다.
