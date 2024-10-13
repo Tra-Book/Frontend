@@ -56,10 +56,10 @@ const SearchArea = ({
   const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
     queryKey:
       name === 'Plan'
-        ? QUERY_KEYS.USER.PLANS.SCRAP
+        ? QUERY_KEYS.USER.PLANS.SCRAP // 스크랩한 여행계획
         : pathname.includes('scrap')
-          ? QUERY_KEYS.USER.PLACES.SCRAP
-          : QUERY_KEYS.GENERAL.PLACES.INDEX,
+          ? QUERY_KEYS.USER.PLACES.SCRAP // 스크랩한 여행지
+          : QUERY_KEYS.GENERAL.PLACES.INDEX, // 일반 여행지
     queryFn: async ({ pageParam = 0 }) => {
       const commonParams = {
         searchInput: searchInputRef.current?.value || '',

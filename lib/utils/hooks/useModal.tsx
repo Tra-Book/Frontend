@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { ConfirmModal, InfoModal, ModalData } from '@/components/common/Modals'
 import { ClientModalData } from '@/lib/constants/errors'
@@ -17,9 +17,6 @@ const useModal = () => {
     onConfirm: () => void
   }
 
-  useEffect(() => {
-    // console.log('ISOpen: ', isOpen)
-  }, [isOpen])
   // 실제 모달 컴포넌트
   const Modal = ({ onConfirm }: ModalProps) => {
     const Comp = modalData.id === 'info' ? InfoModal : ConfirmModal

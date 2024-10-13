@@ -23,8 +23,6 @@ const SignOutPage = ({}: SignOutPageProps): ReactNode => {
 
   const signOut = async () => {
     if (!isChecked) {
-      console.log('431')
-
       toast({ title: '주의사항에 동의해주세요.' })
       return
     }

@@ -94,7 +94,7 @@ export const SchedulePlaceCard = ({
           </div>
           {!isReduced && <span className='w-fit text-sm'>방문자 {formatNumOfReview(visitCnt)}</span>}
         </div>
-        {!deleteHandler && (
+        {deletePlaceHandler && (
           <LucideIcon
             onClick={deleteHandler}
             name='X'
