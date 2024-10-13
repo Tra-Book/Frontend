@@ -43,12 +43,12 @@ const PlanCard = ({ plan }: PlanCardProps): ReactNode => {
       onClick={openPlanHandler}
     >
       <Image
-        src={PLACE_DEFAULT_IMAGE || BusanImg}
+        src={plan.imgSrc || PLACE_DEFAULT_IMAGE || BusanImg}
         alt='BusanImg'
         width={200}
         height={200}
         quality={100}
-        className='absolute h-full w-full rounded-lg p-3'
+        className='absolute h-full w-full rounded-lg p-3 hover:cursor-pointer'
       />
       <div
         className={cn(
