@@ -26,11 +26,11 @@ const getPlans = async (query: Query) => {
 
   let queryString = `?pageSize=100&userScrapOnly=false&search=&pageNum=${scrollNum}`
   if (STATES.some(state => state === filterDetail)) {
-    queryString += `&region=${filterDetail}`
+    queryString += `&state=${filterDetail}`
   } else if (DURATION_FILTERS.some(duration => duration === filterDetail)) {
     queryString += `&duration=${filterDetail[3]}`
   } else {
-    queryString += `&memberCount=${filterDetail.slice(0, -1)}`
+    queryString += `&numOfPeople=${filterDetail.slice(0, -1)}`
   }
 
   try {
@@ -160,10 +160,11 @@ const PlanFilter = ({}: PlanFilterProps): ReactNode => {
         {data?.pages[0].totalPages === 0 && (
           <div className='mt-5 text-2xl'>만들어진 계획이 없습니다. 계획을 만들고 공유하세요!</div>
         )}
-        {/* Loading */}
+      </div>
+      {/* Loading */}
+      <div className='flex h-28 w-full items-center justify-center'>
         {(hasNextPage || isPending) && <Loading size={40} />}
       </div>
-      <div className='h-28 w-full'></div>
     </div>
   )
 }
