@@ -142,7 +142,7 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.UPDATE.key, {
   mutationFn: MUTATION_KEYS.PLAN.UPDATE.fc,
   onSuccess: (data, variables, context) => {
     toast({ title: '저장되었습니다' }) // 성공 메세지
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(data.plan.id) }) // Post 내용
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.plan.id) }) // Post 내용
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USER.PLANS.INDEX })
   },
   onError: () => {
@@ -167,7 +167,7 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.LIKES.ADD.key, {
   mutationFn: MUTATION_KEYS.PLAN.LIKES.ADD.fc,
   onSuccess(data: any, variables, context) {
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLANS.INDEX })
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(data.planId) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.planId) })
   },
   onError(error, variables, context) {
     toast({ title: '서버 오류 다시 시도해주세요' })
@@ -177,7 +177,7 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.LIKES.DELETE.key, {
   mutationFn: MUTATION_KEYS.PLAN.LIKES.DELETE.fc,
   onSuccess(data: any, variables, context) {
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLANS.INDEX })
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(data.planId) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.planId) })
   },
   onError(error, variables, context) {
     toast({ title: '서버 오류 다시 시도해주세요' })
@@ -187,10 +187,11 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.LIKES.DELETE.key, {
  * 스크랩
  */
 queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.SCRAPS.ADD.key, {
-  mutationFn: MUTATION_KEYS.PLAN.SCRAPS.DELETE.fc,
+  mutationFn: MUTATION_KEYS.PLAN.SCRAPS.ADD.fc,
   onSuccess(data: any, variables, context) {
+    console.log('스크랩 수정 완료')
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLANS.INDEX })
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(data.planId) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.planId) })
   },
   onError(error, variables, context) {
     toast({ title: '서버 오류 다시 시도해주세요' })
@@ -200,7 +201,7 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.SCRAPS.DELETE.key, {
   mutationFn: MUTATION_KEYS.PLAN.SCRAPS.DELETE.fc,
   onSuccess(data: any, variables, context) {
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLANS.INDEX })
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(data.planId) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.planId) })
   },
   onError(error, variables, context) {
     toast({ title: '서버 오류 다시 시도해주세요' })
@@ -210,7 +211,7 @@ queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.SCRAPS.DELETE.key, {
 queryClient.setMutationDefaults(MUTATION_KEYS.PLAN.COMMENTS.ADD.key, {
   mutationFn: MUTATION_KEYS.PLAN.COMMENTS.ADD.fc,
   onSuccess(data, variables, context) {
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(data.newComment.planId) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.GENERAL.PLAN.INDEX(variables.newComment.planId) })
     toast({ title: '댓글 업로드 성공' })
   },
   onError: () => {
