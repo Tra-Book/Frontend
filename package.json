@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -19,7 +20,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
     "@tanstack/react-query": "^5.56.2",
-    "@tanstack/react-query-devtools": "^4.36.1",
+    "@tanstack/react-query-devtools": "4",
     "@types/react-slick": "^0.23.13",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
