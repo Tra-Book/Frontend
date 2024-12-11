@@ -9,7 +9,7 @@ import { INITIAL_PLAN, PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
-import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { MUTATION_KEYS, useMutationStore } from '@/lib/HTTP/cacheKey'
 import { UpdatePlanType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { cn } from '@/lib/utils/cn'
@@ -34,7 +34,9 @@ const PlanSideBar = ({ className }: PlanSideBarProps): ReactNode => {
   const { planData, setPlanData, setIsReduced, setIsSearching } = usePlanStore()
   const { modalData, handleModalStates, Modal } = useModal()
 
-  const { mutate: updatePlanMutate, isPending: isUpdating } = useMutationStore<UpdatePlanType>(['updatePlan'])
+  const { mutate: updatePlanMutate, isPending: isUpdating } = useMutationStore<UpdatePlanType>(
+    MUTATION_KEYS.PLAN.UPDATE.key,
+  )
 
   const savePlanHandler = () => {
     if (isUpdating) {

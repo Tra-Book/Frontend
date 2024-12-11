@@ -12,7 +12,7 @@ import { generate_initial_schedule } from '@/lib/constants/dummy_data'
 import { STATES, StateType } from '@/lib/constants/regions'
 import { ROUTES } from '@/lib/constants/routes'
 import usePlanStore from '@/lib/context/planStore'
-import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { MUTATION_KEYS, useMutationStore } from '@/lib/HTTP/cacheKey'
 import { attachQuery, Queries } from '@/lib/HTTP/http'
 import { CreatePlanType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -47,7 +47,9 @@ const PlanStartModal = ({}: PlanStartModalProps): ReactNode => {
     setStep(prev => (prev === 0 ? 1 : 0))
   }
 
-  const { mutate: createPlanMutate, isPending: isCreating } = useMutationStore<CreatePlanType>(['createPlan'])
+  const { mutate: createPlanMutate, isPending: isCreating } = useMutationStore<CreatePlanType>(
+    MUTATION_KEYS.PLAN.CREATE.key,
+  )
 
   const onClickFinish = () => {
     if (!STATES.some(state => state === inputState)) {

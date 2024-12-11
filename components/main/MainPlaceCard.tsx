@@ -5,7 +5,7 @@ import React, { ReactNode, useState } from 'react'
 import { PLAN_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_REVIEW_TEXT } from '@/lib/constants/no_data'
-import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { MUTATION_KEYS, useMutationStore } from '@/lib/HTTP/cacheKey'
 import { DeletePlaceScrapType } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
@@ -83,7 +83,7 @@ const Menu = ({ id, setIsDeleted, user }: MenuProps) => {
   const { ref, isOpen, toggleDropdown } = useDropdown() // 드롭다운 상태 관리
   const { modalData, handleModalStates, Modal, isOpen: isModalOpen } = useModal()
 
-  const { mutate: deletePlanMutate } = useMutationStore<DeletePlaceScrapType>(['deletePlaceScrap'])
+  const { mutate: deletePlanMutate } = useMutationStore<DeletePlaceScrapType>(MUTATION_KEYS.PLACE.SCRAPS.DELETE.key)
   // Todo: 리뷰삭제 및 쓰기 API 연결
   const options = [
     {

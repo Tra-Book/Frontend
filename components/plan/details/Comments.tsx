@@ -10,7 +10,7 @@ import { USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_data'
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
-import { queryClient, useMutationStore } from '@/lib/HTTP/cacheKey'
+import { MUTATION_KEYS, queryClient, useMutationStore } from '@/lib/HTTP/cacheKey'
 import { AddPlanCommentType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { CommentRequest, CommentResponse } from '@/lib/types/Entity/comment'
@@ -170,7 +170,9 @@ const PostComment = ({
   const commentRef = useRef<HTMLTextAreaElement>(null)
 
   // #0. 제출
-  const { mutate: addCommentMutate, isPending: isUploading } = useMutationStore<AddPlanCommentType>(['addPlanComment'])
+  const { mutate: addCommentMutate, isPending: isUploading } = useMutationStore<AddPlanCommentType>(
+    MUTATION_KEYS.PLAN.COMMENTS.ADD.key,
+  )
 
   // #1. 엔터키 눌렀을때 제출
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

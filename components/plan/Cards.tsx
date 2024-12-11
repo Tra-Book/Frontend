@@ -9,7 +9,7 @@ import { ClientModalData } from '@/lib/constants/errors'
 import { NO_PLAN_TITLE, NO_REVIEW_TEXT, NO_TAGS, NO_USER_DESCRIPTION } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
 import useMapStore from '@/lib/context/mapStore'
-import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { MUTATION_KEYS, useMutationStore } from '@/lib/HTTP/cacheKey'
 import { AddPlaceScrapType, DeletePlaceScrapType } from '@/lib/HTTP/place/API'
 import { PlaceCardType } from '@/lib/HTTP/places/API'
 import { AddPlanLikesType, AddPlanScrapType, DeletePlanLikesType, DeletePlanScrapType } from '@/lib/HTTP/plan/API'
@@ -120,7 +120,7 @@ export const PlaceCard = ({ data, focusedPlaceCard, handleClickCard }: PlaceCard
   const [tmpIsScrap, setTmpIsScrap] = useState<boolean>(isScraped)
 
   const { mutate: scrapPlaceMutate } = useMutationStore<AddPlaceScrapType | DeletePlaceScrapType>(
-    !tmpIsScrap ? ['addPlaceScrap'] : ['deletePlaceScrap'],
+    !tmpIsScrap ? MUTATION_KEYS.PLACE.SCRAPS.ADD.key : MUTATION_KEYS.PLACE.SCRAPS.DELETE.key,
   )
 
   const focusHandler = () => {
@@ -225,12 +225,12 @@ export const PlanCard = ({ data, handleClickCard }: PlanCardProps) => {
 
   // #1. Plan Likes Mutation
   const { mutate: likesMutate, isPending: isLikesPending } = useMutationStore<AddPlanLikesType | DeletePlanLikesType>(
-    !tmpLikeData.isLiked ? ['addPlanLikes'] : ['deletePlanLikes'],
+    !tmpLikeData.isLiked ? MUTATION_KEYS.PLAN.LIKES.ADD.key : MUTATION_KEYS.PLAN.LIKES.DELETE.key,
   )
   // #2. Plan Scrap Mutations
   const { mutate: scrapPlaceMutate, isPending: isScrapPending } = useMutationStore<
     AddPlanScrapType | DeletePlanScrapType
-  >(!tmpScrapData.isScraped ? ['addPlanScrap'] : ['deletePlanScrap'])
+  >(!tmpScrapData.isScraped ? MUTATION_KEYS.PLACE.SCRAPS.ADD.key : MUTATION_KEYS.PLACE.SCRAPS.DELETE.key)
 
   const likeHandler = () => {
     if (isLikesPending) {

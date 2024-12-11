@@ -8,7 +8,6 @@ import { Toaster } from '@/components/ui/toaster'
 import { INITIAL_PLAN } from '@/lib/constants/dummy_data'
 import usePlanStore from '@/lib/context/planStore'
 import { queryClient } from '@/lib/HTTP/cacheKey'
-
 interface MainLayoutProps {
   children: React.ReactNode
 }

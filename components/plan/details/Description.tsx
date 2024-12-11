@@ -8,8 +8,9 @@ import { PLAN_DEFAULT_IMAGE, USER_DEFAULT_IMAGE } from '@/lib/constants/dummy_da
 import { ClientModalData } from '@/lib/constants/errors'
 import { NO_USER_DESCRIPTION, NO_USER_NAME } from '@/lib/constants/no_data'
 import { ROUTES } from '@/lib/constants/routes'
-import { useMutationStore } from '@/lib/HTTP/cacheKey'
+import { MUTATION_KEYS, useMutationStore } from '@/lib/HTTP/cacheKey'
 import { attachQuery, Queries } from '@/lib/HTTP/http'
+import { AddPlanLikesType, DeletePlanLikesType } from '@/lib/HTTP/plan/API'
 import LucideIcon from '@/lib/icons/LucideIcon'
 import { Plan } from '@/lib/types/Entity/plan'
 import { cn } from '@/lib/utils/cn'
@@ -78,9 +79,9 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
   }
 
   // #1. Plan Likes Mutation
-  const { mutate: planLikeMutate, isPending: isLikesPending } = useMutationStore(
-    !tmpLikeData.isLiked ? ['addPlanLikes'] : ['deletePlanLikes'],
-  )
+  const { mutate: planLikeMutate, isPending: isLikesPending } = useMutationStore<
+    AddPlanLikesType | DeletePlanLikesType
+  >(!tmpLikeData.isLiked ? MUTATION_KEYS.PLAN.LIKES.ADD.key : MUTATION_KEYS.PLAN.LIKES.DELETE.key)
 
   const likeHandler = () => {
     if (isLikesPending) {
@@ -140,7 +141,7 @@ const Description = ({ plan, planUser, user, className }: DescriptionProps): Rea
   }
 
   // #2. Plan Delete Mutation
-  const { mutate: deletePlanMutate } = useMutationStore(['deletePlan'])
+  const { mutate: deletePlanMutate } = useMutationStore<DeletePlanLikesType>(MUTATION_KEYS.PLAN.DELETE.key)
   const planDeleteHandler = () => {
     // #1. 권한 없는 유저의 접근
     if (!user && planUser.userId === user.userId) {
